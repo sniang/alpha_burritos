@@ -73,23 +73,21 @@ function TimeStampSelector({
     return `${date} ${formattedTime}`;
   }
 
-  // Render dropdown if no error
-  if (!error) {
-    return (
-      <div>
-        <select
-          value={selectedFile}
-          onChange={handleSelectChange}
-          className="border rounded p-2"
-        >
-          <option value="" disabled>Select an acquisition timestamp</option>
-          {jsonFiles.map((file, index) => (
-            <option key={index} value={file}>{parseTimestamp(file)}</option>
-          ))}
-        </select>
-      </div>
-    );
-  }
+  return (
+    <div>
+      <select
+        value={selectedFile}
+        onChange={handleSelectChange}
+        className="border rounded p-2"
+      >
+        <option value="" disabled>Select an acquisition timestamp</option>
+        {!error && jsonFiles.map((file, index) => (
+          <option key={index} value={file}>{parseTimestamp(file)}</option>
+        ))}
+      </select>
+    </div>
+  );
+
 }
 
 export default TimeStampSelector;

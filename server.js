@@ -24,6 +24,29 @@ app.get('/api/json-files', (req, res) => {
   });
 });
 
+app.get('/api/json/:filename', (req, res) => {
+  const { filename } = req.params;
+
+  // Prevent path traversal attacks
+  if (!filename.endsWith('.json') || filename.includes('..')) {
+    return res.status(400).json({ error: 'Invalid file name' });
+  }
+
+  const filePath = path.join('/Users/samuelniang/cern_burritos/2025/05/JSON', filename);
+  
+  fs.readFile(filePath, 'utf8', (err, data) => {
+    if (err) {
+      return res.status(404).json({ error: 'File not found' });
+    }
+    try {
+      const jsonData = JSON.parse(data);
+      res.json(jsonData);
+    } catch (parseErr) {
+      res.status(500).json({ error: 'Invalid JSON format' });
+    }
+  });
+});
+
 app.listen(PORT, () => {
   console.log(`Server is running at http://localhost:${PORT}`);
 });
