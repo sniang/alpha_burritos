@@ -1,16 +1,20 @@
-const express = require('express');
-const fs = require('fs');
-const path = require('path');
-const cors = require('cors');
+import express from 'express';
+import cors from 'cors';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+// Fix __dirname for ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 const PORT = 3001;
 
-// Enable CORS so your frontend (on a different port) can access the API
 app.use(cors());
 
 app.get('/api/json-files', (req, res) => {
-  const dirPath = '/Users/samuelniang/cern_burritos/2025/05/JSON';
+  const dirPath = path.join('/Users/samuelniang/cern_burritos/2025/05/JSON');
   fs.readdir(dirPath, (err, files) => {
     if (err) {
       return res.status(500).json({ error: 'Unable to read directory' });
