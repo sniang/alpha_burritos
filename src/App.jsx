@@ -1,22 +1,23 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import alphaLogo from './assets/ALPHA_Logo_png.png'
 import './App.css'
 import TimeStampSelector from './TimeStampSelector.jsx'
 import Parameters from './Parameters.jsx'
 import DetectorImageAll from './DetectorImageAll.jsx'
-import e from 'cors'
+import DetectorSelector from './DetectorSelector.jsx'
+import DetectorImage from './DetectorImage.jsx'
 
 function App() {
 
   const [jsonFiles, setJsonFiles] = useState([]);
   const [selectedFile, setSelectedFile] = useState('');
+  const [selectedDetector, setSelectedDetector] = useState('PDS');
   const [error, setError] = useState(null);
 
   if (error) {
     return (
       <>
-        <h1>ALPHA Burritos</h1>
+        <h1 style={{ display: 'flex', gap: '50px' }}><img src={alphaLogo} alt="Logo of the ALPHA experiment" width="100px" />  ALPHA Burritos Detectors</h1>
         <p className="error">Something went wrong: {error.message}</p>
       </>
     )
@@ -25,7 +26,8 @@ function App() {
   return (
     <>
 
-      <h1>ALPHA Burritos</h1>
+      <h1 style={{ display: 'flex', gap: '50px' }}><img src={alphaLogo} alt="Logo of the ALPHA experiment" width="100px" />  ALPHA Burritos Detectors</h1>
+
       <TimeStampSelector
         jsonFiles={jsonFiles}
         setJsonFiles={setJsonFiles}
@@ -36,6 +38,8 @@ function App() {
       />
       {selectedFile && <Parameters selectedFile={selectedFile} />}
       {selectedFile && <DetectorImageAll selectedFile={selectedFile} />}
+      {selectedFile && <DetectorSelector  selectedDetector={selectedDetector} setSelectedDetector={setSelectedDetector}/>}
+      {selectedFile && selectedDetector && <DetectorImage selectedFile={selectedFile} selectedDetector={selectedDetector} />}
     </>
   )
 }

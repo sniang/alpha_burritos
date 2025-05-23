@@ -91,7 +91,7 @@ const Parameters = ({ selectedFile }) => {
                 }}
             >
                 {/* Header row */}
-                <div style={{ fontWeight: "600" }}>Parameter</div>
+                <div style={{ fontWeight: "600" }}>Parameters</div>
                 {validLocations.map((loc) => (
                     <div key={loc} style={{ fontWeight: "600" }}>{loc}</div>
                 ))}
