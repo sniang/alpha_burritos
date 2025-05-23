@@ -45,7 +45,8 @@ function TimeStampSelector({
       try {
         const res = await fetch('http://localhost:3001/api/json-files');
         const data = await res.json();
-        setJsonFiles(data); // Update available files
+        setJsonFiles(data.sort().reverse()); // Update available files
+        setSelectedFile(data.sort().reverse()[0]); // Set default selected file
       } catch (error) {
         setError(error); // Set error if fetch fails
       }
@@ -79,8 +80,10 @@ function TimeStampSelector({
         value={selectedFile}
         onChange={handleSelectChange}
         className="border rounded p-2"
+        defaultValue = {jsonFiles[0]}
       >
         <option value="" disabled>Select an acquisition timestamp</option>
+
         {!error && jsonFiles.map((file, index) => (
           <option key={index} value={file}>{parseTimestamp(file)}</option>
         ))}
