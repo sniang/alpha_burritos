@@ -47,6 +47,28 @@ app.get('/api/json/:filename', (req, res) => {
   });
 });
 
+
+app.get('/api/img_all/:jsonFilename', (req, res) => {
+  const { jsonFilename } = req.params;
+
+  // Basic validation and sanitisation
+  if (!jsonFilename.endsWith('.json') || jsonFilename.includes('..')) {
+    return res.status(400).json({ error: 'Invalid file name' });
+  }
+
+  const baseName = jsonFilename.replace('.json', '.png');
+  const imagePath = path.join('/Users/samuelniang/cern_burritos/2025/05/Together', baseName);
+
+  // Check if the file exists and send it
+  fs.access(imagePath, fs.constants.F_OK, (err) => {
+    if (err) {
+      return res.status(404).json({ error: 'Image not found' });
+    }
+    res.sendFile(imagePath);
+  });
+});
+
+
 app.listen(PORT, () => {
   console.log(`Server is running at http://localhost:${PORT}`);
 });

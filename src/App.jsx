@@ -4,6 +4,7 @@ import viteLogo from '/vite.svg'
 import './App.css'
 import TimeStampSelector from './TimeStampSelector.jsx'
 import Parameters from './Parameters.jsx'
+import DetectorImageAll from './DetectorImageAll.jsx'
 import e from 'cors'
 
 function App() {
@@ -33,7 +34,8 @@ function App() {
         error={error}
         setError={setError}
       />
-      <Parameters selectedFile={selectedFile} selectedImageAll={selectedImageAll} setSelectedImageAll={setSelectedImageAll} />
+      {selectedFile && <Parameters selectedFile={selectedFile} />}
+      {selectedFile && <DetectorImageAll selectedFile={selectedFile} />}
     </>
   )
 }

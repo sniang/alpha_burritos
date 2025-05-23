@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 const Parmeters = ({ selectedFile}) => {
     const [parameters, setParameters] = useState(null);
     const [error, setError] = useState(null);
-    const locations = ["PDS", "BDS", "DSAT", "USAT"];
+    const locations = ["PDS", "BDS", "DSAT", "USAT", "PMT11"];
 
     function formatToFiveSignificantDigits(num) {
   return Number(num).toPrecision(5);
@@ -44,7 +44,8 @@ const Parmeters = ({ selectedFile}) => {
         <div>
             <h2>Parameters</h2>
             {locations.map((location) => {
-                return (
+                if (parameters[location]){
+                    return (
                     <div key={location}>
                         <h3>{location}:</h3>
                         <ul>
@@ -56,6 +57,8 @@ const Parmeters = ({ selectedFile}) => {
                         </ul>
                     </div>
                 );
+                }
+                
             })}
         </div>
     );
