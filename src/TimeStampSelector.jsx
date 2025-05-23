@@ -44,9 +44,12 @@ function TimeStampSelector({
     const fetchFiles = async () => {
       try {
         const res = await fetch('http://localhost:3001/api/json-files');
+        if (!res.ok) {
+          throw new Error(`${res.status} ${res.statusText}`);
+        }
         const data = await res.json();
-        setJsonFiles(data.sort().reverse()); // Update available files
-        setSelectedFile(data.sort().reverse()[0]); // Set default selected file
+        setJsonFiles(data); // Update available files
+        setSelectedFile(data[0]); // Set default selected file
       } catch (error) {
         setError(error); // Set error if fetch fails
       }
@@ -73,7 +76,6 @@ function TimeStampSelector({
     const formattedTime = time.replace(/-/g, ':');
     return `${date} ${formattedTime}`;
   }
-
   return (
     <div>
       <select

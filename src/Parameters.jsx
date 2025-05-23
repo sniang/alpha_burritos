@@ -69,27 +69,44 @@ const Parameters = ({ selectedFile }) => {
 
     // Render parameters if available
     if (parameters) {
+        const parameterKeys = [
+            { key: "area", label: "Area [V·ns]" },
+            { key: "fwhm", label: "FWHM [ns]" },
+            { key: "peak", label: "Peak [V]" },
+            { key: "rise", label: "Rise [ns]" },
+            { key: "time peak", label: "Time Peak [ns]" },
+        ];
+
+        const validLocations = locations.filter((loc) => parameters[loc]);
+
         return (
-            <div>
-                <h2>Parameters</h2>
-                {locations.map((location) => {
-                    // Only render locations that exist in parameters
-                    if (parameters[location]) {
-                        return (
-                            <div key={location}>
-                                <h3>{location}:</h3>
-                                <ul>
-                                    <li>Area: {formatToFiveSignificantDigits(parameters[location].area)} [V·ns]</li>
-                                    <li>FWHM: {formatToFiveSignificantDigits(parameters[location].fwhm)} [ns]</li>
-                                    <li>Peak: {formatToFiveSignificantDigits(parameters[location].peak)} [V]</li>
-                                    <li>Rise: {formatToFiveSignificantDigits(parameters[location].rise)} [ns]</li>
-                                    <li>Time Peak: {formatToFiveSignificantDigits(parameters[location]["time peak"])} [ns]</li>
-                                </ul>
+            <div
+                style={{
+                    display: "grid",
+                    gridTemplateColumns: `150px repeat(${validLocations.length}, min-content)`,
+                    gap: "4px 8px",
+                    fontSize: "0.85rem",
+                    lineHeight: "1.2",
+                    alignItems: "center",
+                }}
+            >
+                {/* Header row */}
+                <div style={{ fontWeight: "600" }}>Parameter</div>
+                {validLocations.map((loc) => (
+                    <div key={loc} style={{ fontWeight: "600" }}>{loc}</div>
+                ))}
+
+                {/* Parameter rows */}
+                {parameterKeys.map(({ key, label }) => (
+                    <React.Fragment key={key}>
+                        <div>{label}</div>
+                        {validLocations.map((loc) => (
+                            <div key={`${loc}-${key}`}>
+                                {formatToFiveSignificantDigits(parameters[loc][key])}
                             </div>
-                        );
-                    }
-                    return null;
-                })}
+                        ))}
+                    </React.Fragment>
+                ))}
             </div>
         );
     }
