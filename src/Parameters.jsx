@@ -71,9 +71,9 @@ const Parameters = ({ selectedFile }) => {
     // Render parameters if available
     if (parameters) {
         const parameterKeys = [
-            { key: "area", label: "Area [V·ns]" },
+            { key: "area", label: "Area [mV·ns]" },
             { key: "fwhm", label: "FWHM [ns]" },
-            { key: "peak", label: "Peak [V]" },
+            { key: "peak", label: "Peak [mV]" },
             { key: "rise", label: "Rise [ns]" },
             { key: "time peak", label: "Time Peak [ns]" },
         ];
