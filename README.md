@@ -141,6 +141,20 @@ The API will run on [http://localhost:3001](http://localhost:3001).
   The main directory of the data has to be declared in the variable `MAIN_DIR` in [server.js](server.js).
 
 ---
+
+## Useful Resources
+
+- [React Documentation](https://react.dev/)
+- [Vite Documentation](https://vitejs.dev/guide/)
+- [Express Documentation](https://expressjs.com/)
+- [Node.js Documentation](https://nodejs.org/en/docs)
+- [JavaScript Reference (MDN)](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference)
+- [JSON Format](https://www.json.org/json-en.html)
+- [RESTful API Design](https://restfulapi.net/)
+- [GitHub Guides](https://guides.github.com/)
+- [ALPHA Experiment (CERN)](https://home.cern/science/experiments/alpha)
+
+---
 This project uses React, Vite, and Express. For backend API details, see [server.js](server.js).
 
 ---
