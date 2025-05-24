@@ -13,14 +13,27 @@ const PORT = 3001;
 const mainDir = '/Users/samuelniang/cern_burritos';
 
 const padToTwoDigits = (number) => {
-    return String(number).padStart(2, "0");
+  return String(number).padStart(2, "0");
+};
+
+const parseYearMonthFromFilename = (filename) => {
+  const parts = filename.split("-");
+  if (parts.length < 3) {
+    throw new Error("Invalid filename format: year and month not found.");
+  }
+  const year = parts[1];
+  const month = parts[2];
+  if (!/^\d{4}$/.test(year) || !/^\d{2}$/.test(month)) {
+    throw new Error("Invalid year or month format.");
+  }
+  return { year, month };
 };
 
 app.use(cors());
 
 app.get('/api/:year/:month/json', (req, res) => {
   const { year, month } = req.params;
-  const dirPath = path.join(mainDir,`${year}/${padToTwoDigits(month)}/JSON`);
+  const dirPath = path.join(mainDir, `${year}/${padToTwoDigits(month)}/JSON`);
   console.log(dirPath);
   fs.readdir(dirPath, (err, files) => {
     if (err) {
@@ -39,8 +52,15 @@ app.get('/api/json/:filename', (req, res) => {
     return res.status(400).json({ error: 'Invalid file name' });
   }
 
-  const filePath = path.join('/Users/samuelniang/cern_burritos/2025/05/JSON', filename);
-  
+  let filePath;
+  try {
+    const { year, month } = parseYearMonthFromFilename(filename);
+    console.log(year, month);
+    filePath = path.join(mainDir, year, padToTwoDigits(month), 'JSON', filename);
+  } catch (err) {
+    return res.status(400).json({ error: 'Invalid file name format' });
+  }
+
   fs.readFile(filePath, 'utf8', (err, data) => {
     if (err) {
       return res.status(404).json({ error: 'File not found' });
@@ -64,7 +84,14 @@ app.get('/api/img_all/:jsonFilename', (req, res) => {
   }
 
   const baseName = jsonFilename.replace('.json', '.png');
-  const imagePath = path.join('/Users/samuelniang/cern_burritos/2025/05/Together', baseName);
+  let imagePath;
+  try {
+    const { year, month } = parseYearMonthFromFilename(jsonFilename);
+    console.log(year, month);
+    imagePath = path.join(mainDir, year, padToTwoDigits(month), 'Together', baseName);
+  } catch (err) {
+    return res.status(400).json({ error: 'Invalid file name format' });
+  }
 
   // Check if the file exists and send it
   fs.access(imagePath, fs.constants.F_OK, (err) => {
@@ -84,7 +111,16 @@ app.get('/api/img/:detector/:jsonFilename', (req, res) => {
   }
 
   const baseName = jsonFilename.replace('.json', '.png');
-  const imagePath = path.join('/Users/samuelniang/cern_burritos/2025/05',detector, baseName);
+  let imagePath;
+  try {
+    const { year, month } = parseYearMonthFromFilename(jsonFilename);
+    console.log(year, month);
+    imagePath = path.join(mainDir, year, padToTwoDigits(month), detector, baseName);
+  } catch (err) {
+    return res.status(400).json({ error: 'Invalid file name format' });
+  }
+
+
   console.log(imagePath);
 
   // Check if the file exists and send it
@@ -95,7 +131,6 @@ app.get('/api/img/:detector/:jsonFilename', (req, res) => {
     res.sendFile(imagePath);
   });
 });
-
 
 
 app.listen(PORT, () => {

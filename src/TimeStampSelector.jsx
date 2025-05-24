@@ -61,7 +61,7 @@ function TimeStampSelector({
       }
     };
     fetchFiles();
-  }, []);
+  }, [year, month]);
 
   // Handle dropdown selection change
   const handleSelectChange = (event) => {
