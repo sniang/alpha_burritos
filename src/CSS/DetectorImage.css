@@ -16,3 +16,10 @@
   width: 100%;
   text-align: center;
 }
+
+@media screen and (max-width: 900px) {
+  #detectorImage {
+    width: 425px;
+    height: auto;
+  }
+}
