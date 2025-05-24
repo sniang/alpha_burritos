@@ -1,6 +1,6 @@
 import React from "react";
 import alphaLogo from './assets/ALPHA_Logo_png.png'
-
+import './CSS/MainTitle.css'
 
 /**
  * Renders the main title component of the ALPHA Burritos application.
@@ -12,8 +12,8 @@ import alphaLogo from './assets/ALPHA_Logo_png.png'
  */
 const MainTitle = () => {
     return (
-        <h1><img src={alphaLogo} alt="Logo of the ALPHA experiment" />  ALPHA Burritos Detectors</h1>
-
+            
+            <h1 id="mainTitle"><img id="alphaLogo" src={alphaLogo} alt="Logo of the ALPHA experiment" />ALPHA Burritos Detectors</h1>
     );
 }
 export default MainTitle;

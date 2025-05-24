@@ -1,6 +1,5 @@
 #root {
   
-  border: solid 1px #ccc;
   width: 80%;
   display: flex;
   flex-direction: column;
