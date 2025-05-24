@@ -1,12 +1,12 @@
 import { useState } from 'react'
-import alphaLogo from './assets/ALPHA_Logo_png.png'
-import './App.css'
+import './CSS/App.css'
 import TimeStampSelector from './TimeStampSelector.jsx'
 import Parameters from './Parameters.jsx'
 import DetectorImageAll from './DetectorImageAll.jsx'
 import DetectorSelector from './DetectorSelector.jsx'
 import DetectorImage from './DetectorImage.jsx'
 import YearMonthSelector from './YearMonthSelector.jsx'
+import MainTitle from './MainTitle.jsx'
 
 function App() {
 
@@ -15,13 +15,13 @@ function App() {
   const [selectedDetector, setSelectedDetector] = useState('PDS');
   const [error, setError] = useState(null);
   const currentDate = new Date();
-const [year, setYear] = useState(new Date().getFullYear());
-const [month, setMonth] = useState(new Date().getMonth() + 1);
+  const [year, setYear] = useState(new Date().getFullYear());
+  const [month, setMonth] = useState(new Date().getMonth() + 1);
 
   if (error) {
     return (
       <>
-        <h1 style={{ display: 'flex', gap: '50px' }}><img src={alphaLogo} alt="Logo of the ALPHA experiment" width="100px" />  ALPHA Burritos Detectors</h1>
+        <MainTitle />
         <p className="error">Something went wrong: {error.message}</p>
       </>
     )
@@ -29,16 +29,15 @@ const [month, setMonth] = useState(new Date().getMonth() + 1);
 
   return (
     <>
-
-      <h1 style={{ display: 'flex', gap: '50px' }}><img src={alphaLogo} alt="Logo of the ALPHA experiment" width="100px" />  ALPHA Burritos Detectors</h1>
+      <MainTitle />
       <YearMonthSelector
-                year={year}
-                setYear={setYear}
-                month={month}
-                setMonth={setMonth}
-            />
+        year={year}
+        setYear={setYear}
+        month={month}
+        setMonth={setMonth}
+      />
       <TimeStampSelector
-      year={year}
+        year={year}
         month={month}
         jsonFiles={jsonFiles}
         setJsonFiles={setJsonFiles}

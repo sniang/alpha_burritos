@@ -1,0 +1,19 @@
+import React from "react";
+import alphaLogo from './assets/ALPHA_Logo_png.png'
+
+
+/**
+ * Renders the main title component of the ALPHA Burritos application.
+ * Displays the ALPHA experiment logo alongside the text "ALPHA Burritos Detectors".
+ * 
+ * @component
+ * @author Samuel Niang
+ * @returns {JSX.Element} A heading element containing the logo and title text
+ */
+const MainTitle = () => {
+    return (
+        <h1 style={{ display: 'flex', gap: '50px' }}><img src={alphaLogo} alt="Logo of the ALPHA experiment" width="100px" />  ALPHA Burritos Detectors</h1>
+
+    );
+}
+export default MainTitle;
