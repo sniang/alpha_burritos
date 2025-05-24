@@ -10,11 +10,18 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 const PORT = 3001;
+const mainDir = '/Users/samuelniang/cern_burritos';
+
+const padToTwoDigits = (number) => {
+    return String(number).padStart(2, "0");
+};
 
 app.use(cors());
 
-app.get('/api/json-files', (req, res) => {
-  const dirPath = path.join('/Users/samuelniang/cern_burritos/2025/05/JSON');
+app.get('/api/:year/:month/json', (req, res) => {
+  const { year, month } = req.params;
+  const dirPath = path.join(mainDir,`${year}/${padToTwoDigits(month)}/JSON`);
+  console.log(dirPath);
   fs.readdir(dirPath, (err, files) => {
     if (err) {
       return res.status(500).json({ error: 'Unable to read directory' });

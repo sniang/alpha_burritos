@@ -16,6 +16,8 @@ import React, { useState, useEffect } from "react";
  * @param {Function} props.setSelectedFile - Setter function to update the selected file.
  * @param {Error|null} props.error - Error object if fetching files fails, otherwise null.
  * @param {Function} props.setError - Setter function to update the error state.
+ * @param {string} props.year - Year for fetching JSON files.
+ * @param {string} props.month - Month for fetching JSON files.
  *
  * @example
  * <TimeStampSelector
@@ -25,6 +27,8 @@ import React, { useState, useEffect } from "react";
  *   setSelectedFile={setSelectedFile}
  *   error={error}
  *   setError={setError}
+ *   year={year}
+ *   month={month}
  * />
  */
 /**
@@ -37,13 +41,15 @@ function TimeStampSelector({
   selectedFile,
   setSelectedFile,
   error,
-  setError
+  setError,
+  year,
+  month,
 }) {
   // Fetch JSON files from backend API on mount
   useEffect(() => {
     const fetchFiles = async () => {
       try {
-        const res = await fetch('http://localhost:3001/api/json-files');
+        const res = await fetch(`http://localhost:3001/api/${year}/${month}/json`);
         if (!res.ok) {
           throw new Error(`${res.status} ${res.statusText}`);
         }

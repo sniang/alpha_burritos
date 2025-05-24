@@ -6,6 +6,7 @@ import Parameters from './Parameters.jsx'
 import DetectorImageAll from './DetectorImageAll.jsx'
 import DetectorSelector from './DetectorSelector.jsx'
 import DetectorImage from './DetectorImage.jsx'
+import YearMonthSelector from './YearMonthSelector.jsx'
 
 function App() {
 
@@ -13,6 +14,9 @@ function App() {
   const [selectedFile, setSelectedFile] = useState('');
   const [selectedDetector, setSelectedDetector] = useState('PDS');
   const [error, setError] = useState(null);
+  const currentDate = new Date();
+const [year, setYear] = useState(new Date().getFullYear());
+const [month, setMonth] = useState(new Date().getMonth() + 1);
 
   if (error) {
     return (
@@ -27,8 +31,15 @@ function App() {
     <>
 
       <h1 style={{ display: 'flex', gap: '50px' }}><img src={alphaLogo} alt="Logo of the ALPHA experiment" width="100px" />  ALPHA Burritos Detectors</h1>
-
+      <YearMonthSelector
+                year={year}
+                setYear={setYear}
+                month={month}
+                setMonth={setMonth}
+            />
       <TimeStampSelector
+      year={year}
+        month={month}
         jsonFiles={jsonFiles}
         setJsonFiles={setJsonFiles}
         selectedFile={selectedFile}
@@ -38,7 +49,7 @@ function App() {
       />
       {selectedFile && <Parameters selectedFile={selectedFile} />}
       {selectedFile && <DetectorImageAll selectedFile={selectedFile} />}
-      {selectedFile && <DetectorSelector  selectedDetector={selectedDetector} setSelectedDetector={setSelectedDetector}/>}
+      {selectedFile && <DetectorSelector selectedDetector={selectedDetector} setSelectedDetector={setSelectedDetector} />}
       {selectedFile && selectedDetector && <DetectorImage selectedFile={selectedFile} selectedDetector={selectedDetector} />}
     </>
   )
