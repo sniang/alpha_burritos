@@ -51,9 +51,7 @@ const Parameters = ({ selectedFile }) => {
 
         if (selectedFile) {
             // Only fetch if a file is selected
-            console.log('Fetching:', selectedFile);
             fetchParameters();
-            console.log('Parameters:', parameters);
         }
     }, [selectedFile]);
 

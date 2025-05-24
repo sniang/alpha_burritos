@@ -88,7 +88,6 @@ function TimeStampSelector({
       <select
         value={selectedFile}
         onChange={handleSelectChange}
-        defaultValue = {jsonFiles[0]}
       >
         <option value="" disabled>Select an acquisition timestamp</option>
 
