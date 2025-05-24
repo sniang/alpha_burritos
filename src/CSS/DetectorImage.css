@@ -1,0 +1,18 @@
+#detectorImageAll {
+  width: 95%;
+  margin: 10px;
+}
+
+#detectorImage {
+  height: 280px;
+  border: solid 2px #e33933;
+  border-radius: 10px;
+  padding: 10px;
+}
+
+.detectorImageContainer {
+  border: solid 2px #e33933;
+  border-radius: 10px;
+  width: 100%;
+  text-align: center;
+}
