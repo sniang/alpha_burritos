@@ -20,7 +20,6 @@ const DetectorImageAll = ({selectedFile}) => {
       <img
         src={imageUrl}
         alt={`Preview for ${selectedFile}`}
-        style={{ width: "70%", height: "auto" }}
       />
     </div>
   );

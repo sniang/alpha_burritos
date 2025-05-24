@@ -82,6 +82,7 @@ function App() {
     <>
       <MainTitle />
       {/* Year and month selection controls */}
+      <div className='selects-block'>
       <YearMonthSelector
         year={year}
         month={month}
@@ -99,6 +100,7 @@ function App() {
         error={error}
         setError={(value) => updateState('error', value)}
       />
+      </div>
       {/* Render detector components when a file is selected */}
       {renderDetectorComponents()}
     </>

@@ -83,11 +83,11 @@ function TimeStampSelector({
     return `${date} ${formattedTime}`;
   }
   return (
-    <div>
+    <label>
+      Timestamp: 
       <select
         value={selectedFile}
         onChange={handleSelectChange}
-        className="border rounded p-2"
         defaultValue = {jsonFiles[0]}
       >
         <option value="" disabled>Select an acquisition timestamp</option>
@@ -96,7 +96,7 @@ function TimeStampSelector({
           <option key={index} value={file}>{parseTimestamp(file)}</option>
         ))}
       </select>
-    </div>
+      </label>
   );
 
 }

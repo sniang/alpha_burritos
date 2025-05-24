@@ -30,7 +30,7 @@ const YearMonthSelector = ({ year, setYear, month, setMonth }) => {
 
     return (
         // Container with flex layout and styling
-        <div style={{ display: "flex", gap: "8px", alignItems: "center", fontSize: "0.85rem" }}>
+        <>
             {/* Year selector */}
             <label>
                 Year:
@@ -53,7 +53,7 @@ const YearMonthSelector = ({ year, setYear, month, setMonth }) => {
                     ))}
                 </select>
             </label>
-        </div>
+        </>
     );
 };
 
