@@ -1,138 +1,112 @@
 import express from 'express';
 import cors from 'cors';
-import fs from 'fs';
+import fs from 'fs/promises';  // Using promises-based fs
 import path from 'path';
 import { fileURLToPath } from 'url';
 
-// Fix __dirname for ES modules
+// Constants
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-
 const app = express();
-const PORT = 3001;
-const mainDir = '/Users/samuelniang/cern_burritos';
+const PORT = process.env.PORT || 3001;
+const MAIN_DIR = '/Users/samuelniang/cern_burritos';
 
-const padToTwoDigits = (number) => {
-  return String(number).padStart(2, "0");
-};
+// Middleware
+app.use(cors());
+app.use(express.json());
+
+// Utility functions
+const padToTwoDigits = (number) => String(number).padStart(2, "0");
 
 const parseYearMonthFromFilename = (filename) => {
   const parts = filename.split("-");
   if (parts.length < 3) {
     throw new Error("Invalid filename format: year and month not found.");
   }
-  const year = parts[1];
-  const month = parts[2];
+  const [, year, month] = parts;
   if (!/^\d{4}$/.test(year) || !/^\d{2}$/.test(month)) {
     throw new Error("Invalid year or month format.");
   }
   return { year, month };
 };
 
-app.use(cors());
+const validateFilename = (filename) => {
+  if (!filename.endsWith('.json') || filename.includes('..')) {
+    throw new Error('Invalid file name');
+  }
+};
 
-app.get('/api/:year/:month/json', (req, res) => {
-  const { year, month } = req.params;
-  const dirPath = path.join(mainDir, `${year}/${padToTwoDigits(month)}/JSON`);
-  console.log(dirPath);
-  fs.readdir(dirPath, (err, files) => {
-    if (err) {
-      return res.status(500).json({ error: 'Unable to read directory' });
-    }
+// Route handlers
+const getJsonFiles = async (req, res) => {
+  try {
+    const { year, month } = req.params;
+    const dirPath = path.join(MAIN_DIR, `${year}/${padToTwoDigits(month)}/JSON`);
+    const files = await fs.readdir(dirPath);
     const jsonFiles = files.filter(file => file.endsWith('.json'));
     res.json(jsonFiles);
-  });
-});
-
-app.get('/api/json/:filename', (req, res) => {
-  const { filename } = req.params;
-
-  // Prevent path traversal attacks
-  if (!filename.endsWith('.json') || filename.includes('..')) {
-    return res.status(400).json({ error: 'Invalid file name' });
+  } catch (error) {
+    res.status(500).json({ error: 'Unable to read directory' });
   }
+};
 
-  let filePath;
+const getJsonContent = async (req, res) => {
   try {
+    const { filename } = req.params;
+    validateFilename(filename);
     const { year, month } = parseYearMonthFromFilename(filename);
-    console.log(year, month);
-    filePath = path.join(mainDir, year, padToTwoDigits(month), 'JSON', filename);
-  } catch (err) {
-    return res.status(400).json({ error: 'Invalid file name format' });
-  }
-
-  fs.readFile(filePath, 'utf8', (err, data) => {
-    if (err) {
-      return res.status(404).json({ error: 'File not found' });
+    const filePath = path.join(MAIN_DIR, year, padToTwoDigits(month), 'JSON', filename);
+    
+    const data = await fs.readFile(filePath, 'utf8');
+    const jsonData = JSON.parse(data);
+    res.json(jsonData);
+  } catch (error) {
+    if (error.code === 'ENOENT') {
+      res.status(404).json({ error: 'File not found' });
+    } else {
+      res.status(400).json({ error: error.message });
     }
-    try {
-      const jsonData = JSON.parse(data);
-      res.json(jsonData);
-    } catch (parseErr) {
-      res.status(500).json({ error: 'Invalid JSON format' });
-    }
-  });
-});
-
-
-app.get('/api/img_all/:jsonFilename', (req, res) => {
-  const { jsonFilename } = req.params;
-
-  // Basic validation and sanitisation
-  if (!jsonFilename.endsWith('.json') || jsonFilename.includes('..')) {
-    return res.status(400).json({ error: 'Invalid file name' });
   }
+};
 
-  const baseName = jsonFilename.replace('.json', '.png');
-  let imagePath;
+const getImage = async (req, res, subdir = 'Together') => {
   try {
+    const { jsonFilename, detector } = req.params;
+    validateFilename(jsonFilename);
+    
     const { year, month } = parseYearMonthFromFilename(jsonFilename);
-    console.log(year, month);
-    imagePath = path.join(mainDir, year, padToTwoDigits(month), 'Together', baseName);
-  } catch (err) {
-    return res.status(400).json({ error: 'Invalid file name format' });
-  }
+    const baseName = jsonFilename.replace('.json', '.png');
+    const imagePath = path.join(
+      MAIN_DIR, 
+      year, 
+      padToTwoDigits(month), 
+      detector || subdir, 
+      baseName
+    );
 
-  // Check if the file exists and send it
-  fs.access(imagePath, fs.constants.F_OK, (err) => {
-    if (err) {
-      return res.status(404).json({ error: 'Image not found' });
-    }
+    await fs.access(imagePath, fs.constants.F_OK);
     res.sendFile(imagePath);
-  });
+  } catch (error) {
+    if (error.code === 'ENOENT') {
+      res.status(404).json({ error: 'Image not found' });
+    } else {
+      res.status(400).json({ error: error.message });
+    }
+  }
+};
+
+// Routes
+app.get('/api/:year/:month/json', getJsonFiles);
+app.get('/api/json/:filename', getJsonContent);
+app.get('/api/img_all/:jsonFilename', (req, res) => getImage(req, res));
+app.get('/api/img/:detector/:jsonFilename', (req, res) => getImage(req, res, req.params.detector));
+
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ error: 'Something broke!' });
 });
 
-app.get('/api/img/:detector/:jsonFilename', (req, res) => {
-  const { detector, jsonFilename } = req.params;
-
-  // Basic validation and sanitisation
-  if (!jsonFilename.endsWith('.json') || jsonFilename.includes('..')) {
-    return res.status(400).json({ error: 'Invalid file name' });
-  }
-
-  const baseName = jsonFilename.replace('.json', '.png');
-  let imagePath;
-  try {
-    const { year, month } = parseYearMonthFromFilename(jsonFilename);
-    console.log(year, month);
-    imagePath = path.join(mainDir, year, padToTwoDigits(month), detector, baseName);
-  } catch (err) {
-    return res.status(400).json({ error: 'Invalid file name format' });
-  }
-
-
-  console.log(imagePath);
-
-  // Check if the file exists and send it
-  fs.access(imagePath, fs.constants.F_OK, (err) => {
-    if (err) {
-      return res.status(404).json({ error: 'Image not found' });
-    }
-    res.sendFile(imagePath);
-  });
-});
-
-
+// Server initialization
 app.listen(PORT, () => {
   console.log(`Server is running at http://localhost:${PORT}`);
 });
