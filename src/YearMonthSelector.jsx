@@ -15,6 +15,9 @@ import React, { useState } from "react";
  * @returns {JSX.Element} A div containing two select dropdowns for year and month selection
  */
 const YearMonthSelector = ({ year, setYear, month, setMonth }) => {
+    // Start year for the dropdown options
+    const startYear = 2025;
+
     // Get current year for the year dropdown's range
     const currentYear = new Date().getFullYear();
 
@@ -36,7 +39,7 @@ const YearMonthSelector = ({ year, setYear, month, setMonth }) => {
                 Year:
                 <select value={year} onChange={handleYearChange}>
                     {/* Generate last 10 years as options */}
-                    {Array.from({ length: 10 }, (_, i) => currentYear - i).map((y) => (
+                    {Array.from({ length: currentYear-startYear + 1}, (_, i) => currentYear + i).map((y) => (
                         <option key={y} value={y}>{y}</option>
                     ))}
                 </select>
