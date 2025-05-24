@@ -1,12 +1,80 @@
-# React + Vite
+# Alpha Burritos API
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This project provides a RESTful API using Express.js to serve JSON data and images from a structured directory.
 
-Currently, two official plugins are available:
+## API Endpoints
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+### 1. List JSON Files
 
-## Expanding the ESLint configuration
+**GET** `/api/:year/:month/json`
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- Returns a list of JSON filenames for the specified year and month.
+- Example: `/api/2024/05/json`
+- Response:
+  ```json
+  ["file-2024-05-01.json", "file-2024-05-02.json"]
+  ```
+
+### 2. Get JSON File Content
+
+**GET** `/api/json/:filename`
+
+- Returns the parsed JSON content of the specified file.
+- Example: `/api/json/file-2024-05-01.json`
+- Response:
+  ```json
+  { "key": "value", ... }
+  ```
+
+### 3. Get Combined Image
+
+**GET** `/api/img_all/:jsonFilename`
+
+- Returns the PNG image associated with the JSON file (from the `Together` subdirectory).
+- Example: `/api/img_all/file-2024-05-01.json`
+- Response:  
+  Binary PNG image.
+
+### 4. Get Detector-Specific Image
+
+**GET** `/api/img/:detector/:jsonFilename`
+
+- Returns the PNG image for a specific detector and JSON file.
+- Example: `/api/img/DetectorA/file-2024-05-01.json`
+- Response:  
+  Binary PNG image.
+
+## Error Handling
+
+- Returns `404` if a file or image is not found.
+- Returns `400` for invalid requests.
+- Returns `500` for server errors.
+
+## Directory Structure
+
+The API expects files to be organized as:
+```
+MAIN_DIR/
+  YYYY/
+    MM/
+      JSON/
+        file-YYYY-MM-DD.json
+      Together/
+        file-YYYY-MM-DD.png
+      DetectorA/
+        file-YYYY-MM-DD.png
+      DetectorB/
+        file-YYYY-MM-DD.png
+```
+
+## Development
+
+- Start the server:
+  ```bash
+  node server.js
+  ```
+- The server runs on port `3001` by default.
+
+---
+
+This API is built with Express and supports CORS and JSON request bodies.
