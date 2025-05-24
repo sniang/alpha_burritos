@@ -1,13 +1,12 @@
 #root {
-
-  width: 80%;
+  width: 90%;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 10px;
+  gap: 20px;
   margin: 0 auto;
-  max-width: 900px;
+  max-width: 850px;
 }
 
 label {
@@ -17,26 +16,37 @@ label {
   gap: 5px;
   align-items: center;
   justify-content: center;
+  margin: 10px;
 }
 
 #selects-block {
   display: flex;
-  gap: 10px;
   flex-wrap: wrap;
   align-items: center;
-  justify-content: center;
-  margin-bottom: 10px;
+  justify-content: space-between;
   border: solid 2px #e33933;
-  padding: 10px;
   border-radius: 10px;
+  width: 100%;
 }
 
 #detector-block {
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: center;
+  justify-content: space-around;
   width: 100%;
   flex-wrap: wrap;
-  gap: 10px
+  margin: 0;
+}
+
+@media screen and (max-width: 850px) {
+  #selects-block {
+    flex-direction: column;
+    width: 100%;
+  }
+  #detector-block {
+    flex-direction: column;
+    gap: 20px;
+  }
+  
 }

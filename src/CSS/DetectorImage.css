@@ -1,7 +1,13 @@
 #detectorImageAll {
   width: 100%;
+  border: solid 2px #e33933;
+  border-radius: 10px;
+  padding: ;
 }
 
 #detectorImage {
-    height: 280px;
+  height: 280px;
+  border: solid 2px #e33933;
+  border-radius: 10px;
+  padding: 10px;
 }
