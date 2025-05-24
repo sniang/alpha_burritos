@@ -139,6 +139,7 @@ The API will run on [http://localhost:3001](http://localhost:3001).
 
 - **Data Directory:**  
   The backend expects data in a specific directory structure (see API documentation above).
+  The main directory of the data has to be declared in the variable `MAIN_DIR` in [server.js](server.js).
 
 ---
 This project uses React, Vite, and Express. For backend API details, see [server.js](server.js).
