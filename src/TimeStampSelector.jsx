@@ -68,27 +68,12 @@ function TimeStampSelector({
     setSelectedFile(event.target.value); // Update selected file
     console.log('Selected file:', event.target.value);
   };
-
-  /**
-   * Parses a filename to extract and format the timestamp.
-   * @param {string} filename - The JSON filename.
-   * @returns {string|null} - Formatted timestamp or null if not matched.
-   */
-  function parseTimestamp(filename) {
-    const match = filename.match(/data-(\d{4}-\d{2}-\d{2})_(\d{2}-\d{2}-\d{2})\.json/);
-    if (!match) return null;
-
-    const [, date, time] = match;
-    const formattedTime = time.replace(/-/g, ':');
-    return `${date} ${formattedTime}`;
-  }
   return (
     <label>
       Timestamp: 
       <select
         value={selectedFile}
         onChange={handleSelectChange}
-        defaultValue = {jsonFiles[0]}
       >
         <option value="" disabled>Select an acquisition timestamp</option>
 
@@ -102,3 +87,18 @@ function TimeStampSelector({
 }
 
 export default TimeStampSelector;
+
+/**
+ * Parses a filename to extract a human-readable timestamp.
+ * Assumes filename format: data-YYYY-MM-DD_HH-MM-SS.json
+ * Returns string in format: "YYYY-MM-DD HH:MM:SS" or null if not matched.
+ *
+ * @param {string} filename - The JSON filename to parse.
+ * @returns {string|null} - The parsed timestamp or null if format is invalid.
+ */
+function parseTimestamp(filename) {
+  const m = filename.match(/data-(\d{4}-\d{2}-\d{2})_(\d{2}-\d{2}-\d{2})\.json/);
+  return m ? `${m[1]} ${m[2].replace(/-/g, ':')}` : null;
+}
+
+export { parseTimestamp };

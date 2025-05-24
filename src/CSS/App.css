@@ -6,7 +6,7 @@
   align-items: center;
   gap: 20px;
   margin: 0 auto;
-  max-width: 850px;
+  max-width: 900px;
 }
 
 label {
@@ -39,7 +39,7 @@ label {
   margin: 0;
 }
 
-@media screen and (max-width: 850px) {
+@media screen and (max-width: 900px) {
   #selects-block {
     flex-direction: column;
     width: 100%;

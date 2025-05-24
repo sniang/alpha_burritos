@@ -1,4 +1,7 @@
 import React, { useState, useEffect } from "react";
+import { parseTimestamp } from "./TimeStampSelector";
+import "./CSS/Parameters.css"; 
+
 
 /**
  * Parameters component fetches and displays parameter data for a selected file.
@@ -51,9 +54,7 @@ const Parameters = ({ selectedFile }) => {
 
         if (selectedFile) {
             // Only fetch if a file is selected
-            console.log('Fetching:', selectedFile);
             fetchParameters();
-            console.log('Parameters:', parameters);
         }
     }, [selectedFile]);
 
@@ -80,36 +81,35 @@ const Parameters = ({ selectedFile }) => {
         const validLocations = locations.filter((loc) => parameters[loc]);
 
         return (
-            <div
-                style={{
-                    display: "grid",
-                    gridTemplateColumns: `120px repeat(${validLocations.length}, min-content)`,
-                    gap: "15px 15px",
-                    fontSize: "0.9rem",
-                    alignItems: "center",
-                    border: "solid 2px #e33933",
-                    padding: "10px",
-                    borderRadius: "10px",
-                    textAlign: "center",
-                }}
-            >
-                {/* Header row */}
-                <div style={{ fontWeight: "bold" }}>Parameters</div>
-                {validLocations.map((loc) => (
-                    <div key={loc} style={{ fontWeight: "bold" }}>{loc}</div>
-                ))}
+            <div id="parametersBlock">
+                <h4>{parseTimestamp(selectedFile)}</h4>
+                <div
+                    style={{
+                        display: "grid",
+                        gridTemplateColumns: `120px repeat(${validLocations.length}, min-content)`,
+                        gap: "15px 15px",
+                        fontSize: "0.9rem",
+                        alignItems: "center"
+                    }}
+                >
+                    {/* Header row */}
+                    <div style={{ fontWeight: "bold" }}>Parameters</div>
+                    {validLocations.map((loc) => (
+                        <div key={loc} style={{ fontWeight: "bold" }}>{loc}</div>
+                    ))}
 
-                {/* Parameter rows */}
-                {parameterKeys.map(({ key, label }) => (
-                    <React.Fragment key={key}>
-                        <div>{label}</div>
-                        {validLocations.map((loc) => (
-                            <div key={`${loc}-${key}`}>
-                                {formatToFiveSignificantDigits(parameters[loc][key])}
-                            </div>
-                        ))}
-                    </React.Fragment>
-                ))}
+                    {/* Parameter rows */}
+                    {parameterKeys.map(({ key, label }) => (
+                        <React.Fragment key={key}>
+                            <div>{label}</div>
+                            {validLocations.map((loc) => (
+                                <div key={`${loc}-${key}`}>
+                                    {formatToFiveSignificantDigits(parameters[loc][key])}
+                                </div>
+                            ))}
+                        </React.Fragment>
+                    ))}
+                </div>
             </div>
         );
     }
