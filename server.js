@@ -1,23 +1,25 @@
-import express from 'express';
-import cors from 'cors';
-import fs from 'fs/promises';  // Using promises-based fs
-import path from 'path';
-import { fileURLToPath } from 'url';
+// Import required modules
+import express from 'express';  // Express.js web framework
+import cors from 'cors';        // Cross-Origin Resource Sharing middleware
+import fs from 'fs/promises';   // File system module with promises support
+import path from 'path';        // Path manipulation utility
+import { fileURLToPath } from 'url';  // URL manipulation utility
 
-// Constants
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const app = express();
-const PORT = process.env.PORT || 3001;
-const MAIN_DIR = '/Users/samuelniang/cern_burritos';
+// Set up constants and configuration
+const __filename = fileURLToPath(import.meta.url);  // Get current file path
+const __dirname = path.dirname(__filename);         // Get current directory path
+const app = express();                             // Create Express application
+const PORT = process.env.PORT || 3001;             // Set server port
+const MAIN_DIR = '/Users/samuelniang/cern_burritos';  // Base directory for data
 
-// Middleware
-app.use(cors());
-app.use(express.json());
+// Configure middleware
+app.use(cors());         // Enable CORS for all routes
+app.use(express.json()); // Parse JSON request bodies
 
-// Utility functions
+// Utility function to ensure numbers are two digits (e.g., '1' -> '01')
 const padToTwoDigits = (number) => String(number).padStart(2, "0");
 
+// Parse year and month from a filename (format: xxx-YYYY-MM-xxx.json)
 const parseYearMonthFromFilename = (filename) => {
   const parts = filename.split("-");
   if (parts.length < 3) {
@@ -30,13 +32,14 @@ const parseYearMonthFromFilename = (filename) => {
   return { year, month };
 };
 
+// Validate filename to prevent directory traversal attacks
 const validateFilename = (filename) => {
   if (!filename.endsWith('.json') || filename.includes('..')) {
     throw new Error('Invalid file name');
   }
 };
 
-// Route handlers
+// Route handler to get list of JSON files for a specific year/month
 const getJsonFiles = async (req, res) => {
   try {
     const { year, month } = req.params;
@@ -49,6 +52,7 @@ const getJsonFiles = async (req, res) => {
   }
 };
 
+// Route handler to get contents of a specific JSON file
 const getJsonContent = async (req, res) => {
   try {
     const { filename } = req.params;
@@ -68,6 +72,7 @@ const getJsonContent = async (req, res) => {
   }
 };
 
+// Route handler to serve image files
 const getImage = async (req, res, subdir = 'Together') => {
   try {
     const { jsonFilename, detector } = req.params;
@@ -94,19 +99,19 @@ const getImage = async (req, res, subdir = 'Together') => {
   }
 };
 
-// Routes
-app.get('/api/:year/:month/json', getJsonFiles);
-app.get('/api/json/:filename', getJsonContent);
-app.get('/api/img_all/:jsonFilename', (req, res) => getImage(req, res));
-app.get('/api/img/:detector/:jsonFilename', (req, res) => getImage(req, res, req.params.detector));
+// Define API routes
+app.get('/api/:year/:month/json', getJsonFiles);          // Get JSON files list
+app.get('/api/json/:filename', getJsonContent);           // Get JSON content
+app.get('/api/img_all/:jsonFilename', (req, res) => getImage(req, res));  // Get combined image
+app.get('/api/img/:detector/:jsonFilename', (req, res) => getImage(req, res, req.params.detector));  // Get detector-specific image
 
-// Error handling middleware
+// Global error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).json({ error: 'Something broke!' });
 });
 
-// Server initialization
+// Start the server
 app.listen(PORT, () => {
   console.log(`Server is running at http://localhost:${PORT}`);
 });
