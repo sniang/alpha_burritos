@@ -83,20 +83,20 @@ const Parameters = ({ selectedFile }) => {
             <div
                 style={{
                     display: "grid",
-                    gridTemplateColumns: `150px repeat(${validLocations.length}, min-content)`,
-                    gap: "4px 8px",
-                    fontSize: "0.85rem",
-                    lineHeight: "1.2",
+                    gridTemplateColumns: `120px repeat(${validLocations.length}, min-content)`,
+                    gap: "10px 15px",
+                    fontSize: "0.9rem",
                     alignItems: "center",
                     border: "solid 2px #e33933",
                     padding: "10px",
-                    borderRadius: "10px"
+                    borderRadius: "10px",
+                    textAlign: "center",
                 }}
             >
                 {/* Header row */}
-                <div style={{ fontWeight: "600" }}>Parameters</div>
+                <div style={{ fontWeight: "bold" }}>Parameters</div>
                 {validLocations.map((loc) => (
-                    <div key={loc} style={{ fontWeight: "600" }}>{loc}</div>
+                    <div key={loc} style={{ fontWeight: "bold" }}>{loc}</div>
                 ))}
 
                 {/* Parameter rows */}
