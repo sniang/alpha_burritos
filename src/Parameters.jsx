@@ -88,6 +88,9 @@ const Parameters = ({ selectedFile }) => {
                     fontSize: "0.85rem",
                     lineHeight: "1.2",
                     alignItems: "center",
+                    border: "solid 2px #e33933",
+                    padding: "10px",
+                    borderRadius: "10px"
                 }}
             >
                 {/* Header row */}

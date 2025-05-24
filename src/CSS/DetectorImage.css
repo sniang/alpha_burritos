@@ -1,3 +1,7 @@
 #detectorImageAll {
   width: 100%;
 }
+
+#detectorImage {
+    height: 300px;
+}

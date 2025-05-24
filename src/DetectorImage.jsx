@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import "./CSS/DetectorImage.css";
 
 /**
@@ -16,14 +16,12 @@ import "./CSS/DetectorImage.css";
  * @example
  * <DetectorImage selectedFile={selectedFile} selectedDetector={selectedDetector} />
  */
-const DetectorImage = ({selectedFile, selectedDetector}) => {
+const DetectorImage = ({ selectedFile, selectedDetector }) => {
     return (
-        <div>
-            <img
-                src={`http://localhost:3001/api/img/${selectedDetector}/${selectedFile}`}
-                alt={`Preview for ${selectedFile} with ${selectedDetector}`}
-            />
-        </div>
+        <img id="detectorImage"
+            src={`http://localhost:3001/api/img/${selectedDetector}/${selectedFile}`}
+            alt={`Preview for ${selectedFile} with ${selectedDetector}`}
+        />
     );
 };
 
