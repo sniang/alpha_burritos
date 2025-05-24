@@ -1,6 +1,6 @@
 import React from "react";
-import alphaLogo from './assets/ALPHA_Logo_png.png'
-import './CSS/MainTitle.css'
+import alphaLogo from './assets/ALPHA_Logo_png.png';
+import './CSS/MainTitle.css';
 
 /**
  * Renders the main title component of the ALPHA Burritos application.
