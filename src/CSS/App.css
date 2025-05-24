@@ -9,3 +9,21 @@
   margin: 0 auto;
   max-width: 1280px;
 }
+
+label {
+  display: flex;
+  flex-direction: row;
+  font-weight: bold;
+  gap: 5px;
+  align-items: center;
+  justify-content: center;
+}
+
+#selects-block{
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+    align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+}

@@ -1,4 +1,5 @@
 import React, {useState} from "react";
+import "./CSS/DetectorImage.css";
 
 /**
  * A React component that displays an image from a selected file using a backend API endpoint.
@@ -17,7 +18,7 @@ const DetectorImageAll = ({selectedFile}) => {
 
   return (
     <div>
-      <img
+      <img id="detectorImageAll"
         src={imageUrl}
         alt={`Preview for ${selectedFile}`}
       />

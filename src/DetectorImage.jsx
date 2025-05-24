@@ -1,4 +1,5 @@
 import React, {useState} from "react";
+import "./CSS/DetectorImage.css";
 
 /**
  * Component that displays an image processed by a specific detector

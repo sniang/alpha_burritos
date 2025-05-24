@@ -63,15 +63,11 @@ function App() {
    */
   const renderDetectorComponents = () => {
     if (!selectedFile) return null;
-    
+
     return (
       <>
         <Parameters selectedFile={selectedFile} />
         <DetectorImageAll selectedFile={selectedFile} />
-        <DetectorSelector 
-          selectedDetector={selectedDetector} 
-          setSelectedDetector={(value) => updateState('selectedDetector', value)} 
-        />
         {selectedDetector && <DetectorImage selectedFile={selectedFile} selectedDetector={selectedDetector} />}
       </>
     );
@@ -82,24 +78,28 @@ function App() {
     <>
       <MainTitle />
       {/* Year and month selection controls */}
-      <div className='selects-block'>
-      <YearMonthSelector
-        year={year}
-        month={month}
-        setYear={(value) => updateState('year', value)}
-        setMonth={(value) => updateState('month', value)}
-      />
-      {/* File selection and timestamp controls */}
-      <TimeStampSelector
-        year={year}
-        month={month}
-        jsonFiles={jsonFiles}
-        setJsonFiles={(value) => updateState('jsonFiles', value)}
-        selectedFile={selectedFile}
-        setSelectedFile={(value) => updateState('selectedFile', value)}
-        error={error}
-        setError={(value) => updateState('error', value)}
-      />
+      <div id='selects-block'>
+        <YearMonthSelector
+          year={year}
+          month={month}
+          setYear={(value) => updateState('year', value)}
+          setMonth={(value) => updateState('month', value)}
+        />
+        {/* File selection and timestamp controls */}
+        <TimeStampSelector
+          year={year}
+          month={month}
+          jsonFiles={jsonFiles}
+          setJsonFiles={(value) => updateState('jsonFiles', value)}
+          selectedFile={selectedFile}
+          setSelectedFile={(value) => updateState('selectedFile', value)}
+          error={error}
+          setError={(value) => updateState('error', value)}
+        />
+        {selectedFile && <DetectorSelector
+          selectedDetector={selectedDetector}
+          setSelectedDetector={(value) => updateState('selectedDetector', value)}
+        />}
       </div>
       {/* Render detector components when a file is selected */}
       {renderDetectorComponents()}
