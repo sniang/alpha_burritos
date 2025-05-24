@@ -1,6 +1,5 @@
 # Alpha Burritos
-
-Alpha Burritos is a React application for browsing, visualizing, and analyzing detector data and images from the ALPHA experiment. The app communicates with a RESTful API (see below) to fetch JSON data and PNG images for different detectors and acquisition timestamps.
+Alpha Burritos is a React application designed to browse, visualize, and analyze detector signals from the "burrito detectors" of the ALPHA experiment. The application communicates with a RESTful API (see below) to fetch JSON data and PNG images for various detectors and acquisition timestamps.
 
 ## Features
 
