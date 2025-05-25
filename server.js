@@ -6,10 +6,10 @@ import path from 'path';        // Path manipulation utility
 import { fileURLToPath } from 'url';  // URL manipulation utility
 
 // Set up constants and configuration
-const __filename = fileURLToPath(import.meta.url);  // Get current file path
-const __dirname = path.dirname(__filename);         // Get current directory path
-const app = express();                             // Create Express application
-const PORT = process.env.PORT || 3001;             // Set server port
+const __filename = fileURLToPath(import.meta.url);    // Get current file path
+const __dirname = path.dirname(__filename);           // Get current directory path
+const app = express();                                // Create Express application
+const PORT = 3001;                                    // Set server port
 const MAIN_DIR = '/Users/samuelniang/cern_burritos';  // Base directory for data
 
 // Configure middleware
@@ -123,6 +123,6 @@ app.use((err, req, res, next) => {
 });
 
 // Start the server
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`Server is running at http://localhost:${PORT}`);
 });
