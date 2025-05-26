@@ -24,7 +24,7 @@ function AutoRefresh({
     month,
 }) {
     // State to track whether auto-refresh is enabled
-    const [autoRefresh, setAutoRefresh] = useState(true);
+    const [autoRefresh, setAutoRefresh] = useState(false);
 
     /**
      * Fetch JSON files from backend API.
