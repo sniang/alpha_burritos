@@ -7,7 +7,7 @@ export default defineConfig({
   server: {
     host: '0.0.0.0',
     port: 5173,
-    allowedHosts: ['macbook-pro-de-samuel-9.local','alphacpc67.cern.ch']
+    allowedHosts: ['alphacpc67.cern.ch']
   }
 })
 
