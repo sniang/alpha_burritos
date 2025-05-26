@@ -13,7 +13,7 @@ label {
   display: flex;
   flex-direction: row;
   font-weight: bold;
-  gap: 5px;
+  gap: 2px;
   align-items: center;
   justify-content: center;
   margin: 10px;
@@ -39,7 +39,7 @@ label {
   margin: 0;
 }
 
-@media screen and (max-width: 900px) {
+@media screen and (max-width: 950px) {
   #selects-block {
     flex-direction: column;
     width: 100%;
