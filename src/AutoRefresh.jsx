@@ -16,6 +16,8 @@ import React, { useState, useEffect } from "react";
  *
  * @returns {JSX.Element} A checkbox UI for toggling auto-refresh functionality.
  */
+
+let Nfiles = -1;
 function AutoRefresh({
     setJsonFiles,
     setSelectedFile,
@@ -24,7 +26,7 @@ function AutoRefresh({
     month,
 }) {
     // State to track whether auto-refresh is enabled
-    const [autoRefresh, setAutoRefresh] = useState(false);
+    const [autoRefresh, setAutoRefresh] = useState(true);
 
     /**
      * Fetch JSON files from backend API.
@@ -39,10 +41,14 @@ function AutoRefresh({
                 throw new Error(`${res.status} ${res.statusText}`);
             }
             const data = await res.json();
-            // Sort files in reverse order (latest first)
-            setJsonFiles(data.sort().reverse());
-            // Select the latest file
-            setSelectedFile(data.sort().reverse()[0]);
+     
+            if (Nfiles !== data.length) {
+                Nfiles = data.length; // Update the file count
+                // Sort files in reverse order (latest first)
+                setJsonFiles(data.sort().reverse());
+                // Select the latest file
+                setSelectedFile(data.sort().reverse()[0]);
+            }
         } catch (error) {
             // Pass error to parent
             setError(error);
