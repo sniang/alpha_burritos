@@ -38,7 +38,7 @@ const YearMonthSelector = ({ year, setYear, month, setMonth }) => {
             <label>
                 Year:
                 <select value={year} onChange={handleYearChange}>
-                    {/* Year selector */}
+                     {/* Generate year options from startYear to currentYear */}
                     {Array.from({ length: currentYear - startYear + 1}, (_, i) => currentYear + i).map((y) => (
                         <option key={y} value={y}>{y}</option>
                     ))}

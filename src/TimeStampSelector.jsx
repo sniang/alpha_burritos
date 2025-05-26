@@ -54,8 +54,8 @@ function TimeStampSelector({
           throw new Error(`${res.status} ${res.statusText}`);
         }
         const data = await res.json();
-        setJsonFiles(data); // Update available files
-        setSelectedFile(data[0]); // Set default selected file
+        setJsonFiles(data.sort().reverse()); // Update available files
+        setSelectedFile(data.sort().reverse()[0]); // Set default selected file
       } catch (error) {
         setError(error); // Set error if fetch fails
       }
