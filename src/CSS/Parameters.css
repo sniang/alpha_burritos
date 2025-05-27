@@ -1,17 +1,19 @@
+/* Main container for parameters block */
 #parametersBlock {
-    border: solid 2px #e33933;
-    border-radius: 10px;
-    text-align: center;
-    padding: 0px 25px 10px 10px;
-    height: 280px;
+    border: 2px solid #e33933;      /* Red border */
+    border-radius: 10px;            /* Rounded corners */
+    text-align: center;             /* Center text horizontally */
+    padding: 10px 25px 10px 10px;   /* Top, right, bottom, left padding */
+    height: 300px;                  /* Fixed height on large screens */
 }
 
+/* Responsive styles for screens 900px wide or less */
 @media screen and (max-width: 900px) {
     #parametersBlock {
-        width: 410px;
-        height: auto;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
+        height: auto;                   /* Let height adjust to content */
+        display: flex;                  /* Use flex layout */
+        flex-direction: column;         /* Stack children vertically */
+        align-items: center;            /* Center children horizontally */
+        width: 410px;                   /* Set fixed width for block */
     }
 }

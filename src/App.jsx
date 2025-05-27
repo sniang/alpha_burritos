@@ -7,6 +7,7 @@ import DetectorSelector from './DetectorSelector.jsx'
 import DetectorImage from './DetectorImage.jsx'
 import YearMonthSelector from './YearMonthSelector.jsx'
 import MainTitle from './MainTitle.jsx'
+import AutoRefresh from './AutoRefresh.jsx'
 
 /**
  * Root component of the application that orchestrates detector visualization and data management.
@@ -80,6 +81,13 @@ function App() {
     <>
       <MainTitle />
       <div id='selects-block'>
+        <AutoRefresh
+          year={year}
+          month={month}
+          setJsonFiles={(value) => updateState('jsonFiles', value)}
+          setSelectedFile={(value) => updateState('selectedFile', value)}
+          setError={(value) => updateState('error', value)}
+        />
         <YearMonthSelector
           year={year}
           month={month}

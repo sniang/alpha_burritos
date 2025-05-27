@@ -20,7 +20,7 @@ const DetectorSelector = ({selectedDetector, setSelectedDetector}) => {
 
     return (
         <label>
-            Select a detector:
+            Detector:
             <select value={selectedDetector} onChange={handleChange}>
                 <option value="PDS">PDS</option>
                 <option value="BDS">BDS</option>

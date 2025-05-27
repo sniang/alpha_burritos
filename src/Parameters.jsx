@@ -87,7 +87,7 @@ const Parameters = ({ selectedFile }) => {
                     style={{
                         display: "grid",
                         gridTemplateColumns: `120px repeat(${validLocations.length}, min-content)`,
-                        gap: "15px 15px",
+                        gap: "15px 10px",
                         fontSize: "0.9rem",
                         alignItems: "center"
                     }}

@@ -5,21 +5,38 @@
 
 #detectorImage {
   height: 280px;
-  border: solid 2px #e33933;
-  border-radius: 10px;
-  padding: 10px;
+  width: auto;
+  display: block; /* Center the image horizontally */
+  margin: 0 auto;  /* Center the image horizontally */
+}
+
+#detectorImageButtonContainer {
+  display: flex;                /* Use flexbox for layout */
+  flex-direction: column;       /* Stack children vertically */
+  align-items: center;          /* Center children horizontally */
+  justify-content: center;      /* Center children vertically */
+  border: 2px solid #e33933;    /* Red border */
+  border-radius: 10px;          /* Rounded corners */
+  padding: 10px;                /* Inner spacing */
+  height: 300px;                /* Fixed height */
 }
 
 .detectorImageContainer {
-  border: solid 2px #e33933;
-  border-radius: 10px;
-  width: 100%;
-  text-align: center;
+  border: 2px solid #e33933;    /* Red border */
+  border-radius: 10px;          /* Rounded corners */
+  width: 100%;                  /* Full width */
+  text-align: center;           /* Center text */
+  box-sizing: border-box;       /* Include border and padding in width */
 }
 
-@media screen and (max-width: 900px) {
+@media (max-width: 900px) {
   #detectorImage {
-    width: 425px;
-    height: auto;
+    width: 100%;                /* Responsive width */
+    max-width: 425px;           /* Maximum width */
+    height: auto;               /* Maintain aspect ratio */
+  }
+
+  #detectorImageButtonContainer {
+    height: auto;               /* Adjust height for small screens */
   }
 }

@@ -1,3 +1,4 @@
+/* Root variables and global font settings */
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -8,23 +9,26 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-
-a:hover {
-  color: #535bf2;
-}
-
+/* Remove default body margin and padding, add bottom margin */
 body {
   margin: 0;
   padding: 0;
   margin-bottom: 20px;
 }
 
+/* Style for main headings */
 h1 {
   font-size: 3.2em;
   line-height: 1.1;
+}
+
+/* Logo image styling */
+#alphaLogo {
+  width: 55px;
+  margin-right: 20px;
+}
+
+/* Center the main title */
+#mainTitle {
+  text-align: center;
 }

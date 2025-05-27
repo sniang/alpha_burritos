@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import DownloadButton from "./DownloadButton";
 import "./CSS/DetectorImage.css";
 
 /**
@@ -18,10 +19,16 @@ import "./CSS/DetectorImage.css";
  */
 const DetectorImage = ({ selectedFile, selectedDetector }) => {
     return (
-        <img id="detectorImage"
-            src={`http://localhost:3001/api/img/${selectedDetector}/${selectedFile}`}
-            alt={`Preview for ${selectedFile} with ${selectedDetector}`}
-        />
+        <div id="detectorImageButtonContainer">
+            <img id="detectorImage"
+                src={`http://localhost:3001/api/img/${selectedDetector}/${selectedFile}`}
+                alt={`Preview for ${selectedFile} with ${selectedDetector}`}
+            />
+            <DownloadButton
+                selectedFile={selectedFile}
+                selectedDetector={selectedDetector}
+            />
+        </div>
     );
 };
 

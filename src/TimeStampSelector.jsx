@@ -75,7 +75,7 @@ function TimeStampSelector({
         value={selectedFile}
         onChange={handleSelectChange}
       >
-        <option value="" disabled>Select an acquisition timestamp</option>
+        <option value="" disabled>Acquisition timestamp</option>
 
         {!error && jsonFiles.map((file, index) => (
           <option key={index} value={file}>{parseTimestamp(file)}</option>
