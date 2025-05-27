@@ -32,7 +32,7 @@ label {
 #detector-block {
   display: flex;
   flex-direction: row;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
   width: 100%;
   flex-wrap: wrap;
@@ -48,6 +48,7 @@ label {
   #detector-block {
     flex-direction: column;
     gap: 20px;
+    align-items: center;
   }
 
   label {

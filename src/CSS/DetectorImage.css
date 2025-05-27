@@ -5,9 +5,18 @@
 
 #detectorImage {
   height: 280px;
+  width: auto;
+}
+
+#detectorImageButtonContainer{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   border: solid 2px #e33933;
   border-radius: 10px;
   padding: 10px;
+  height: 300px;
 }
 
 .detectorImageContainer {
@@ -20,6 +29,10 @@
 @media screen and (max-width: 900px) {
   #detectorImage {
     width: 425px;
+    height: auto;
+  }
+
+  #detectorImageButtonContainer{
     height: auto;
   }
 }
