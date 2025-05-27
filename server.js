@@ -52,6 +52,7 @@ const getJsonFiles = async (req, res) => {
   }
 };
 
+// Route handler to get signal files for a specific JSON file and detector
 const getSignals = async (req, res) => {
   try {
     const { jsonFilename, detector } = req.params;
