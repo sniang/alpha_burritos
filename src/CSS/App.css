@@ -1,44 +1,52 @@
+/* Main container styling */
 #root {
   width: 90%;
+  max-width: 900px;
+  margin: 0 auto;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
-  gap: 20px;
-  margin: 0 auto;
-  max-width: 900px;
+  justify-content: center;
+  gap: 20px; /* Space between children */
 }
 
+/* Label styling for form elements */
 label {
   display: flex;
   flex-direction: row;
-  font-weight: bold;
-  gap: 2px;
   align-items: center;
   justify-content: center;
+  gap: 2px;
+  font-weight: bold;
   margin: 10px;
 }
 
+/* Block containing select elements */
 #selects-block {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  border: solid 2px #e33933;
-  border-radius: 10px;
   width: 100%;
+  border: 2px solid #e33933;
+  border-radius: 10px;
+  padding: 12px 0; /* Added padding for better spacing */
+  box-sizing: border-box;
 }
 
+/* Block containing detector elements */
 #detector-block {
   display: flex;
+  flex-wrap: wrap;
   flex-direction: row;
   align-items: flex-start;
   justify-content: space-between;
   width: 100%;
-  flex-wrap: wrap;
   margin: 0;
+  gap: 16px; /* Added gap for better spacing */
 }
 
+/* Responsive adjustments for smaller screens */
 @media screen and (max-width: 950px) {
   #selects-block {
     flex-direction: column;
@@ -47,8 +55,8 @@ label {
 
   #detector-block {
     flex-direction: column;
-    gap: 20px;
     align-items: center;
+    gap: 20px;
   }
 
   label {
