@@ -83,6 +83,13 @@ The React app expects the following backend API (see `server.js`):
     - Response:  
     Binary PNG image.
 
+- **Get Detector-Specific signal:**  
+    `GET /api/img/:detector/:jsonFilename`  
+    - Returns the signal as a text file for a specific detector and JSON file.
+    - Example: `/api/signal/DetectorA/file-2024-05-01.json`
+    - Response:  
+    text file
+
   ### Error Handling
 
 - Returns `404` if a file or image is not found.

@@ -3,11 +3,8 @@ import express from 'express';  // Express.js web framework
 import cors from 'cors';        // Cross-Origin Resource Sharing middleware
 import fs from 'fs/promises';   // File system module with promises support
 import path from 'path';        // Path manipulation utility
-import { fileURLToPath } from 'url';  // URL manipulation utility
 
 // Set up constants and configuration
-const __filename = fileURLToPath(import.meta.url);    // Get current file path
-const __dirname = path.dirname(__filename);           // Get current directory path
 const app = express();                                // Create Express application
 const PORT = 3001;                                    // Set server port
 const MAIN_DIR = '/Users/samuelniang/cern_burritos';  // Base directory for data
@@ -20,8 +17,8 @@ app.use(express.json()); // Parse JSON request bodies
 const padToTwoDigits = (number) => String(number).padStart(2, "0");
 
 // Parse year and month from a filename (format: xxx-YYYY-MM-xxx.json)
-const parseYearMonthFromFilename = (filename) => {
-  const parts = filename.split("-");
+const parseYearMonthFromFilename = (jsonFilename) => {
+  const parts = jsonFilename.split("-");
   if (parts.length < 3) {
     throw new Error("Invalid filename format: year and month not found.");
   }
@@ -33,8 +30,8 @@ const parseYearMonthFromFilename = (filename) => {
 };
 
 // Validate filename to prevent directory traversal attacks
-const validateFilename = (filename) => {
-  if (!filename.endsWith('.json') || filename.includes('..')) {
+const validateFilename = (jsonFilename) => {
+  if (!jsonFilename.endsWith('.json') || jsonFilename.includes('..')) {
     throw new Error('Invalid file name');
   }
 };
@@ -55,16 +52,46 @@ const getJsonFiles = async (req, res) => {
   }
 };
 
+const getSignals = async (req, res) => {
+  try {
+    const { jsonFilename, detector } = req.params;
+    console.log(`Getting signal files for JSON file: ${jsonFilename}, detector: ${detector}`);
+    validateFilename(jsonFilename);
+
+    const { year, month } = parseYearMonthFromFilename(jsonFilename);
+    const baseName = jsonFilename.replace('.json', '.txt');
+    const filePath = path.join(
+      MAIN_DIR,
+      year,
+      padToTwoDigits(month),
+      detector,
+      baseName
+    );
+    console.log(`Looking for signal file at: ${filePath}`);
+
+    await fs.access(filePath, fs.constants.F_OK);
+    console.log('Signal file found, sending file');
+    res.setHeader('Content-Disposition', `attachment; filename="${baseName}"`);
+    res.sendFile(filePath);
+  } catch (error) {
+    console.error('Error in getSignals:', error.message);
+    if (error.code === 'ENOENT') {
+      res.status(404).json({ error: 'Signal file not found' });
+    } else {
+      res.status(400).json({ error: error.message });
+    }
+  }
+};
+
 // Route handler to get contents of a specific JSON file
 const getJsonContent = async (req, res) => {
   try {
-    const { filename } = req.params;
-    console.log(`Getting content for file: ${filename}`);
-    validateFilename(filename);
-    const { year, month } = parseYearMonthFromFilename(filename);
-    const filePath = path.join(MAIN_DIR, year, padToTwoDigits(month), 'JSON', filename);
+    const { jsonFilename } = req.params;
+    console.log(`Getting content for file: ${jsonFilename}`);
+    validateFilename(jsonFilename);
+    const { year, month } = parseYearMonthFromFilename(jsonFilename);
+    const filePath = path.join(MAIN_DIR, year, padToTwoDigits(month), 'JSON', jsonFilename);
     console.log(`Reading file from: ${filePath}`);
-    
     const data = await fs.readFile(filePath, 'utf8');
     const jsonData = JSON.parse(data);
     console.log('Successfully parsed JSON data');
@@ -85,14 +112,14 @@ const getImage = async (req, res, subdir = 'Together') => {
     const { jsonFilename, detector } = req.params;
     console.log(`Getting image for JSON file: ${jsonFilename}, detector: ${detector || subdir}`);
     validateFilename(jsonFilename);
-    
+
     const { year, month } = parseYearMonthFromFilename(jsonFilename);
     const baseName = jsonFilename.replace('.json', '.png');
     const imagePath = path.join(
-      MAIN_DIR, 
-      year, 
-      padToTwoDigits(month), 
-      detector || subdir, 
+      MAIN_DIR,
+      year,
+      padToTwoDigits(month),
+      detector || subdir,
       baseName
     );
     console.log(`Looking for image at: ${imagePath}`);
@@ -112,9 +139,10 @@ const getImage = async (req, res, subdir = 'Together') => {
 
 // Define API routes
 app.get('/api/:year/:month/json', getJsonFiles);          // Get JSON files list
-app.get('/api/json/:filename', getJsonContent);           // Get JSON content
+app.get('/api/json/:jsonFilename', getJsonContent);           // Get JSON content
 app.get('/api/img_all/:jsonFilename', (req, res) => getImage(req, res));  // Get combined image
 app.get('/api/img/:detector/:jsonFilename', (req, res) => getImage(req, res, req.params.detector));  // Get detector-specific image
+app.get('/api/signal/:detector/:jsonFilename', (req, res) => getSignals(req, res));  // Get signal as a text file
 
 // Global error handling middleware
 app.use((err, req, res, next) => {
