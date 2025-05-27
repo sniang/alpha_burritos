@@ -1,4 +1,5 @@
 # Alpha Burritos
+
 Alpha Burritos is a React application designed to browse, visualize, and analyze detector signals from the "burrito detectors" of the ALPHA experiment. The application communicates with a RESTful API (see below) to fetch JSON data and PNG images for various detectors and acquisition timestamps.
 
 <p align="center">
@@ -12,6 +13,8 @@ Alpha Burritos is a React application designed to browse, visualize, and analyze
 - **Parameter Display:** View key parameters (area, FWHM, peak, rise, time peak) for each detector.
 - **Combined Image View:** See the combined detector image for the selected acquisition.
 - **Detector Selection:** Choose a specific detector (PDS, BDS, DSAT, USAT, PMT11) to view its processed image.
+- **Signal Download:** Download the raw signal as a text file for the selected detector and timestamp.
+- **Auto-Refresh:** Automatically refresh the list of available files.
 - **Responsive UI:** Built with React and styled for clarity and usability.
 
 ## Project Structure
@@ -26,6 +29,8 @@ src/
   DetectorImageAll.jsx   # Shows combined detector image
   DetectorSelector.jsx   # Dropdown for detector selection
   DetectorImage.jsx      # Shows image for selected detector
+  DownloadButton.jsx     # Button to download the signal as a text file
+  AutoRefresh.jsx        # Checkbox to enable/disable auto-refresh
   assets/                # Static assets (e.g., ALPHA logo)
   CSS/                   # App and global CSS
   main.jsx               # React entry point
@@ -46,6 +51,12 @@ src/
    - The combined image is shown by default.
    - Use the detector dropdown to view images for individual detectors.
 
+5. **Download Signal:**  
+   Use the "Download the signal" button to download the raw signal as a text file for the selected detector and timestamp.
+
+6. **Auto-Refresh:**  
+   Enable auto-refresh to automatically update the list of available files every 2 seconds.
+
 ## API Endpoints
 
 The React app expects the following backend API (see `server.js`):
@@ -55,48 +66,47 @@ The React app expects the following backend API (see `server.js`):
   - Returns a list of JSON filenames for the specified year and month.
   - Example: `/api/2024/05/json`
   - Response:
-  ```json
-  ["file-2024-05-01.json", "file-2024-05-02.json"]
-  ```
-  
+    ```json
+    ["file-2024-05-01.json", "file-2024-05-02.json"]
+    ```
 
 - **Get JSON File Content:**  
-    `GET /api/json/:filename`  
-    - Returns the parsed JSON content of the specified file.
-    - Example: `/api/json/file-2024-05-01.json`
-    - Response:
+  `GET /api/json/:filename`  
+  - Returns the parsed JSON content of the specified file.
+  - Example: `/api/json/file-2024-05-01.json`
+  - Response:
     ```json
     { "key": "value", ... }
     ```
 
 - **Get Combined Image:**  
-    `GET /api/img_all/:jsonFilename`  
-    - Returns the PNG image associated with the JSON file (from the `Together` subdirectory).
-    - Example: `/api/img_all/file-2024-05-01.json`
-    - Response:  
+  `GET /api/img_all/:jsonFilename`  
+  - Returns the PNG image associated with the JSON file (from the `Together` subdirectory).
+  - Example: `/api/img_all/file-2024-05-01.json`
+  - Response:  
     Binary PNG image.
 
 - **Get Detector-Specific Image:**  
-    `GET /api/img/:detector/:jsonFilename`  
-    - Returns the PNG image for a specific detector and JSON file.
-    - Example: `/api/img/DetectorA/file-2024-05-01.json`
-    - Response:  
+  `GET /api/img/:detector/:jsonFilename`  
+  - Returns the PNG image for a specific detector and JSON file.
+  - Example: `/api/img/DetectorA/file-2024-05-01.json`
+  - Response:  
     Binary PNG image.
 
-- **Get Detector-Specific signal:**  
-    `GET /api/img/:detector/:jsonFilename`  
-    - Returns the signal as a text file for a specific detector and JSON file.
-    - Example: `/api/signal/DetectorA/file-2024-05-01.json`
-    - Response:  
-    text file
+- **Get Detector-Specific Signal:**  
+  `GET /api/signal/:detector/:jsonFilename`  
+  - Returns the signal as a text file for a specific detector and JSON file.
+  - Example: `/api/signal/DetectorA/file-2024-05-01.json`
+  - Response:  
+    Text file
 
-  ### Error Handling
+### Error Handling
 
 - Returns `404` if a file or image is not found.
 - Returns `400` for invalid requests.
 - Returns `500` for server errors.
 
-  ### Directory Structure
+### Directory Structure
 
 The API expects files to be organized as:
 ```
@@ -109,8 +119,10 @@ MAIN_DIR/
         file-YYYY-MM-DD.png
       DetectorA/
         file-YYYY-MM-DD.png
+        file-YYYY-MM-DD.txt
       DetectorB/
         file-YYYY-MM-DD.png
+        file-YYYY-MM-DD.txt
 ```
 
 ## Development
@@ -169,4 +181,4 @@ The API will run on [http://localhost:3001](http://localhost:3001).
 This project uses React, Vite, and Express. For backend API details, see [server.js](server.js).
 
 ---
-**Developed by Samuel Niang (Swansea University) and Adriano Del Vincio (Università degli Studi di Brescia)**
+**Developed by Samuel Niang (Swansea University) and Adriano Del Vincio (Brescia University)**
