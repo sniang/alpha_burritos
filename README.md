@@ -14,6 +14,7 @@ Alpha Burritos is a React application designed to browse, visualize, and analyze
 - **Combined Image View:** See the combined detector image for the selected acquisition.
 - **Detector Selection:** Choose a specific detector (PDS, BDS, DSAT, USAT, PMT11) to view its processed image.
 - **Signal Download:** Download the raw signal as a text file for the selected detector and timestamp.
+- **Download All Signals:** Download signal files for all available detectors at once.
 - **Auto-Refresh:** Automatically refresh the list of available files.
 - **Responsive UI:** Built with React and styled for clarity and usability.
 
@@ -51,8 +52,9 @@ src/
    - The combined image is shown by default.
    - Use the detector dropdown to view images for individual detectors.
 
-5. **Download Signal:**  
-   Use the "Download the signal" button to download the raw signal as a text file for the selected detector and timestamp.
+5. **Download Signals:**  
+   - Use the "Download the signal" button to download the raw signal for the selected detector.
+   - Use the "Download the signals" button to download signals for all available detectors at once.
 
 6. **Auto-Refresh:**  
    Enable auto-refresh to automatically update the list of available files every 2 seconds.

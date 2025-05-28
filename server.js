@@ -52,11 +52,11 @@ const getJsonFiles = async (req, res) => {
   }
 };
 
-// Route handler to get signal files for a specific JSON file and detector
-const getSignals = async (req, res) => {
+// Route handler to get signal file for a specific JSON file and detector
+const getSignal = async (req, res) => {
   try {
     const { jsonFilename, detector } = req.params;
-    console.log(`Getting signal files for JSON file: ${jsonFilename}, detector: ${detector}`);
+    console.log(`Getting signal file for JSON file: ${jsonFilename}, detector: ${detector}`);
     validateFilename(jsonFilename);
 
     const { year, month } = parseYearMonthFromFilename(jsonFilename);
@@ -75,7 +75,7 @@ const getSignals = async (req, res) => {
     res.setHeader('Content-Disposition', `attachment; filename="${baseName}"`);
     res.sendFile(filePath);
   } catch (error) {
-    console.error('Error in getSignals:', error.message);
+    console.error('Error in getSignal:', error.message);
     if (error.code === 'ENOENT') {
       res.status(404).json({ error: 'Signal file not found' });
     } else {
@@ -143,7 +143,7 @@ app.get('/api/:year/:month/json', getJsonFiles);          // Get JSON files list
 app.get('/api/json/:jsonFilename', getJsonContent);           // Get JSON content
 app.get('/api/img_all/:jsonFilename', (req, res) => getImage(req, res));  // Get combined image
 app.get('/api/img/:detector/:jsonFilename', (req, res) => getImage(req, res, req.params.detector));  // Get detector-specific image
-app.get('/api/signal/:detector/:jsonFilename', (req, res) => getSignals(req, res));  // Get signal as a text file
+app.get('/api/signal/:detector/:jsonFilename', (req, res) => getSignal(req, res));  // Get signal as a text file
 
 // Global error handling middleware
 app.use((err, req, res, next) => {

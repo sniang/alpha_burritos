@@ -1,5 +1,6 @@
 import React, {useState} from "react";
 import "./CSS/DetectorImage.css";
+import DownloadAllButton from "./DownloadAllButton";
 
 /**
  * A React component that displays an image from a selected file using a backend API endpoint.
@@ -18,6 +19,7 @@ const DetectorImageAll = ({selectedFile}) => {
 
   return (
     <div className="detectorImageContainer">
+      <DownloadAllButton selectedFile={selectedFile} />
       <img
         id="detectorImageAll"
         src={imageUrl}
