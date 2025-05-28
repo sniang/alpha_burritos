@@ -1,6 +1,7 @@
 #detectorImageAll {
   width: 95%;
   margin: 10px;
+
 }
 
 #detectorImage {
@@ -27,6 +28,7 @@
   width: 100%;                  /* Full width */
   text-align: center;           /* Center text */
   box-sizing: border-box;       /* Include border and padding in width */
+  padding: 10px;                /* Inner spacing */
 }
 
 @media (max-width: 900px) {
