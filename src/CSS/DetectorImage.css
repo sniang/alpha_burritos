@@ -30,11 +30,6 @@
 }
 
 @media (max-width: 900px) {
-  #detectorImage {
-    width: 100%;                /* Responsive width */
-    max-width: 425px;           /* Maximum width */
-    height: auto;               /* Maintain aspect ratio */
-  }
 
   #detectorImageButtonContainer {
     height: auto;               /* Adjust height for small screens */

@@ -86,10 +86,10 @@ const Parameters = ({ selectedFile }) => {
                 <div
                     style={{
                         display: "grid",
-                        gridTemplateColumns: `120px repeat(${validLocations.length}, min-content)`,
-                        gap: "15px 10px",
+                        gridTemplateColumns: `100px repeat(${validLocations.length}, min-content)`,
+                        gap: "15px 5px",
                         fontSize: "0.9rem",
-                        alignItems: "center"
+                        alignItems: "center",
                     }}
                 >
                     {/* Header row */}

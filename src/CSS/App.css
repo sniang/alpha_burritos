@@ -39,11 +39,10 @@ label {
   display: flex;
   flex-wrap: wrap;
   flex-direction: row;
-  align-items: flex-start;
   justify-content: space-between;
   width: 100%;
   margin: 0;
-  gap: 16px; /* Added gap for better spacing */
+  align-items: stretch;
 }
 
 /* Responsive adjustments for smaller screens */
