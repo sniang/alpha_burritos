@@ -139,6 +139,7 @@ const getImage = async (req, res, subdir = 'Together') => {
 };
 
 // Define API routes
+app.get('/api/test', (req, res) => { res.json({ message: 'API is working' }); }); // Test the API
 app.get('/api/:year/:month/json', getJsonFiles);          // Get JSON files list
 app.get('/api/json/:jsonFilename', getJsonContent);           // Get JSON content
 app.get('/api/img_all/:jsonFilename', (req, res) => getImage(req, res));  // Get combined image
@@ -149,11 +150,6 @@ app.get('/api/signal/:detector/:jsonFilename', (req, res) => getSignal(req, res)
 app.use((err, req, res, next) => {
   console.error('Global error:', err.stack);
   res.status(500).json({ error: 'Something broke!' });
-});
-
-// Test
-app.get('/api/test', (req, res) => {
-  res.json({ message: 'API is working' });
 });
 
 // Start the server
