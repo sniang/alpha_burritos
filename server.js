@@ -7,7 +7,7 @@ import path from 'path';        // Path manipulation utility
 // Set up constants and configuration
 const app = express();                                // Create Express application
 const PORT = 3001;                                    // Set server port
-const MAIN_DIR = '/Users/samuelniang/cern_burritos';  // Base directory for data
+const MAIN_DIR = '/home/alpha/Desktop/eos';  // Base directory for data
 
 // Configure middleware
 app.use(cors());         // Enable CORS for all routes
@@ -149,6 +149,11 @@ app.get('/api/signal/:detector/:jsonFilename', (req, res) => getSignal(req, res)
 app.use((err, req, res, next) => {
   console.error('Global error:', err.stack);
   res.status(500).json({ error: 'Something broke!' });
+});
+
+// Test
+app.get('/api/test', (req, res) => {
+  res.json({ message: 'API is working' });
 });
 
 // Start the server
