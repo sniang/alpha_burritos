@@ -64,7 +64,15 @@ src/
 ## API Endpoints
 
 The React app expects the following backend API (see `server.js`):
-
+- **Test if the API is working**:
+  `GET /api/test`
+  - Returns a json file to confirm that the API is working
+  - Example `/api/test`
+  - Response:
+    ```json
+    { "message" : "API is working"}
+    ```
+    
 - **List JSON Files:**  
   `GET /api/:year/:month/json`  
   - Returns a list of JSON filenames for the specified year and month.
