@@ -38,7 +38,7 @@ const Parameters = ({ selectedFile }) => {
         const fetchParameters = async () => {
             try {
                 // Fetch parameter data from backend API
-                const res = await fetch(`http://localhost:3001/api/json/${selectedFile}`);
+                const res = await fetch(`/api/json/${selectedFile}`);
                 if (!res.ok) {
                     // Throw error if response is not ok
                     throw new Error('Network response was not ok');

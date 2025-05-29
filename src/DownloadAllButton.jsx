@@ -23,7 +23,7 @@ const DownloadAllButton = ({ selectedFile }) => {
     const downloadSignalFile = async (jsonFilename, detector) => {
         try {
             // Fetch the file from the backend API
-            const response = await fetch(`http://localhost:3001/api/signal/${detector}/${jsonFilename}`);
+            const response = await fetch(`/api/signal/${detector}/${jsonFilename}`);
             console.log(`/api/signal/${detector}/${jsonFilename}`)
             if (!response.ok) {
                 // If the response is not OK, throw an error
@@ -58,7 +58,7 @@ const DownloadAllButton = ({ selectedFile }) => {
     const getDetectorList = async() => {
             try {
                 // Fetch parameter data from backend API
-                const res = await fetch(`http://localhost:3001/api/json/${selectedFile}`);
+                const res = await fetch(`/api/json/${selectedFile}`);
                 if (!res.ok) {
                     // Throw error if response is not ok
                     throw new Error('Network response was not ok');

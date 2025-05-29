@@ -49,7 +49,7 @@ function TimeStampSelector({
   useEffect(() => {
     const fetchFiles = async () => {
       try {
-        const res = await fetch(`http://localhost:3001/api/${year}/${month}/json`);
+        const res = await fetch(`/api/${year}/${month}/json`);
         if (!res.ok) {
           throw new Error(`${res.status} ${res.statusText}`);
         }
