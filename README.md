@@ -12,7 +12,7 @@ The application seamlessly communicates with a custom RESTful API to fetch and d
 
 - **Year/Month Selection:** Choose the year and month to filter available data files.
 - **Timestamp Selection:** Select a specific acquisition timestamp from available JSON files.
-- **Parameter Display:** View key parameters (area, FWHM, peak, rise, time peak) for each detector.
+- **Parameter Display:** View key parameters (area, FWHM, peak, rise, time peak, dt) for each detector.
 - **Combined Image View:** See the combined detector image for the selected acquisition.
 - **Detector Selection:** Choose a specific detector (PDS, BDS, DSAT, USAT, PMT11) to view its processed image.
 - **Signal Download:** Download the raw signal as a text file for the selected detector and timestamp.

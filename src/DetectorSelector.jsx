@@ -4,16 +4,15 @@
  * @description A React component that provides a dropdown menu for selecting different types of detectors
  */
 
-import React, {useState} from "react";
-
 /**
  * DetectorSelector component allows users to choose between different detector options
  * @param {string} selectedDetector - The currently selected detector value
  * @param {function} setSelectedDetector - Function to update the selected detector
+ * @param {string[]} detectorList - Array of detector options to display in the dropdown
  * @returns {JSX.Element} A select element with detector options
  */
-const DetectorSelector = ({selectedDetector, setSelectedDetector}) => {
-    // State to manage the selected detector
+const DetectorSelector = ({ selectedDetector, setSelectedDetector, detectorList }) => {
+    // Handler for detector selection changes
     const handleChange = (event) => {
         setSelectedDetector(event.target.value);
     };
@@ -22,11 +21,11 @@ const DetectorSelector = ({selectedDetector, setSelectedDetector}) => {
         <label>
             Detector:
             <select value={selectedDetector} onChange={handleChange}>
-                <option value="PDS">PDS</option>
-                <option value="BDS">BDS</option>
-                <option value="DSAT">DSAT</option>
-                <option value="USAT">USAT</option>
-                <option value="PMT11">PMT11</option>
+                {detectorList && detectorList.map((detector) => (
+                    <option key={detector} value={detector}>
+                        {detector}
+                    </option>
+                ))}
             </select>
         </label>
     );
