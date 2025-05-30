@@ -25,7 +25,7 @@ const DownloadButton = ({ selectedFile, selectedDetector }) => {
     const downloadSignalFile = async (jsonFilename, detector) => {
         try {
             // Fetch the file from the backend API
-            const response = await fetch(`http://localhost:3001/api/signal/${detector}/${jsonFilename}`);
+            const response = await fetch(`/api/signal/${detector}/${jsonFilename}`);
             console.log(`/api/signal/${detector}/${jsonFilename}`)
             if (!response.ok) {
                 // If the response is not OK, throw an error

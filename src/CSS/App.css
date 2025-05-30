@@ -8,6 +8,17 @@
   align-items: center;
   justify-content: center;
   gap: 20px; /* Space between children */
+  opacity: 1;
+  animation: fadeIn 1s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 /* Label styling for form elements */
@@ -39,11 +50,10 @@ label {
   display: flex;
   flex-wrap: wrap;
   flex-direction: row;
-  align-items: flex-start;
   justify-content: space-between;
   width: 100%;
   margin: 0;
-  gap: 16px; /* Added gap for better spacing */
+  align-items: stretch;
 }
 
 /* Responsive adjustments for smaller screens */
@@ -54,8 +64,10 @@ label {
   }
 
   #detector-block {
+    max-width: 500px;
+    width: 100%;
     flex-direction: column;
-    align-items: center;
+    align-items: stretch;
     gap: 20px;
   }
 

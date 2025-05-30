@@ -11,19 +11,21 @@ import AutoRefresh from './AutoRefresh.jsx'
 
 /**
  * Root component of the application that orchestrates detector visualization and data management.
- * Handles state management for file selection, detector selection, and temporal navigation.
+ * Manages the global state including file selection, detector options, and temporal navigation.
+ * Coordinates interactions between child components through centralized state management.
  * 
  * @component
  * @author Samuel Niang
- * @returns {JSX.Element} The root application interface
+ * @returns {JSX.Element} The root application interface with navigation controls and visualization components
  * 
- * @state {Object} state - Application's global state
- * @state {string[]} state.jsonFiles - Available JSON data files
- * @state {string} state.selectedFile - Currently active data file
- * @state {string} state.selectedDetector - Active detector identifier (default: 'PDS')
+ * @state {Object} state - Application's global state object
+ * @state {string[]} state.jsonFiles - List of available JSON data files for selection
+ * @state {string} state.selectedFile - Currently selected data file path/identifier
+ * @state {string} state.selectedDetector - Currently active detector identifier (default: 'PDS')
  * @state {Error|null} state.error - Error state for application-wide error handling
- * @state {number} state.year - Selected year for data filtering
- * @state {number} state.month - Selected month for data filtering (1-12)
+ * @state {number} state.year - Currently selected year for temporal data filtering
+ * @state {number} state.month - Currently selected month (1-12) for temporal data filtering
+ * @state {Array} state.detectorList - List of available detectors from the current dataset
  */
 
 function App() {
@@ -35,9 +37,10 @@ function App() {
     error: null,
     year: new Date().getFullYear(),
     month: new Date().getMonth() + 1,
+    detectorList: []
   });
 
-  const { jsonFiles, selectedFile, selectedDetector, error, year, month } = state;
+  const { jsonFiles, selectedFile, selectedDetector, error, year, month, detectorList } = state;
 
   // Display error message if application encounters an error
   if (error) {
@@ -50,9 +53,11 @@ function App() {
   }
 
   /**
-   * Updates a specific state property while maintaining state immutability
-   * @param {string} key - State property identifier
-   * @param {any} value - New value to be assigned
+   * Updates a specific property in the application state while preserving other values
+   * Uses functional state update pattern to ensure state immutability
+   * 
+   * @param {string} key - The state property key to update
+   * @param {any} value - The new value to assign to the specified property
    */
   const updateState = (key, value) => {
     setState(prevState => ({ ...prevState, [key]: value }));
@@ -60,8 +65,10 @@ function App() {
 
   /**
    * Conditionally renders detector visualization components
-   * Only displays when a file is selected
-   * @returns {JSX.Element|null} Detector visualization components or null
+   * Only displays visualization when a data file is selected
+   * Groups related detector visualization components
+   * 
+   * @returns {JSX.Element|null} Detector visualization components or null if no file selected
    */
   const renderDetectorComponents = () => {
     if (!selectedFile) return null;
@@ -69,7 +76,11 @@ function App() {
     return (
       <>
         <div id='detector-block'>
-          <Parameters selectedFile={selectedFile} />
+          <Parameters
+            selectedFile={selectedFile}
+            detectorList={detectorList}
+            setDetectorList={(value) => updateState('detectorList', value)}
+          />
           {selectedDetector && <DetectorImage selectedFile={selectedFile} selectedDetector={selectedDetector} />}
         </div>
         <DetectorImageAll selectedFile={selectedFile} />
@@ -107,6 +118,7 @@ function App() {
         {selectedFile && <DetectorSelector
           selectedDetector={selectedDetector}
           setSelectedDetector={(value) => updateState('selectedDetector', value)}
+          detectorList={detectorList}
         />}
       </div>
       {renderDetectorComponents()}

@@ -21,7 +21,7 @@ const DetectorImage = ({ selectedFile, selectedDetector }) => {
     return (
         <div id="detectorImageButtonContainer">
             <img id="detectorImage"
-                src={`http://localhost:3001/api/img/${selectedDetector}/${selectedFile}`}
+                src={`/api/img/${selectedDetector}/${selectedFile}`}
                 alt={`Preview for ${selectedFile} with ${selectedDetector}`}
             />
             <DownloadButton

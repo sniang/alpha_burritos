@@ -35,7 +35,7 @@ function AutoRefresh({
     const fetchFiles = async () => {
         try {
             // Fetch files from backend using year and month
-            const res = await fetch(`http://localhost:3001/api/${year}/${month}/json`);
+            const res = await fetch(`/api/${year}/${month}/json`);
             if (!res.ok) {
                 // Throw error if response is not ok
                 throw new Error(`${res.status} ${res.statusText}`);

@@ -7,27 +7,28 @@ import "./CSS/Parameters.css";
  * Parameters component fetches and displays parameter data for a selected file.
  * 
  * Given a `selectedFile` prop, it retrieves parameter information from a backend API,
- * handles loading and error states, and renders formatted parameter values for predefined locations.
+ * displays loading and error states appropriately, and renders formatted parameter values
+ * for the detector locations specified in detectorList.
  * 
  * @component
  * @param {Object} props
  * @param {string} props.selectedFile - The name or identifier of the file whose parameters are to be fetched and displayed.
+ * @param {string[]} props.detectorList - Array of detector locations to display.
+ * @param {Function} props.setDetectorList - Setter function to update the detector list.
  * @returns {JSX.Element|null} Rendered parameter information, error message, or null if no file is selected.
  * 
  * @author Samuel Niang
  */
-const Parameters = ({ selectedFile }) => {
-    // State to hold fetched parameters
+const Parameters = ({ selectedFile, detectorList, setDetectorList }) => {
+    // State to hold fetched parameters data
     const [parameters, setParameters] = useState(null);
-    // State to hold any error that occurs during fetch
+    // State to track and display any API fetch errors
     const [error, setError] = useState(null);
-    // List of locations to display parameters for
-    const locations = ["PDS", "BDS", "DSAT", "USAT", "PMT11"];
 
     /**
-     * Formats a number to five significant digits.
+     * Formats a number to five significant digits for consistent display.
      * @param {number} num - The number to format.
-     * @returns {string} The formatted number.
+     * @returns {string} The formatted number with five significant digits.
      */
     function formatToFiveSignificantDigits(num) {
         return Number(num).toPrecision(5);
@@ -37,28 +38,30 @@ const Parameters = ({ selectedFile }) => {
     useEffect(() => {
         const fetchParameters = async () => {
             try {
-                // Fetch parameter data from backend API
-                const res = await fetch(`http://localhost:3001/api/json/${selectedFile}`);
+                // Request parameter data from backend API for the selected file
+                const res = await fetch(`/api/json/${selectedFile}`);
                 if (!res.ok) {
-                    // Throw error if response is not ok
+                    // Handle HTTP error responses
                     throw new Error('Network response was not ok');
                 }
-                // Parse JSON data
+                // Parse and store the JSON response data
                 const data = await res.json();
                 setParameters(data);
+                // Update detectorList with all available detector locations from the data
+                setDetectorList(Object.keys(data));
             } catch (error) {
-                // Set error state if fetch fails
+                // Store error state for user display
                 setError(error);
             }
         };
 
         if (selectedFile) {
-            // Only fetch if a file is selected
+            // Only attempt to fetch data if a file is selected
             fetchParameters();
         }
-    }, [selectedFile]);
+    }, [selectedFile, setDetectorList]);
 
-    // Render error message if error occurred
+    // Display error information if fetch failed
     if (error) {
         return (
             <div>
@@ -68,17 +71,20 @@ const Parameters = ({ selectedFile }) => {
         );
     }
 
-    // Render parameters if available
+    // Render parameter data grid if data is available
     if (parameters) {
+        // Define parameter keys and their display labels
         const parameterKeys = [
             { key: "area", label: "Area [mV·ns]" },
             { key: "fwhm", label: "FWHM [ns]" },
             { key: "peak", label: "Peak [mV]" },
             { key: "rise", label: "Rise [ns]" },
             { key: "time peak", label: "Time Peak [ns]" },
+            { key: "dt", label: "dt [ns]" },
         ];
 
-        const validLocations = locations.filter((loc) => parameters[loc]);
+        // Filter out any detector locations that don't exist in the parameters data
+        const validdetectorList = detectorList.filter((loc) => parameters[loc]);
 
         return (
             <div id="parametersBlock">
@@ -86,23 +92,23 @@ const Parameters = ({ selectedFile }) => {
                 <div
                     style={{
                         display: "grid",
-                        gridTemplateColumns: `120px repeat(${validLocations.length}, min-content)`,
-                        gap: "15px 10px",
+                        gridTemplateColumns: `120px repeat(${validdetectorList.length}, min-content)`,
+                        gap: "15px 5px",
                         fontSize: "0.9rem",
-                        alignItems: "center"
+                        alignItems: "center",
                     }}
                 >
-                    {/* Header row */}
+                    {/* Header row with parameter name and detector locations */}
                     <div style={{ fontWeight: "bold" }}>Parameters</div>
-                    {validLocations.map((loc) => (
+                    {validdetectorList.map((loc) => (
                         <div key={loc} style={{ fontWeight: "bold" }}>{loc}</div>
                     ))}
 
-                    {/* Parameter rows */}
+                    {/* Data rows for each parameter across all detectors */}
                     {parameterKeys.map(({ key, label }) => (
                         <React.Fragment key={key}>
                             <div>{label}</div>
-                            {validLocations.map((loc) => (
+                            {validdetectorList.map((loc) => (
                                 <div key={`${loc}-${key}`}>
                                     {formatToFiveSignificantDigits(parameters[loc][key])}
                                 </div>
@@ -114,7 +120,7 @@ const Parameters = ({ selectedFile }) => {
         );
     }
 
-    // Render nothing if no file is selected and no error
+    // Return null if no file is selected or data hasn't loaded yet
     return null;
 };
 
