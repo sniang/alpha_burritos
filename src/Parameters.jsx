@@ -59,7 +59,7 @@ const Parameters = ({ selectedFile, detectorList, setDetectorList }) => {
             // Only attempt to fetch data if a file is selected
             fetchParameters();
         }
-    }, [selectedFile, setDetectorList]);
+    }, [selectedFile]);
 
     // Display error information if fetch failed
     if (error) {
