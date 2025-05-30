@@ -19,7 +19,6 @@
   border: 2px solid #e33933;    /* Red border */
   border-radius: 10px;          /* Rounded corners */
   padding: 10px;                /* Inner spacing */
-  height: 300px;                /* Fixed height */
 }
 
 .detectorImageContainer {

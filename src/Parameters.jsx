@@ -92,7 +92,7 @@ const Parameters = ({ selectedFile, detectorList, setDetectorList }) => {
                 <div
                     style={{
                         display: "grid",
-                        gridTemplateColumns: `100px repeat(${validdetectorList.length}, min-content)`,
+                        gridTemplateColumns: `120px repeat(${validdetectorList.length}, min-content)`,
                         gap: "15px 5px",
                         fontSize: "0.9rem",
                         alignItems: "center",
