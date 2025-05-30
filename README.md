@@ -1,6 +1,6 @@
 # Alpha Burritos
 
-Alpha Burritos is a modern, interactive React application developed for CERN's ALPHA experiment. It provides researchers and analysts with a user-friendly interface to browse, visualize, and analyze signal data from the experiment's "burrito detectors" - specialized detection systems that capture antimatter annihilation events.
+Alpha Burritos is a modern, interactive React application developed for CERN's ALPHA experiment. It provides researchers and analysts with a user-friendly interface to browse, visualize, and analyze signal data from the experiment's "burrito detectors"—specialized detection systems that capture antimatter annihilation events.
 
 The application seamlessly communicates with a custom RESTful API to fetch and display critical data, including JSON parameter files and detector-specific PNG images captured at various timestamps. By consolidating multiple data streams into a single, responsive interface, Alpha Burritos simplifies the complex task of antimatter detection analysis and monitoring.
 
@@ -64,51 +64,52 @@ src/
 ## API Endpoints
 
 The React app expects the following backend API (see `server.js`):
-- **Test if the API is working**:
-  `GET /api/test`
-  - Returns a json file to confirm that the API is working
-  - Example `/api/test`
-  - Response:
+
+- **Test if the API is working:**  
+  `GET /api/test`  
+  - Returns a JSON file to confirm that the API is working.  
+  - Example: `/api/test`  
+  - Response:  
     ```json
-    { "message" : "API is working"}
+    { "message": "API is working" }
     ```
-    
+
 - **List JSON Files:**  
   `GET /api/:year/:month/json`  
-  - Returns a list of JSON filenames for the specified year and month.
-  - Example: `/api/2024/05/json`
-  - Response:
+  - Returns a list of JSON filenames for the specified year and month.  
+  - Example: `/api/2024/05/json`  
+  - Response:  
     ```json
     ["file-2024-05-01.json", "file-2024-05-02.json"]
     ```
 
 - **Get JSON File Content:**  
   `GET /api/json/:filename`  
-  - Returns the parsed JSON content of the specified file.
-  - Example: `/api/json/file-2024-05-01.json`
-  - Response:
+  - Returns the parsed JSON content of the specified file.  
+  - Example: `/api/json/file-2024-05-01.json`  
+  - Response:  
     ```json
     { "key": "value", ... }
     ```
 
 - **Get Combined Image:**  
   `GET /api/img_all/:jsonFilename`  
-  - Returns the PNG image associated with the JSON file (from the `Together` subdirectory).
-  - Example: `/api/img_all/file-2024-05-01.json`
+  - Returns the PNG image associated with the JSON file (from the `Together` subdirectory).  
+  - Example: `/api/img_all/file-2024-05-01.json`  
   - Response:  
     Binary PNG image.
 
 - **Get Detector-Specific Image:**  
   `GET /api/img/:detector/:jsonFilename`  
-  - Returns the PNG image for a specific detector and JSON file.
-  - Example: `/api/img/DetectorA/file-2024-05-01.json`
+  - Returns the PNG image for a specific detector and JSON file.  
+  - Example: `/api/img/DetectorA/file-2024-05-01.json`  
   - Response:  
     Binary PNG image.
 
 - **Get Detector-Specific Signal:**  
   `GET /api/signal/:detector/:jsonFilename`  
-  - Returns the signal as a text file for a specific detector and JSON file.
-  - Example: `/api/signal/DetectorA/file-2024-05-01.json`
+  - Returns the signal as a text file for a specific detector and JSON file.  
+  - Example: `/api/signal/DetectorA/file-2024-05-01.json`  
   - Response:  
     Text file
 
@@ -172,8 +173,8 @@ The API will run on [http://localhost:3001](http://localhost:3001).
   If your backend runs on a different host or port, update the API URLs in the React components (e.g., `Parameters.jsx`, `DetectorImage.jsx`, etc.).
 
 - **Data Directory:**  
-  The backend expects data in a specific directory structure (see API documentation above).
-  The main directory of the data has to be declared in the variable `MAIN_DIR` in [server.js](server.js).
+  The backend expects data in a specific directory structure (see API documentation above).  
+  The main directory of the data must be declared in the variable `MAIN_DIR` in [server.js](server.js).
 
 ---
 
@@ -190,7 +191,9 @@ The API will run on [http://localhost:3001](http://localhost:3001).
 - [ALPHA Experiment (CERN)](https://home.cern/science/experiments/alpha)
 
 ---
+
 This project uses React, Vite, and Express. For backend API details, see [server.js](server.js).
 
 ---
+
 **Developed by Samuel Niang (Swansea University) and Adriano Del Vincio (Brescia University)**
