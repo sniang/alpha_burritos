@@ -117,6 +117,16 @@ The React app expects the following backend API (see `server.js`):
   - Response:  
     Text file
 
+- **Get Comments:**  
+  `GET /api/comments/:jsonFilename`  
+  - Retrieves any saved comments for a specific JSON file.  
+  - Example: `/api/comments/data-2025-06-02_08-25-03.json`  
+  - Response:  
+    ```json
+    { "comment": "This detection shows interesting peak values." }
+    ```
+  - Returns `{ "comment": "No comment" }` if no comment exists.
+
 - **Post Comments:**  
   `POST /api/comments/:jsonFilename`  
   - Saves a comment for a specific JSON file.  
@@ -124,6 +134,10 @@ The React app expects the following backend API (see `server.js`):
   - Request Body:  
     ```json
     { "comment": "This detection shows interesting peak values." }
+    ```
+  - Response:  
+    ```json
+    { "success": true, "message": "Comment updated successfully" }
     ```
 
 ### Error Handling
