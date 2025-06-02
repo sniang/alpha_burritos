@@ -3,11 +3,15 @@ import express from 'express';  // Express.js web framework
 import cors from 'cors';        // Cross-Origin Resource Sharing middleware
 import fs from 'fs/promises';   // File system module with promises support
 import path from 'path';        // Path manipulation utility
+import { json } from 'stream/consumers';
+import js from '@eslint/js';
 
 // Set up constants and configuration
 const app = express();                                // Create Express application
 const PORT = 3001;                                    // Set server port
-const MAIN_DIR = '/home/alpha/Desktop/eos';  // Base directory for data
+const MAIN_DIR = '/home/alpha/Desktop/eos'            // Base directory for data
+//const MAIN_DIR = '/Users/samuelniang/cern_burritos'; 
+//const MAIN_DIR = '/Users/samuelniang/Desktop/test'
 
 // Configure middleware
 app.use(cors());         // Enable CORS for all routes
@@ -138,6 +142,68 @@ const getImage = async (req, res, subdir = 'Together') => {
   }
 };
 
+// Route handler to get comments from a JSON file
+const getComments = async (req, res) => {
+  try {
+    const { jsonFilename } = req.params;
+    console.log(`Getting comments for file: ${jsonFilename}`);
+    validateFilename(jsonFilename);
+    const { year, month } = parseYearMonthFromFilename(jsonFilename);
+    const filePath = path.join(MAIN_DIR, year, padToTwoDigits(month), 'comments.json');
+    console.log(`Reading comments from: ${filePath}`);
+    
+    const data = await fs.readFile(filePath, 'utf8');
+    const jsonData = JSON.parse(data);
+    console.log(`Comments found: ${jsonData[jsonFilename] ? 'Yes' : 'No'}`);
+
+    res.json({comment: jsonData[jsonFilename] || 'No comment'});    
+  } catch (error) {
+    console.error('Error in getComments:', error.message);
+    res.json({ comment: 'No comment' });
+  }
+};
+
+// Route handler to post/update comments for a JSON file
+const postComments = async (req, res) => {
+  try {
+    const { jsonFilename } = req.params;
+    const { comment } = req.body;
+    
+    validateFilename(jsonFilename);
+    
+    const { year, month } = parseYearMonthFromFilename(jsonFilename);
+    const filePath = path.join(MAIN_DIR, year, padToTwoDigits(month), 'comments.json');
+    
+    // Read existing comments file or create empty object if it doesn't exist
+    let commentsData = {};
+    try {
+      const data = await fs.readFile(filePath, 'utf8');
+      commentsData = JSON.parse(data);
+    } catch (error) {
+      if (error.code !== 'ENOENT') {
+        throw error;
+      }
+      // File doesn't exist, will create a new one
+    }
+    
+    // Update the comment for this file
+    commentsData[jsonFilename] = comment;
+    
+    // Ensure directory exists
+    const dirPath = path.join(MAIN_DIR, year, padToTwoDigits(month));
+    await fs.mkdir(dirPath, { recursive: true });
+    
+    // Write updated comments back to file
+    await fs.writeFile(filePath, JSON.stringify(commentsData, null, 2), 'utf8');
+    
+    console.log(`Comment updated successfully for ${jsonFilename}`);
+    res.json({ success: true, message: 'Comment updated successfully' });
+  } catch (error) {
+    console.error('Error in postComments:', error.message);
+    res.status(400).json({ error: error.message });
+  }
+};
+
 // Define API routes
 app.get('/api/test', (req, res) => { res.json({ message: 'API is working' }); }); // Test the API
 app.get('/api/:year/:month/json', getJsonFiles);          // Get JSON files list
@@ -145,6 +211,8 @@ app.get('/api/json/:jsonFilename', getJsonContent);           // Get JSON conten
 app.get('/api/img_all/:jsonFilename', (req, res) => getImage(req, res));  // Get combined image
 app.get('/api/img/:detector/:jsonFilename', (req, res) => getImage(req, res, req.params.detector));  // Get detector-specific image
 app.get('/api/signal/:detector/:jsonFilename', (req, res) => getSignal(req, res));  // Get signal as a text file
+app.get('/api/comments/:jsonFilename', (req, res) => getComments(req, res)); // Get the comments
+app.post('/api/comments/:jsonFilename', (req, res) => postComments(req, res)); // post the comments
 
 // Global error handling middleware
 app.use((err, req, res, next) => {

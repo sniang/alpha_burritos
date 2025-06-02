@@ -16,6 +16,29 @@ const Comment = ({ selectedFile }) => {
     const [update, setUpdate] = useState(false); // Controls whether edit mode is active
     const [error, setError] = useState(null); // Tracks any API or processing errors
 
+    const fetchComment = async () => {
+        try {
+            // Fetch the existing comment for the selected file from the API
+            const response = await fetch(`/api/comments/${selectedFile}`);
+            if (!response.ok) {
+                throw new Error('Failed to fetch comment');
+            }
+            const data = await response.json();
+            // Update the comment state with the fetched data
+            setComment(data.comment || "No comment");
+        } catch (err) {
+            // Handle and display any errors during API call
+            setError(err);
+        }
+    }
+
+    // Fetch the comment when the component mounts or when selectedFile changes
+    useEffect(() => {
+        if (selectedFile) {
+            fetchComment();
+        }
+    }, [selectedFile]);
+
     /**
      * Handles saving or toggling the comment edit mode
      * Makes API request to save the new comment when in edit mode
@@ -23,7 +46,7 @@ const Comment = ({ selectedFile }) => {
      */
     const updateComment = async () => {
         setError(null); // Reset any previous errors
-        if (update && newComment !== "") {
+        if (update && newComment !== comment) {
             // Save the new comment via API call when in edit mode and comment is not empty
             try {
                 // POST request to save the comment for the selected file
@@ -35,8 +58,14 @@ const Comment = ({ selectedFile }) => {
                     body: JSON.stringify({ comment: newComment })
                 });
                 const data = await response.json();
+                console.log("Comment saved successfully:", data);
                 // Reset states after successful save
-                setComment("No comment");
+                if (newComment !== "") {
+                    setComment(newComment);
+                } else {
+                    setComment("No comment");
+                }
+
                 setNewComment("");
                 return setUpdate(!update); // Exit edit mode
             } catch (err) {
@@ -60,7 +89,7 @@ const Comment = ({ selectedFile }) => {
                     id="comment-textarea"
                     value={newComment}
                     onChange={(e) => setNewComment(e.target.value)}
-                    placeholder="Write your comments here..."
+                    placeholder={"Write your comments here..."}
                 />
             }
             <div id="comment-buttons-block">
