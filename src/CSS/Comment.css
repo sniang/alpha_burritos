@@ -1,0 +1,20 @@
+#comment-block {
+    padding: 10px;
+    border: 2px solid #e33933;
+    border-radius: 10px;
+    align-self: stretch;
+}
+
+#comment-textarea {
+    width: 98%;
+    height: 100px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+#comment-buttons-block {
+    display: flex;
+    justify-content: flex-start;
+    gap: 10px;
+}

@@ -1,17 +1,18 @@
-/* Main container styling */
+/* Root container styling - controls the main app layout */
 #root {
   width: 90%;
   max-width: 900px;
-  margin: 0 auto;
+  margin: 0 auto; /* Center the container */
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 20px; /* Space between children */
   opacity: 1;
-  animation: fadeIn 1s ease-in-out;
+  animation: fadeIn 1s ease-in-out; /* Apply fade-in animation */
 }
 
+/* Animation for fade-in effect when page loads */
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -21,31 +22,50 @@
   }
 }
 
-/* Label styling for form elements */
+/* Label styling for form elements - horizontal layout with centered content */
 label {
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  gap: 2px;
+  gap: 2px; /* Space between label text and form elements */
   font-weight: bold;
   margin: 10px;
 }
 
-/* Block containing select elements */
+/* Dropdown select styling */
+select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 12px;
+}
+
+/* Button styling - uses brand color (#e33933) */
+button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  background-color: #e33933; /* Brand red color */
+  color: white;
+  font-size: 16px;
+}
+
+/* Block containing select elements - wrapped in a bordered container */
 #selects-block {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  border: 2px solid #e33933;
+  border: 2px solid #e33933; /* Brand red border */
   border-radius: 10px;
   padding: 12px 0; /* Added padding for better spacing */
-  box-sizing: border-box;
+  box-sizing: border-box; /* Ensures padding doesn't increase width */
 }
 
-/* Block containing detector elements */
+/* Block containing detector elements - flexible layout with even spacing */
 #detector-block {
   display: flex;
   flex-wrap: wrap;
@@ -53,25 +73,25 @@ label {
   justify-content: space-between;
   width: 100%;
   margin: 0;
-  align-items: stretch;
+  align-items: stretch; /* Makes children stretch to equal heights */
 }
 
-/* Responsive adjustments for smaller screens */
+/* Responsive layout adjustments for mobile/tablet screens */
 @media screen and (max-width: 950px) {
   #selects-block {
-    flex-direction: column;
+    flex-direction: column; /* Stack items vertically on smaller screens */
     width: 100%;
   }
 
   #detector-block {
     max-width: 500px;
     width: 100%;
-    flex-direction: column;
+    flex-direction: column; /* Stack items vertically on smaller screens */
     align-items: stretch;
-    gap: 20px;
+    gap: 20px; /* Increased spacing between stacked items */
   }
 
   label {
-    margin: 4px;
+    margin: 4px; /* Reduced margins on smaller screens */
   }
 }

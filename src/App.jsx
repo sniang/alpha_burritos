@@ -8,6 +8,7 @@ import DetectorImage from './DetectorImage.jsx'
 import YearMonthSelector from './YearMonthSelector.jsx'
 import MainTitle from './MainTitle.jsx'
 import AutoRefresh from './AutoRefresh.jsx'
+import Comment from './Comment.jsx'
 
 /**
  * Root component of the application that orchestrates detector visualization and data management.
@@ -83,14 +84,22 @@ function App() {
           />
           {selectedDetector && <DetectorImage selectedFile={selectedFile} selectedDetector={selectedDetector} />}
         </div>
+        {selectedFile && <Comment selectedFile={selectedFile} />}
         <DetectorImageAll selectedFile={selectedFile} />
       </>
     );
   };
 
-  return (
-    <>
-      <MainTitle />
+
+  /**
+   * Renders the control and selection components for the application
+   * Organizes year/month selectors, timestamp selector, auto-refresh, and detector selector
+   * Conditionally renders detector selector only when a file is selected
+   * 
+   * @returns {JSX.Element} A container with all selection and control components
+   */
+  const renderSelectorComponents = () => {
+    return (
       <div id='selects-block'>
         <AutoRefresh
           year={year}
@@ -121,6 +130,13 @@ function App() {
           detectorList={detectorList}
         />}
       </div>
+    );
+  }
+
+  return (
+    <>
+      <MainTitle />
+      {renderSelectorComponents()}
       {renderDetectorComponents()}
     </>
   )

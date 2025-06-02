@@ -17,6 +17,7 @@ The application seamlessly communicates with a custom RESTful API to fetch and d
 - **Detector Selection:** Choose a specific detector (PDS, BDS, DSAT, USAT, PMT11) to view its processed image.
 - **Signal Download:** Download the raw signal as a text file for the selected detector and timestamp.
 - **Download All Signals:** Download signal files for all available detectors at once.
+- **Comments:** Add and edit comments for specific acquisition files.
 - **Auto-Refresh:** Automatically refresh the list of available files.
 - **Responsive UI:** Built with React and styled for clarity and usability.
 
@@ -58,7 +59,10 @@ src/
    - Use the "Download the signal" button to download the raw signal for the selected detector.
    - Use the "Download the signals" button to download signals for all available detectors at once.
 
-6. **Auto-Refresh:**  
+6. **Add Comments:**  
+   Add notes or observations about specific acquisition files for collaborative research.
+
+7. **Auto-Refresh:**  
    Enable auto-refresh to automatically update the list of available files every 2 seconds.
 
 ## API Endpoints
@@ -80,13 +84,13 @@ The React app expects the following backend API (see `server.js`):
   - Example: `/api/2024/05/json`  
   - Response:  
     ```json
-    ["file-2024-05-01.json", "file-2024-05-02.json"]
+    ["data-2025-06-02_08-25-03.json", "file-2024-05-02.json"]
     ```
 
 - **Get JSON File Content:**  
   `GET /api/json/:filename`  
   - Returns the parsed JSON content of the specified file.  
-  - Example: `/api/json/file-2024-05-01.json`  
+  - Example: `/api/json/data-2025-06-02_08-25-03.json`  
   - Response:  
     ```json
     { "key": "value", ... }
@@ -95,23 +99,32 @@ The React app expects the following backend API (see `server.js`):
 - **Get Combined Image:**  
   `GET /api/img_all/:jsonFilename`  
   - Returns the PNG image associated with the JSON file (from the `Together` subdirectory).  
-  - Example: `/api/img_all/file-2024-05-01.json`  
+  - Example: `/api/img_all/data-2025-06-02_08-25-03.json`  
   - Response:  
     Binary PNG image.
 
 - **Get Detector-Specific Image:**  
   `GET /api/img/:detector/:jsonFilename`  
   - Returns the PNG image for a specific detector and JSON file.  
-  - Example: `/api/img/DetectorA/file-2024-05-01.json`  
+  - Example: `/api/img/DetectorA/data-2025-06-02_08-25-03.json`  
   - Response:  
     Binary PNG image.
 
 - **Get Detector-Specific Signal:**  
   `GET /api/signal/:detector/:jsonFilename`  
   - Returns the signal as a text file for a specific detector and JSON file.  
-  - Example: `/api/signal/DetectorA/file-2024-05-01.json`  
+  - Example: `/api/signal/DetectorA/data-2025-06-02_08-25-03.json`  
   - Response:  
     Text file
+
+- **Post Comments:**  
+  `POST /api/comments/:jsonFilename`  
+  - Saves a comment for a specific JSON file.  
+  - Example: `/api/comments/data-2025-06-02_08-25-03.json`  
+  - Request Body:  
+    ```json
+    { "comment": "This detection shows interesting peak values." }
+    ```
 
 ### Error Handling
 
