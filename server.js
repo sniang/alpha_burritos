@@ -156,10 +156,10 @@ const getComments = async (req, res) => {
     const jsonData = JSON.parse(data);
     console.log(`Comments found: ${jsonData[jsonFilename] ? 'Yes' : 'No'}`);
 
-    res.json({comment: jsonData[jsonFilename] || 'No comment'});    
+    res.json({comment: jsonData[jsonFilename] || null});    
   } catch (error) {
-    console.error('Error in getComments:', error.message);
-    res.json({ comment: 'No comment' });
+    console.log('Not comment found for', jsonFilename);
+    res.json({ comment: null });
   }
 };
 
@@ -188,6 +188,7 @@ const postComments = async (req, res) => {
     
     // Update the comment for this file
     commentsData[jsonFilename] = comment;
+    console.log(`Updating comment for ${jsonFilename}: ${comment}`);
     
     // Ensure directory exists
     const dirPath = path.join(MAIN_DIR, year, padToTwoDigits(month));

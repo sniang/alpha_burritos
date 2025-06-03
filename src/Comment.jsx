@@ -26,6 +26,7 @@ const Comment = ({ selectedFile }) => {
             const data = await response.json();
             // Update the comment state with the fetched data
             setComment(data.comment || "No comment");
+            setNewComment(data.comment || ""); 
         } catch (err) {
             // Handle and display any errors during API call
             setError(err);
@@ -58,15 +59,12 @@ const Comment = ({ selectedFile }) => {
                     body: JSON.stringify({ comment: newComment })
                 });
                 const data = await response.json();
-                console.log("Comment saved successfully:", data);
                 // Reset states after successful save
                 if (newComment !== "") {
                     setComment(newComment);
                 } else {
                     setComment("No comment");
                 }
-
-                setNewComment("");
                 return setUpdate(!update); // Exit edit mode
             } catch (err) {
                 // Handle and display any errors during API call
@@ -82,7 +80,7 @@ const Comment = ({ selectedFile }) => {
         <div id="comment-block">
             <h2>Comments</h2>
             {/* Display the current comment when not in edit mode */}
-            <p>{comment}</p>
+            <p style={{whiteSpace: 'pre-wrap'}}>{comment}</p>
             {/* Render textarea only when in edit mode */}
             {update &&
                 <textarea
@@ -93,10 +91,10 @@ const Comment = ({ selectedFile }) => {
                 />
             }
             <div id="comment-buttons-block">
+                 {/* Cancel button only appears in edit mode */}
+                {update && <button onClick={() => setUpdate(!update)}>Cancel</button>}
                 {/* Button text changes based on edit mode */}
                 <button onClick={updateComment}>{!update ? "Update comments" : "Save comments"}</button>
-                {/* Cancel button only appears in edit mode */}
-                {update && <button onClick={() => setUpdate(!update)}>Cancel</button>}
             </div>
 
             {/* Error message display when applicable */}
