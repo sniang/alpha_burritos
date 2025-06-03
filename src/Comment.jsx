@@ -101,7 +101,7 @@ const Comment = ({ selectedFile }) => {
             </div>
 
             {/* Error message display when applicable */}
-            {error && <p>{error.message}</p>}
+            {error && <p>Error: {error.message}</p>}
         </div>
     );
 }
