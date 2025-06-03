@@ -10,8 +10,7 @@ import js from '@eslint/js';
 const app = express();                                // Create Express application
 const PORT = 3001;                                    // Set server port
 const MAIN_DIR = '/home/alpha/Desktop/eos'            // Base directory for data
-//const MAIN_DIR = '/Users/samuelniang/cern_burritos'; 
-//const MAIN_DIR = '/Users/samuelniang/Desktop/test'
+//const MAIN_DIR = '/Users/samuelniang/cernbox/test'
 
 // Configure middleware
 app.use(cors());         // Enable CORS for all routes
@@ -46,6 +45,10 @@ const getJsonFiles = async (req, res) => {
     const { year, month } = req.params;
     const dirPath = path.join(MAIN_DIR, `${year}/${padToTwoDigits(month)}/JSON`);
     console.log(`Reading directory: ${dirPath}`);
+    
+    // Create directory if it doesn't exist
+    await fs.mkdir(dirPath, { recursive: true });
+    
     const files = await fs.readdir(dirPath);
     const jsonFiles = files.filter(file => file.endsWith('.json'));
     console.log(`Found ${jsonFiles.length} JSON files`);
@@ -152,13 +155,26 @@ const getComments = async (req, res) => {
     const filePath = path.join(MAIN_DIR, year, padToTwoDigits(month), 'comments.json');
     console.log(`Reading comments from: ${filePath}`);
     
-    const data = await fs.readFile(filePath, 'utf8');
-    const jsonData = JSON.parse(data);
+    let jsonData = {};
+    try {
+      const data = await fs.readFile(filePath, 'utf8');
+      jsonData = JSON.parse(data);
+    } catch (error) {
+      if (error.code === 'ENOENT') {
+        // File doesn't exist, create directory and empty comments file
+        const dirPath = path.join(MAIN_DIR, year, padToTwoDigits(month));
+        await fs.mkdir(dirPath, { recursive: true });
+        await fs.writeFile(filePath, JSON.stringify({}), 'utf8');
+        console.log(`Created new comments file at: ${filePath}`);
+      } else {
+        throw error;
+      }
+    }
+    
     console.log(`Comments found: ${jsonData[jsonFilename] ? 'Yes' : 'No'}`);
-
     res.json({comment: jsonData[jsonFilename] || null});    
   } catch (error) {
-    console.log('Not comment found for', jsonFilename);
+    console.error('Error in getComments:', error.message);
     res.json({ comment: null });
   }
 };

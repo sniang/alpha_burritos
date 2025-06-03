@@ -52,6 +52,7 @@ const Parameters = ({ selectedFile, detectorList, setDetectorList }) => {
             } catch (error) {
                 // Store error state for user display
                 setError(error);
+                setDetectorList([]); // Clear detector list on error
             }
         };
 

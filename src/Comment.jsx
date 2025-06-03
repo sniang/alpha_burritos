@@ -80,7 +80,7 @@ const Comment = ({ selectedFile }) => {
         <div id="comment-block">
             <h2>Comments</h2>
             {/* Display the current comment when not in edit mode */}
-            <p style={{whiteSpace: 'pre-wrap'}}>{comment}</p>
+            {!update && <p style={{whiteSpace: 'pre-wrap'}}>{comment}</p>}
             {/* Render textarea only when in edit mode */}
             {update &&
                 <textarea

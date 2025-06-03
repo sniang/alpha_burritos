@@ -124,11 +124,11 @@ function App() {
           error={error}
           setError={(value) => updateState('error', value)}
         />
-        {selectedFile && <DetectorSelector
+        <DetectorSelector
           selectedDetector={selectedDetector}
           setSelectedDetector={(value) => updateState('selectedDetector', value)}
           detectorList={detectorList}
-        />}
+        />
       </div>
     );
   }
