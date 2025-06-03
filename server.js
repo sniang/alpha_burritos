@@ -8,7 +8,7 @@ import path from 'path';        // Path manipulation utility
 const app = express();                                // Create Express application
 const PORT = 3001;                                    // Set server port
 const MAIN_DIR = '/home/alpha/Desktop/eos'            // Base directory for data
-//const MAIN_DIR = '/Users/samuelniang/cernbox/test'
+//const MAIN_DIR = '/Users/samuelniang/cern_burritos'
 
 // Configure middleware
 app.use(cors());         // Enable CORS for all routes
