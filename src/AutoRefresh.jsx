@@ -41,13 +41,17 @@ function AutoRefresh({
                 throw new Error(`${res.status} ${res.statusText}`);
             }
             const data = await res.json();
-     
+
             if (Nfiles !== data.length) {
                 Nfiles = data.length; // Update the file count
-                // Sort files in reverse order (latest first)
-                setJsonFiles(data.sort().reverse());
-                // Select the latest file
-                setSelectedFile(data.sort().reverse()[0]);
+                // Filter out any non-data files (keeping only files matching the pattern data-*.json)
+                // Then sort files in descending order to prioritize the most recent files
+                const filteredData = data
+                    .filter(file => file.match(/^data-.*\.json$/))
+                    .sort()
+                    .reverse();
+                setJsonFiles(filteredData); // Update available files
+                setSelectedFile(filteredData[0]); // Set default selected file
             }
         } catch (error) {
             // Pass error to parent

@@ -54,8 +54,15 @@ function TimeStampSelector({
           throw new Error(`${res.status} ${res.statusText}`);
         }
         const data = await res.json();
-        setJsonFiles(data.sort().reverse()); // Update available files
-        setSelectedFile(data.sort().reverse()[0]); // Set default selected file
+        // Filter out any non-data files (keeping only files matching the pattern data-*.json)
+        // Then sort files in descending order to prioritize the most recent files
+        const filteredData = data
+          .filter(file => file.match(/^data-.*\.json$/))
+          .sort()
+          .reverse();
+        console.log('Fetched files:', filteredData); // Log fetched files for debugging
+        setJsonFiles(filteredData); // Update available files
+        setSelectedFile(filteredData[0]); // Set default selected file
       } catch (error) {
         setError(error); // Set error if fetch fails
       }
@@ -70,7 +77,7 @@ function TimeStampSelector({
   };
   return (
     <label>
-      Timestamp: 
+      Timestamp:
       <select
         value={selectedFile}
         onChange={handleSelectChange}
@@ -81,7 +88,7 @@ function TimeStampSelector({
           <option key={index} value={file}>{parseTimestamp(file)}</option>
         ))}
       </select>
-      </label>
+    </label>
   );
 
 }
