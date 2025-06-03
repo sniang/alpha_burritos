@@ -84,7 +84,7 @@ function App() {
           />
           {selectedDetector && <DetectorImage selectedFile={selectedFile} selectedDetector={selectedDetector} />}
         </div>
-        {selectedFile && <Comment selectedFile={selectedFile} />}
+        <Comment selectedFile={selectedFile} />
         <DetectorImageAll selectedFile={selectedFile} />
       </>
     );

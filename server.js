@@ -3,8 +3,6 @@ import express from 'express';  // Express.js web framework
 import cors from 'cors';        // Cross-Origin Resource Sharing middleware
 import fs from 'fs/promises';   // File system module with promises support
 import path from 'path';        // Path manipulation utility
-import { json } from 'stream/consumers';
-import js from '@eslint/js';
 
 // Set up constants and configuration
 const app = express();                                // Create Express application
@@ -152,7 +150,7 @@ const getComments = async (req, res) => {
     console.log(`Getting comments for file: ${jsonFilename}`);
     validateFilename(jsonFilename);
     const { year, month } = parseYearMonthFromFilename(jsonFilename);
-    const filePath = path.join(MAIN_DIR, year, padToTwoDigits(month), 'comments.json');
+    const filePath = path.join(MAIN_DIR, year, padToTwoDigits(month), 'JSON', 'comments.json');
     console.log(`Reading comments from: ${filePath}`);
     
     let jsonData = {};
@@ -162,7 +160,7 @@ const getComments = async (req, res) => {
     } catch (error) {
       if (error.code === 'ENOENT') {
         // File doesn't exist, create directory and empty comments file
-        const dirPath = path.join(MAIN_DIR, year, padToTwoDigits(month));
+        const dirPath = path.join(MAIN_DIR, year, padToTwoDigits(month),'JSON');
         await fs.mkdir(dirPath, { recursive: true });
         await fs.writeFile(filePath, JSON.stringify({}), 'utf8');
         console.log(`Created new comments file at: ${filePath}`);
@@ -188,7 +186,7 @@ const postComments = async (req, res) => {
     validateFilename(jsonFilename);
     
     const { year, month } = parseYearMonthFromFilename(jsonFilename);
-    const filePath = path.join(MAIN_DIR, year, padToTwoDigits(month), 'comments.json');
+    const filePath = path.join(MAIN_DIR, year, padToTwoDigits(month), 'JSON', 'comments.json');
     
     // Read existing comments file or create empty object if it doesn't exist
     let commentsData = {};
@@ -207,7 +205,7 @@ const postComments = async (req, res) => {
     console.log(`Updating comment for ${jsonFilename}: ${comment}`);
     
     // Ensure directory exists
-    const dirPath = path.join(MAIN_DIR, year, padToTwoDigits(month));
+    const dirPath = path.join(MAIN_DIR, year, padToTwoDigits(month),'JSON');
     await fs.mkdir(dirPath, { recursive: true });
     
     // Write updated comments back to file
