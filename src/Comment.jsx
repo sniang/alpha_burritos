@@ -59,6 +59,9 @@ const Comment = ({ selectedFile }) => {
                     body: JSON.stringify({ comment: newComment })
                 });
                 const data = await response.json();
+                if (!response.ok) {
+                    throw new Error('Failed to save comment');
+                }
                 // Reset states after successful save
                 if (newComment !== "") {
                     setComment(newComment);
@@ -98,7 +101,7 @@ const Comment = ({ selectedFile }) => {
             </div>
 
             {/* Error message display when applicable */}
-            {error && <p>Something went wrong: {error.message}</p>}
+            {error && <p>{error.message}</p>}
         </div>
     );
 }

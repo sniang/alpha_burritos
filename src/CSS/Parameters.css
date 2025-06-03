@@ -7,7 +7,7 @@
 }
 
 /* Responsive styles for screens 900px wide or less */
-@media screen and (max-width: 900px) {
+@media screen and (max-width: 950px) {
     #parametersBlock {
         display: flex;                  /* Use flex layout */
         flex-direction: column;         /* Stack children vertically */

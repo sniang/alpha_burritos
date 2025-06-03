@@ -5,7 +5,7 @@ Alpha Burritos is a modern, interactive React application developed for CERN's A
 The application seamlessly communicates with a custom RESTful API to fetch and display critical data, including JSON parameter files and detector-specific PNG images captured at various timestamps. By consolidating multiple data streams into a single, responsive interface, Alpha Burritos simplifies the complex task of antimatter detection analysis and monitoring.
 
 <p align="center">
-  <img src="alpha-burritos.png" alt="Alpha Burritos Logo" width="300"/>
+  <img src="alpha-burritos.png" alt="Alpha Burritos Logo" width="400"/>
 </p>
 
 ## Features
