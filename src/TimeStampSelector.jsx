@@ -60,7 +60,6 @@ function TimeStampSelector({
           .filter(file => file.match(/^data-.*\.json$/))
           .sort()
           .reverse();
-        console.log('Fetched files:', filteredData); // Log fetched files for debugging
         setJsonFiles(filteredData); // Update available files
         setSelectedFile(filteredData[0]); // Set default selected file
       } catch (error) {
