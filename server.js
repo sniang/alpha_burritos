@@ -3,8 +3,6 @@ import express from 'express';  // Express.js web framework
 import cors from 'cors';        // Cross-Origin Resource Sharing middleware
 import fs from 'fs/promises';   // File system module with promises support
 import path from 'path';        // Path manipulation utility
-import { json } from 'stream/consumers';
-import js from '@eslint/js';
 
 // Set up constants and configuration
 const app = express();                                // Create Express application
