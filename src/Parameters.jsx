@@ -76,7 +76,7 @@ const Parameters = ({ selectedFile, detectorList, setDetectorList }) => {
     if (parameters) {
         // Define parameter keys and their display labels
         const parameterKeys = [
-            { key: "area", label: "Area [mV·ns]" },
+            { key: "area", label: "Area [V·ns]" },
             { key: "fwhm", label: "FWHM [ns]" },
             { key: "peak", label: "Peak [mV]" },
             { key: "rise", label: "Rise [ns]" },

@@ -30,7 +30,6 @@ label {
   justify-content: center;
   gap: 2px; /* Space between label text and form elements */
   font-weight: bold;
-  margin: 10px;
 }
 
 /* Dropdown select styling */
@@ -61,7 +60,7 @@ button {
   width: 100%;
   border: 2px solid #e33933; /* Brand red border */
   border-radius: 10px;
-  padding: 12px 0; /* Added padding for better spacing */
+  padding: 10px; /* Added padding for better spacing */
   box-sizing: border-box; /* Ensures padding doesn't increase width */
 }
 
