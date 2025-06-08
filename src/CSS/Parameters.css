@@ -1,16 +1,18 @@
 /* Main container for parameters block */
 #parametersBlock {
-    border: 2px solid #e33933;      /* Red border */
-    border-radius: 10px;            /* Rounded corners */
-    text-align: center;             /* Center text horizontally */
-    padding: 10px;   /* Top, right, bottom, left padding */
-}
-
-/* Responsive styles for screens 900px wide or less */
-@media screen and (max-width: 950px) {
-    #parametersBlock {
-        display: flex;                  /* Use flex layout */
-        flex-direction: column;         /* Stack children vertically */
-        align-items: center;            /* Center children horizontally */
-    }
+    border: 2px solid #e33933;
+    /* Red border */
+    border-radius: 10px;
+    /* Rounded corners */
+    text-align: center;
+    /* Center text horizontally */
+    padding: 10px;
+    /* Top, right, bottom, left padding */
+    flex: 1;
+    display: flex;
+    /* Use flex layout */
+    flex-direction: column;
+    /* Stack children vertically */
+    align-items: center;
+    /* Center children horizontally */
 }

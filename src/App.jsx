@@ -34,7 +34,7 @@ function App() {
   const [state, setState] = useState({
     jsonFiles: [],
     selectedFile: '',
-    selectedDetector: 'PDS',
+    selectedDetector: '',
     error: null,
     year: new Date().getFullYear(),
     month: new Date().getMonth() + 1,
@@ -81,8 +81,9 @@ function App() {
             selectedFile={selectedFile}
             detectorList={detectorList}
             setDetectorList={(value) => updateState('detectorList', value)}
+            setSelectedDetector={(value) => updateState('selectedDetector', value)}
           />
-          {selectedDetector && <DetectorImage selectedFile={selectedFile} selectedDetector={selectedDetector} />}
+          {selectedDetector && <DetectorImage selectedFile={selectedFile} selectedDetector={selectedDetector} detectorList={detectorList}/>}
         </div>
         <Comment selectedFile={selectedFile} />
         <DetectorImageAll selectedFile={selectedFile} />

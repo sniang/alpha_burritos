@@ -19,7 +19,7 @@ import "./CSS/Parameters.css";
  * 
  * @author Samuel Niang
  */
-const Parameters = ({ selectedFile, detectorList, setDetectorList }) => {
+const Parameters = ({ selectedFile, detectorList, setDetectorList, setSelectedDetector }) => {
     // State to hold fetched parameters data
     const [parameters, setParameters] = useState(null);
     // State to track and display any API fetch errors
@@ -49,6 +49,7 @@ const Parameters = ({ selectedFile, detectorList, setDetectorList }) => {
                 setParameters(data);
                 // Update detectorList with all available detector locations from the data
                 setDetectorList(Object.keys(data));
+                setSelectedDetector(Object.keys(data)[0])
             } catch (error) {
                 // Store error state for user display
                 setError(error);

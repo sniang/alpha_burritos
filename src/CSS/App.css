@@ -73,6 +73,7 @@ button {
   width: 100%;
   margin: 0;
   align-items: stretch; /* Makes children stretch to equal heights */
+  gap: 20px; /* Space between items */
 }
 
 /* Responsive layout adjustments for mobile/tablet screens */
