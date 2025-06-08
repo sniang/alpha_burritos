@@ -49,7 +49,14 @@ const Parameters = ({ selectedFile, detectorList, setDetectorList, setSelectedDe
                 setParameters(data);
                 // Update detectorList with all available detector locations from the data
                 setDetectorList(Object.keys(data));
-                setSelectedDetector(Object.keys(data)[0])
+                // Check if the detectorList and Object.keys(data) arrays are equal
+                const dataKeys = Object.keys(data);
+                const areArraysEqual = 
+                    dataKeys.length === detectorList.length &&
+                    dataKeys.every((key, idx) => key === detectorList[idx]);
+                if (dataKeys.length === 0 || !areArraysEqual) {
+                    setSelectedDetector(dataKeys[0]);
+                }
             } catch (error) {
                 // Store error state for user display
                 setError(error);
