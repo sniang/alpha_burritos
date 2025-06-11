@@ -1,34 +1,34 @@
 import React, { useState, useEffect } from "react";
 import { parseTimestamp } from "./TimeStampSelector";
-import "./CSS/Parameters.css"; 
-
+import "./CSS/Parameters.css";
 
 /**
- * Parameters component fetches and displays parameter data for a selected file.
- * 
- * Given a `selectedFile` prop, it retrieves parameter information from a backend API,
- * displays loading and error states appropriately, and renders formatted parameter values
- * for the detector locations specified in detectorList.
- * 
- * @component
+ * Displays parameter data for a selected file and list of detectors.
+ *
+ * Fetches parameter information from a backend API when a file is selected,
+ * handles loading and error states, and renders a table of parameter values
+ * for each detector in the provided detectorList. Allows toggling the table orientation.
+ *
  * @param {Object} props
- * @param {string} props.selectedFile - The name or identifier of the file whose parameters are to be fetched and displayed.
- * @param {string[]} props.detectorList - Array of detector locations to display.
- * @param {Function} props.setDetectorList - Setter function to update the detector list.
- * @returns {JSX.Element|null} Rendered parameter information, error message, or null if no file is selected.
- * 
- * @author Samuel Niang
- */
+ * @param {string} props.selectedFile - The file to fetch parameters for.
+ * @param {string[]} props.detectorList - List of detector locations to display.
+ * @param {Function} props.setDetectorList - Updates the detector list.
+ * @param {Function} props.setSelectedDetector - Sets the currently selected detector.
+ * @returns {JSX.Element|null}
+ *  * 
+ * @author Samuel Niang */
 const Parameters = ({ selectedFile, detectorList, setDetectorList, setSelectedDetector }) => {
-    // State to hold fetched parameters data
+    // Holds fetched parameter data
     const [parameters, setParameters] = useState(null);
-    // State to track and display any API fetch errors
+    // Tracks API fetch errors
     const [error, setError] = useState(null);
+    // Controls table orientation
+    const [reverseTable, setReverseTable] = useState(false);
 
     /**
-     * Formats a number to five significant digits for consistent display.
-     * @param {number} num - The number to format.
-     * @returns {string} The formatted number with five significant digits.
+     * Formats a number to five significant digits.
+     * @param {number} num
+     * @returns {string}
      */
     function formatToFiveSignificantDigits(num) {
         return Number(num).toPrecision(5);
@@ -38,39 +38,31 @@ const Parameters = ({ selectedFile, detectorList, setDetectorList, setSelectedDe
     useEffect(() => {
         const fetchParameters = async () => {
             try {
-                // Request parameter data from backend API for the selected file
                 const res = await fetch(`/api/json/${selectedFile}`);
-                if (!res.ok) {
-                    // Handle HTTP error responses
-                    throw new Error('Network response was not ok');
-                }
-                // Parse and store the JSON response data
+                if (!res.ok) throw new Error('Network response was not ok');
                 const data = await res.json();
                 setParameters(data);
-                // Update detectorList with all available detector locations from the data
                 setDetectorList(Object.keys(data));
-                // Check if the detectorList and Object.keys(data) arrays are equal
+                // Ensure selected detector is valid
                 const dataKeys = Object.keys(data);
-                const areArraysEqual = 
+                const areArraysEqual =
                     dataKeys.length === detectorList.length &&
                     dataKeys.every((key, idx) => key === detectorList[idx]);
                 if (dataKeys.length === 0 || !areArraysEqual) {
                     setSelectedDetector(dataKeys[0]);
                 }
             } catch (error) {
-                // Store error state for user display
                 setError(error);
-                setDetectorList([]); // Clear detector list on error
+                setDetectorList([]);
             }
         };
 
         if (selectedFile) {
-            // Only attempt to fetch data if a file is selected
             fetchParameters();
         }
     }, [selectedFile]);
 
-    // Display error information if fetch failed
+    // Show error if fetch failed
     if (error) {
         return (
             <div>
@@ -80,9 +72,9 @@ const Parameters = ({ selectedFile, detectorList, setDetectorList, setSelectedDe
         );
     }
 
-    // Render parameter data grid if data is available
+    // Render parameter table if data is available
     if (parameters) {
-        // Define parameter keys and their display labels
+        // Parameter keys and display labels
         const parameterKeys = [
             { key: "area", label: "Area [V·ns]" },
             { key: "fwhm", label: "FWHM [ns]" },
@@ -92,32 +84,76 @@ const Parameters = ({ selectedFile, detectorList, setDetectorList, setSelectedDe
             { key: "dt", label: "dt [ns]" },
         ];
 
-        // Filter out any detector locations that don't exist in the parameters data
-        const validdetectorList = detectorList.filter((loc) => parameters[loc]);
+        // Only show detectors present in the data
+        const validDetectorList = detectorList.filter((loc) => parameters[loc]);
 
+        if (!reverseTable) {
+            // Table: parameters as rows, detectors as columns
+            return (
+                <div id="parametersBlock">
+                    <h4>{parseTimestamp(selectedFile)}</h4>
+                    <div
+                        style={{
+                            display: "grid",
+                            gridTemplateColumns: `120px repeat(${validDetectorList.length}, min-content)`,
+                            gap: "10px 5px",
+                            fontSize: "0.9rem",
+                            alignItems: "center",
+                            marginBottom: "10px"
+                        }}
+                    >
+                        {/* Header row */}
+                        <div style={{ fontWeight: "bold" }}>Parameters</div>
+                        {validDetectorList.map((loc) => (
+                            <div key={loc} style={{ fontWeight: "bold" }}>{loc}</div>
+                        ))}
+
+                        {/* Parameter rows */}
+                        {parameterKeys.map(({ key, label }) => (
+                            <React.Fragment key={key}>
+                                <div>{label}</div>
+                                {validDetectorList.map((loc) => (
+                                    <div key={`${loc}-${key}`}>
+                                        {formatToFiveSignificantDigits(parameters[loc][key])}
+                                    </div>
+                                ))}
+                            </React.Fragment>
+                        ))}
+                    </div>
+                    <button
+                        className="button"
+                        onClick={() => setReverseTable(!reverseTable)}>
+                        Reverse Table
+                    </button>
+                </div>
+            );
+        }
+
+        // Table: detectors as rows, parameters as columns
         return (
             <div id="parametersBlock">
                 <h4>{parseTimestamp(selectedFile)}</h4>
                 <div
                     style={{
                         display: "grid",
-                        gridTemplateColumns: `120px repeat(${validdetectorList.length}, min-content)`,
-                        gap: "15px 5px",
+                        gridTemplateColumns: `80px repeat(${parameterKeys.length}, min-content)`,
+                        gap: "10px 5px",
                         fontSize: "0.9rem",
                         alignItems: "center",
+                        marginBottom: "10px"
                     }}
                 >
-                    {/* Header row with parameter name and detector locations */}
-                    <div style={{ fontWeight: "bold" }}>Parameters</div>
-                    {validdetectorList.map((loc) => (
-                        <div key={loc} style={{ fontWeight: "bold" }}>{loc}</div>
+                    {/* Header row */}
+                    <div style={{ fontWeight: "bold" }}>Location</div>
+                    {parameterKeys.map(({ key, label }) => (
+                        <div key={key} style={{ fontWeight: "bold" }}>{label}</div>
                     ))}
 
-                    {/* Data rows for each parameter across all detectors */}
-                    {parameterKeys.map(({ key, label }) => (
-                        <React.Fragment key={key}>
-                            <div>{label}</div>
-                            {validdetectorList.map((loc) => (
+                    {/* Detector rows */}
+                    {validDetectorList.map((loc) => (
+                        <React.Fragment key={loc}>
+                            <div>{loc}</div>
+                            {parameterKeys.map(({ key }) => (
                                 <div key={`${loc}-${key}`}>
                                     {formatToFiveSignificantDigits(parameters[loc][key])}
                                 </div>
@@ -125,11 +161,16 @@ const Parameters = ({ selectedFile, detectorList, setDetectorList, setSelectedDe
                         </React.Fragment>
                     ))}
                 </div>
+                <button
+                    className="button"
+                    onClick={() => setReverseTable(!reverseTable)}>
+                    Reverse Table
+                </button>
             </div>
         );
     }
 
-    // Return null if no file is selected or data hasn't loaded yet
+    // Nothing to show if no file selected or data not loaded
     return null;
 };
 

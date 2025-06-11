@@ -34,7 +34,9 @@ src/
   DetectorSelector.jsx   # Dropdown for detector selection
   DetectorImage.jsx      # Shows image for selected detector
   DownloadButton.jsx     # Button to download the signal as a text file
+  DownloadAllButton.jsx  # Button to download all signals for all detectors
   AutoRefresh.jsx        # Checkbox to enable/disable auto-refresh
+  Comment.jsx            # Add and edit comments for each acquisition
   assets/                # Static assets (e.g., ALPHA logo)
   CSS/                   # App and global CSS
   main.jsx               # React entry point
@@ -67,7 +69,7 @@ src/
 
 ## API Endpoints
 
-The React app expects the following backend API (see `server.js`):
+The React app expects the following backend API (see [`server.js`](server.js)):
 
 - **Test if the API is working:**  
   `GET /api/test`  
@@ -125,7 +127,7 @@ The React app expects the following backend API (see `server.js`):
     ```json
     { "comment": "This detection shows interesting peak values." }
     ```
-  - Returns `{ "comment": "No comment" }` if no comment exists.
+  - Returns `{ "comment": null }` if no comment exists.
 
 - **Post Comments:**  
   `POST /api/comments/:jsonFilename`  
@@ -155,6 +157,7 @@ MAIN_DIR/
     MM/
       JSON/
         file-YYYY-MM-DD.json
+        comments.json
       Together/
         file-YYYY-MM-DD.png
       DetectorA/
@@ -201,7 +204,7 @@ The API will run on [http://localhost:3001](http://localhost:3001).
 
 - **Data Directory:**  
   The backend expects data in a specific directory structure (see API documentation above).  
-  The main directory of the data must be declared in the variable `MAIN_DIR` in [server.js](server.js).
+  The main directory of the data must be declared in the variable `MAIN_DIR` in [`server.js`](server.js) or in your `.env` file.
 
 ---
 
@@ -219,7 +222,7 @@ The API will run on [http://localhost:3001](http://localhost:3001).
 
 ---
 
-This project uses React, Vite, and Express. For backend API details, see [server.js](server.js).
+This project uses React, Vite, and Express. For backend API details, see [`server.js`](server.js).
 
 ---
 

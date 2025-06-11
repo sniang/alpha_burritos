@@ -6,7 +6,7 @@
     /* Rounded corners */
     text-align: center;
     /* Center text horizontally */
-    padding: 10px;
+    padding: 0 0 10px 0;
     /* Top, right, bottom, left padding */
     flex: 1;
     display: flex;
