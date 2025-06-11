@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { parseTimestamp } from "./TimeStampSelector";
-import "./CSS/Parameters.css"; 
+import "./CSS/Parameters.css";
 
 
 /**
@@ -24,6 +24,8 @@ const Parameters = ({ selectedFile, detectorList, setDetectorList, setSelectedDe
     const [parameters, setParameters] = useState(null);
     // State to track and display any API fetch errors
     const [error, setError] = useState(null);
+    // State to control the reverse order of the parameter table
+    const [reverseTable, setReverseTable] = useState(false);
 
     /**
      * Formats a number to five significant digits for consistent display.
@@ -51,7 +53,7 @@ const Parameters = ({ selectedFile, detectorList, setDetectorList, setSelectedDe
                 setDetectorList(Object.keys(data));
                 // Check if the detectorList and Object.keys(data) arrays are equal
                 const dataKeys = Object.keys(data);
-                const areArraysEqual = 
+                const areArraysEqual =
                     dataKeys.length === detectorList.length &&
                     dataKeys.every((key, idx) => key === detectorList[idx]);
                 if (dataKeys.length === 0 || !areArraysEqual) {
@@ -95,29 +97,74 @@ const Parameters = ({ selectedFile, detectorList, setDetectorList, setSelectedDe
         // Filter out any detector locations that don't exist in the parameters data
         const validdetectorList = detectorList.filter((loc) => parameters[loc]);
 
+        if (!reverseTable) {
+            return (
+                <div id="parametersBlock">
+                    <h4>{parseTimestamp(selectedFile)}</h4>
+                    
+                    <div
+                        style={{
+                            display: "grid",
+                            gridTemplateColumns: `120px repeat(${validdetectorList.length}, min-content)`,
+                            gap: "10px 5px",
+                            fontSize: "0.9rem",
+                            alignItems: "center",
+                            marginBottom: "10px"
+                        }}
+                    >
+                        {/* Header row with parameter name and detector locations */}
+                        <div style={{ fontWeight: "bold" }}>Parameters</div>
+                        {validdetectorList.map((loc) => (
+                            <div key={loc} style={{ fontWeight: "bold" }}>{loc}</div>
+                        ))}
+
+                        {/* Data rows for each parameter across all detectors */}
+                        {parameterKeys.map(({ key, label }) => (
+                            <React.Fragment key={key}>
+                                <div>{label}</div>
+                                {validdetectorList.map((loc) => (
+                                    <div key={`${loc}-${key}`}>
+                                        {formatToFiveSignificantDigits(parameters[loc][key])}
+                                    </div>
+                                ))}
+                            </React.Fragment>
+                        ))}
+
+                    </div>
+                    <button
+                    className="button"
+                    onClick={() => setReverseTable(!reverseTable)}>
+                    Reverse Table
+                    </button>
+                </div>
+            );
+        }
+
+
         return (
             <div id="parametersBlock">
                 <h4>{parseTimestamp(selectedFile)}</h4>
                 <div
                     style={{
                         display: "grid",
-                        gridTemplateColumns: `120px repeat(${validdetectorList.length}, min-content)`,
-                        gap: "15px 5px",
+                        gridTemplateColumns: `80px repeat(${parameterKeys.length}, min-content)`,
+                        gap: "10px 5px",
                         fontSize: "0.9rem",
                         alignItems: "center",
+                        marginBottom: "10px"
                     }}
                 >
                     {/* Header row with parameter name and detector locations */}
-                    <div style={{ fontWeight: "bold" }}>Parameters</div>
-                    {validdetectorList.map((loc) => (
-                        <div key={loc} style={{ fontWeight: "bold" }}>{loc}</div>
+                    <div style={{ fontWeight: "bold" }}>Location</div>
+                    {parameterKeys.map(({ key, label }) => (
+                        <div key={key} style={{ fontWeight: "bold" }}>{label}</div>
                     ))}
 
                     {/* Data rows for each parameter across all detectors */}
-                    {parameterKeys.map(({ key, label }) => (
-                        <React.Fragment key={key}>
-                            <div>{label}</div>
-                            {validdetectorList.map((loc) => (
+                    {validdetectorList.map((loc) => (
+                        <React.Fragment key={loc}>
+                            <div>{loc}</div>
+                            {parameterKeys.map(({ key }) => (
                                 <div key={`${loc}-${key}`}>
                                     {formatToFiveSignificantDigits(parameters[loc][key])}
                                 </div>
@@ -125,9 +172,15 @@ const Parameters = ({ selectedFile, detectorList, setDetectorList, setSelectedDe
                         </React.Fragment>
                     ))}
                 </div>
+                <button
+                    className="button"
+                    onClick={() => setReverseTable(!reverseTable)}>
+                    Reverse Table
+                    </button>
             </div>
         );
     }
+
 
     // Return null if no file is selected or data hasn't loaded yet
     return null;
