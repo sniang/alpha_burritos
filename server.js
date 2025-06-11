@@ -1,45 +1,80 @@
-// ALPHA Burritos API
-// @author: Samuel Niang
+// ALPHA Burritos API Server
+// Author: Samuel Niang
 //
-import express from 'express';  // Express.js web framework
-import cors from 'cors';        // Cross-Origin Resource Sharing middleware
-import dotenv from 'dotenv';    // Load environment variables from .env file
-import { getCurrentTimestamp } from './utils.js'; 
-import { getJsonFiles, getSignal, getJsonContent, getImage, getComments, postComments } from './routehandlers.js';
+// Main entry point for the ALPHA Burritos API server.
+// Sets up Express application, middleware, API routes, error handling, and server startup.
 
+import express from 'express';      // Express.js web framework
+import cors from 'cors';            // Middleware for enabling CORS
+import dotenv from 'dotenv';        // Loads environment variables from .env file
+import { getCurrentTimestamp } from './utils.js';
+import {
+    getJsonFiles,
+    getSignal,
+    getJsonContent,
+    getImage,
+    getComments,
+    postComments,
+    MAIN_DIR
+} from './routehandlers.js';
 
 // ====================
 // Environment & Config
 // ====================
-dotenv.config();
-// Set up constants and configuration
-const app = express();                                // Create Express application
-const PORT =  process.env.PORT || 3001;                                    // Set server port
 
+// Load environment variables
+dotenv.config();
+
+// Initialize Express application
+const app = express();
+
+// Set server port from environment or default to 3001
+const PORT = process.env.PORT || 3001;
 
 // ====================
 // Middleware
 // ====================
-app.use(cors());         // Enable CORS for all routes
-app.use(express.json()); // Parse JSON request bodies
 
+// Enable CORS for all routes
+app.use(cors());
+
+// Parse incoming JSON request bodies
+app.use(express.json());
 
 // ====================
 // API Routes
 // ====================
-app.get('/api/test', (req, res) => { res.json({ message: 'API is working' }); }); // Test the API
-app.get('/api/:year/:month/json', getJsonFiles);          // Get JSON files list
-app.get('/api/json/:jsonFilename', getJsonContent);           // Get JSON content
-app.get('/api/img_all/:jsonFilename', (req, res) => getImage(req, res));  // Get combined image
-app.get('/api/img/:detector/:jsonFilename', (req, res) => getImage(req, res, req.params.detector));  // Get detector-specific image
-app.get('/api/signal/:detector/:jsonFilename', (req, res) => getSignal(req, res));  // Get signal as a text file
-app.get('/api/comments/:jsonFilename', (req, res) => getComments(req, res)); // Get the comments
-app.post('/api/comments/:jsonFilename', (req, res) => postComments(req, res)); // post the comments
 
+// Health check endpoint
+app.get('/api/test', (req, res) => {
+    res.json({ message: 'API is working' });
+});
+
+// Retrieve list of JSON files for a given year and month
+app.get('/api/:year/:month/json', getJsonFiles);
+
+// Retrieve content of a specific JSON file
+app.get('/api/json/:jsonFilename', getJsonContent);
+
+// Retrieve combined image for a JSON file
+app.get('/api/img_all/:jsonFilename', (req, res) => getImage(req, res));
+
+// Retrieve detector-specific image for a JSON file
+app.get('/api/img/:detector/:jsonFilename', (req, res) => getImage(req, res, req.params.detector));
+
+// Retrieve signal data as a text file for a detector and JSON file
+app.get('/api/signal/:detector/:jsonFilename', (req, res) => getSignal(req, res));
+
+// Retrieve comments for a specific JSON file
+app.get('/api/comments/:jsonFilename', (req, res) => getComments(req, res));
+
+// Post comments for a specific JSON file
+app.post('/api/comments/:jsonFilename', (req, res) => postComments(req, res));
 
 // ====================
 // Error Handling
 // ====================
+
 /**
  * Handles requests to undefined routes.
  * Responds with 404 Not Found.
@@ -52,6 +87,7 @@ app.use((req, res) => {
         message: 'Endpoint not found.'
     });
 });
+
 /**
  * Global error handler for uncaught errors.
  * Responds with 500 Internal Server Error.
@@ -65,13 +101,14 @@ app.use((err, req, res, next) => {
     });
 });
 
-
 // ====================
 // Server Startup
 // ====================
+
+// Start the server and listen on the specified port
 app.listen(PORT, '0.0.0.0', () => {
-  console.log(getCurrentTimestamp())
-  console.log('Server started');
-  console.log(`Server is running at http://localhost:${PORT}`);
-  console.log(`Main directory is set to: ${process.env.MAIN_DIR}`);
+    console.log(getCurrentTimestamp());
+    console.log('Server started');
+    console.log(`Server is running at http://localhost:${PORT}`);
+    console.log(`Main directory is set to: ${MAIN_DIR}`);
 });

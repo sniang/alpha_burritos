@@ -1,6 +1,9 @@
 /**
- * Returns the current timestamp in 'YYYY-MM-DD HH:mm:ss' format.
- * The timestamp is adjusted to the 'Europe/Rome' timezone.
+ * Gets the current timestamp in ISO-like format based on Europe/Paris timezone.
+ * Format: YYYY-MM-DD HH:MM:SS
+ * 
+ * @returns {string} Formatted timestamp string
+ * @author Samuel Niang
  */
 export const getCurrentTimestamp = () => {
   const now = new Date();
@@ -26,7 +29,14 @@ export const getCurrentTimestamp = () => {
   return `${parts.year}-${parts.month}-${parts.day} ${parts.hour}:${parts.minute}:${parts.second}`;
 };
 
-// Parse year and month from a filename (format: xxx-YYYY-MM-xxx.json)
+/**
+ * Extracts year and month from a filename with format xxx-YYYY-MM-xxx.json.
+ * 
+ * @param {string} jsonFilename - Filename to parse
+ * @returns {Object} Object containing year and month as strings
+ * @throws {Error} If filename format is invalid or year/month format is incorrect
+ * @author Samuel Niang
+ */
 export const parseYearMonthFromFilename = (jsonFilename) => {
   const parts = jsonFilename.split("-");
   if (parts.length < 3) {
@@ -39,10 +49,24 @@ export const parseYearMonthFromFilename = (jsonFilename) => {
   return { year, month };
 };
 
-// Utility function to ensure numbers are two digits (e.g., '1' -> '01')
+/**
+ * Ensures a number is formatted as a two-digit string.
+ * Examples: 1 -> "01", 10 -> "10"
+ * 
+ * @param {number|string} number - The number to format
+ * @returns {string} Two-digit formatted string
+ * @author Samuel Niang
+ */
 export const padToTwoDigits = (number) => String(number).padStart(2, "0");
 
-// Validate filename to prevent directory traversal attacks
+/**
+ * Validates a filename to prevent directory traversal attacks.
+ * Ensures the file has a .json extension and doesn't contain path traversal patterns.
+ * 
+ * @param {string} jsonFilename - Filename to validate
+ * @throws {Error} If filename is invalid
+ * @author Samuel Niang
+ */
 export const validateFilename = (jsonFilename) => {
   if (!jsonFilename.endsWith('.json') || jsonFilename.includes('..')) {
     throw new Error('Invalid file name');

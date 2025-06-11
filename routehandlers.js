@@ -1,13 +1,12 @@
-import { getCurrentTimestamp } from './utils.js'; 
-import { padToTwoDigits } from './utils.js'; 
-import { validateFilename } from './utils.js';
-import { parseYearMonthFromFilename } from './utils.js';
-import dotenv from 'dotenv';    // Load environment variables from .env file
-import fs from 'fs/promises';   // File system module with promises support
-import path from 'path';        // Path manipulation utility
+// Utility functions imported from local utils.js
+import { getCurrentTimestamp, padToTwoDigits, validateFilename, parseYearMonthFromFilename } from './utils.js';
+import dotenv from 'dotenv';    // Loads environment variables from .env file
+import fs from 'fs/promises';   // Modern promise-based filesystem operations
+import path from 'path';        // Cross-platform path handling
 
+// Load environment variables and set base directory
 dotenv.config();
-const MAIN_DIR = process.env.MAIN_DIR                         // Base directory for data
+export const MAIN_DIR = process.env.MAIN_DIR || '/home/alpha/Desktop/eos'; // Base directory for all data files
 
 // ====================
 // Route handler
@@ -19,10 +18,10 @@ export const getJsonFiles = async (req, res) => {
     const { year, month } = req.params;
     const dirPath = path.join(MAIN_DIR, `${year}/${padToTwoDigits(month)}/JSON`);
     console.log(`Reading directory: ${dirPath}`);
-    
+
     // Create directory if it doesn't exist
     await fs.mkdir(dirPath, { recursive: true });
-    
+
     const files = await fs.readdir(dirPath);
     const jsonFiles = files.filter(file => file.endsWith('.json'));
     console.log(`Found ${jsonFiles.length} JSON files`);
@@ -132,7 +131,7 @@ export const getComments = async (req, res) => {
     const { year, month } = parseYearMonthFromFilename(jsonFilename);
     const filePath = path.join(MAIN_DIR, year, padToTwoDigits(month), 'JSON', 'comments.json');
     console.log(`Reading comments from: ${filePath}`);
-    
+
     let jsonData = {};
     try {
       const data = await fs.readFile(filePath, 'utf8');
@@ -140,7 +139,7 @@ export const getComments = async (req, res) => {
     } catch (error) {
       if (error.code === 'ENOENT') {
         // File doesn't exist, create directory and empty comments file
-        const dirPath = path.join(MAIN_DIR, year, padToTwoDigits(month),'JSON');
+        const dirPath = path.join(MAIN_DIR, year, padToTwoDigits(month), 'JSON');
         await fs.mkdir(dirPath, { recursive: true });
         await fs.writeFile(filePath, JSON.stringify({}), 'utf8');
         console.log(`Created new comments file at: ${filePath}`);
@@ -148,9 +147,9 @@ export const getComments = async (req, res) => {
         throw error;
       }
     }
-    
+
     console.log(`Comments found: ${jsonData[jsonFilename] ? 'Yes' : 'No'}`);
-    res.json({comment: jsonData[jsonFilename] || null});    
+    res.json({ comment: jsonData[jsonFilename] || null });
   } catch (error) {
     console.error(getCurrentTimestamp());
     console.error('Error in getComments:', error.message);
@@ -163,12 +162,12 @@ export const postComments = async (req, res) => {
   try {
     const { jsonFilename } = req.params;
     const { comment } = req.body;
-    
+
     validateFilename(jsonFilename);
-    
+
     const { year, month } = parseYearMonthFromFilename(jsonFilename);
     const filePath = path.join(MAIN_DIR, year, padToTwoDigits(month), 'JSON', 'comments.json');
-    
+
     // Read existing comments file or create empty object if it doesn't exist
     let commentsData = {};
     try {
@@ -180,18 +179,18 @@ export const postComments = async (req, res) => {
       }
       // File doesn't exist, will create a new one
     }
-    
+
     // Update the comment for this file
     commentsData[jsonFilename] = comment;
     console.log(`Updating comment for ${jsonFilename}: ${comment}`);
-    
+
     // Ensure directory exists
-    const dirPath = path.join(MAIN_DIR, year, padToTwoDigits(month),'JSON');
+    const dirPath = path.join(MAIN_DIR, year, padToTwoDigits(month), 'JSON');
     await fs.mkdir(dirPath, { recursive: true });
-    
+
     // Write updated comments back to file
     await fs.writeFile(filePath, JSON.stringify(commentsData, null, 2), 'utf8');
-    
+
     console.log(`Comment updated successfully for ${jsonFilename}`);
     res.json({ success: true, message: 'Comment updated successfully' });
   } catch (error) {
