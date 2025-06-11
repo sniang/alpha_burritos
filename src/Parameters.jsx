@@ -85,7 +85,7 @@ const Parameters = ({ selectedFile, detectorList, setDetectorList, setSelectedDe
         ];
 
         // Only show detectors present in the data
-        const validdetectorList = detectorList.filter((loc) => parameters[loc]);
+        const validDetectorList = detectorList.filter((loc) => parameters[loc]);
 
         if (!reverseTable) {
             // Table: parameters as rows, detectors as columns
@@ -95,7 +95,7 @@ const Parameters = ({ selectedFile, detectorList, setDetectorList, setSelectedDe
                     <div
                         style={{
                             display: "grid",
-                            gridTemplateColumns: `120px repeat(${validdetectorList.length}, min-content)`,
+                            gridTemplateColumns: `120px repeat(${validDetectorList.length}, min-content)`,
                             gap: "10px 5px",
                             fontSize: "0.9rem",
                             alignItems: "center",
@@ -104,7 +104,7 @@ const Parameters = ({ selectedFile, detectorList, setDetectorList, setSelectedDe
                     >
                         {/* Header row */}
                         <div style={{ fontWeight: "bold" }}>Parameters</div>
-                        {validdetectorList.map((loc) => (
+                        {validDetectorList.map((loc) => (
                             <div key={loc} style={{ fontWeight: "bold" }}>{loc}</div>
                         ))}
 
@@ -112,7 +112,7 @@ const Parameters = ({ selectedFile, detectorList, setDetectorList, setSelectedDe
                         {parameterKeys.map(({ key, label }) => (
                             <React.Fragment key={key}>
                                 <div>{label}</div>
-                                {validdetectorList.map((loc) => (
+                                {validDetectorList.map((loc) => (
                                     <div key={`${loc}-${key}`}>
                                         {formatToFiveSignificantDigits(parameters[loc][key])}
                                     </div>
@@ -150,7 +150,7 @@ const Parameters = ({ selectedFile, detectorList, setDetectorList, setSelectedDe
                     ))}
 
                     {/* Detector rows */}
-                    {validdetectorList.map((loc) => (
+                    {validDetectorList.map((loc) => (
                         <React.Fragment key={loc}>
                             <div>{loc}</div>
                             {parameterKeys.map(({ key }) => (
