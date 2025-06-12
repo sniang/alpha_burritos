@@ -82,6 +82,7 @@ const Parameters = ({ selectedFile, detectorList, setDetectorList, setSelectedDe
             { key: "rise", label: "Rise [ns]" },
             { key: "time peak", label: "Time Peak [ns]" },
             { key: "dt", label: "dt [ns]" },
+            { key: "time arrival", label: "time arrival [ns]" },
         ];
 
         // Only show detectors present in the data
