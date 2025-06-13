@@ -1,0 +1,17 @@
+
+div.skimmer-container {
+    border: 2px solid #e33933;
+    /* Red border */
+    border-radius: 10px;
+    width: 100%;
+}
+
+.skimmer-textarea{
+    display: block;
+    width: 95%;
+    height: 120px;
+    margin: 10px auto;
+    font-family: monospace;
+    /* Center the textarea */
+    text-align: left;
+}

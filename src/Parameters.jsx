@@ -2,6 +2,17 @@ import React, { useState, useEffect, use } from "react";
 import { parseTimestamp } from "./TimeStampSelector";
 import "./CSS/Parameters.css";
 
+// Parameter keys and display labels
+export const parameterKeys = [
+    { key: "area", label: "Area [V·ns]" },
+    { key: "fwhm", label: "FWHM [ns]" },
+    { key: "peak", label: "Peak [mV]" },
+    { key: "rise", label: "Rise [ns]" },
+    { key: "time peak", label: "Time Peak [ns]" },
+    { key: "dt", label: "Interval [ns]" },
+    { key: "time arrival", label: "Arrival [ns]" },
+];
+
 /**
  * Displays parameter data for a selected file and list of detectors.
  *
@@ -31,7 +42,7 @@ const Parameters = ({ selectedFile, detectorList, setDetectorList, setSelectedDe
      * @param {number} num
      * @returns {string}
      */
-    function formatToFiveSignificantDigits(num) {
+  function formatToFiveSignificantDigits(num) {
         return Number(num).toPrecision(5);
     }
 
@@ -63,17 +74,6 @@ const Parameters = ({ selectedFile, detectorList, setDetectorList, setSelectedDe
             setDisplayTable(false);
         }
     }, [selectedFile]);
-
-    // Parameter keys and display labels
-    const parameterKeys = [
-        { key: "area", label: "Area [V·ns]" },
-        { key: "fwhm", label: "FWHM [ns]" },
-        { key: "peak", label: "Peak [mV]" },
-        { key: "rise", label: "Rise [ns]" },
-        { key: "time peak", label: "Time Peak [ns]" },
-        { key: "dt", label: "Interval [ns]" },
-        { key: "time arrival", label: "Arrival [ns]" },
-    ];
 
     /**
      * 
@@ -226,3 +226,5 @@ const Parameters = ({ selectedFile, detectorList, setDetectorList, setSelectedDe
 };
 
 export default Parameters;
+
+

@@ -9,6 +9,7 @@ import YearMonthSelector from './YearMonthSelector.jsx'
 import MainTitle from './MainTitle.jsx'
 import AutoRefresh from './AutoRefresh.jsx'
 import Comment from './Comment.jsx'
+import Skimmer from './Skimmer.jsx'
 
 /**
  * Root component of the application that orchestrates detector visualization and data management.
@@ -83,10 +84,16 @@ function App() {
             setDetectorList={(value) => updateState('detectorList', value)}
             setSelectedDetector={(value) => updateState('selectedDetector', value)}
           />
-          {selectedDetector && <DetectorImage selectedFile={selectedFile} selectedDetector={selectedDetector} detectorList={detectorList}/>}
+          {selectedDetector && <DetectorImage selectedFile={selectedFile} selectedDetector={selectedDetector} detectorList={detectorList} />}
         </div>
         <Comment selectedFile={selectedFile} />
         <DetectorImageAll selectedFile={selectedFile} />
+        <Skimmer
+          jsonFiles={jsonFiles}
+          selectedDetector={selectedDetector}
+          setSelectedDetector={(value) => updateState('selectedDetector', value)}
+          detectorList={detectorList}
+        />
       </>
     );
   };
