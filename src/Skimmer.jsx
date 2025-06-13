@@ -6,7 +6,7 @@ import { parameterKeys } from "./Parameters";
 
 
 const getText = (jsonFiles, data, startingIndex, endingIndex) => {
-    let text = "Timestamp\t";
+    let text = "Timestamp\t\t";
     if (!data || data.length === 0) {
         return "No data available.";
     }
@@ -14,9 +14,9 @@ const getText = (jsonFiles, data, startingIndex, endingIndex) => {
         text += `${label}\t`;
     });
     text += "\n";
-
-    jsonFiles.slice(startingIndex, endingIndex + 1).map((file, index) => {
-        text += `${parseTimestamp(jsonFiles[index])}\t`;
+    const jsonFilesSlice = jsonFiles.slice(startingIndex, endingIndex + 1)
+    jsonFilesSlice.map((file, index) => {
+        text += `${parseTimestamp(jsonFilesSlice[index])}\t`;
         parameterKeys.forEach(({ key }) => {
             if (!data[index] || !data[index]["PMT11"] || !data[index]["PMT11"][key]) {
                 text += "N/A\t"; // Handle missing data gracefully
