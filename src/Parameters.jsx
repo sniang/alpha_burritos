@@ -103,6 +103,22 @@ const Parameters = ({ selectedFile, detectorList, setDetectorList, setSelectedDe
         }
     };
 
+    const displayButtons = () => {
+        return (
+            <div style={{ display: "flex", gap: "10px" }}>
+                <button
+                    className="button"
+                    onClick={() => setReverseTable(!reverseTable)}>
+                    Reverse Table
+                </button>
+                {displayTable && <button
+                    className="button"
+                    onClick={() => setDisplayTable(!displayTable)}>
+                    Back
+                </button>}
+            </div>);
+    };
+
     // Show error if fetch failed
     if (error) {
         return (
@@ -158,11 +174,7 @@ const Parameters = ({ selectedFile, detectorList, setDetectorList, setSelectedDe
                             </React.Fragment>
                         ))}
                     </div>}
-                    <button
-                        className="button"
-                        onClick={() => setReverseTable(!reverseTable)}>
-                        Reverse Table
-                    </button>
+                    {displayButtons()}
                 </div>
             );
         }
@@ -204,11 +216,7 @@ const Parameters = ({ selectedFile, detectorList, setDetectorList, setSelectedDe
                         </React.Fragment>
                     ))}
                 </div>}
-                <button
-                    className="button"
-                    onClick={() => setReverseTable(!reverseTable)}>
-                    Reverse Table
-                </button>
+                {displayButtons()}
             </div>
         );
     }
