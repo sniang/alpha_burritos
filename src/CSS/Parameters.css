@@ -16,3 +16,11 @@
     align-items: center;
     /* Center children horizontally */
 }
+
+#parametersBlock textarea{
+    display: block;
+    width: 90%;
+    height: 120px;
+    margin: 10px 10px;
+    font-family: monospace;
+}
