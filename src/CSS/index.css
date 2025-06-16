@@ -27,6 +27,11 @@ h2 {
   margin-top: 0;                  /* Remove top margin from headings */
 }
 
+/* Heading style */
+h4 {
+  margin-top: 0;                  /* Remove top margin from headings */
+}
+
 /* Logo image styling */
 #alphaLogo {
   width: 55px;

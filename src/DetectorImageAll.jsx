@@ -19,12 +19,12 @@ const DetectorImageAll = ({selectedFile}) => {
 
   return (
     <div className="detectorImageContainer blocks">
-      <DownloadAllButton selectedFile={selectedFile} />
       <img
         id="detectorImageAll"
         src={imageUrl}
         alt={`Preview for ${selectedFile}`}
       />
+      <DownloadAllButton selectedFile={selectedFile} />
     </div>
   );
 }

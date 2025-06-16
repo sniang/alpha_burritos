@@ -2,6 +2,11 @@
 #detectorImageAll {
   width: 95%;
   margin: 10px;
+  max-width: 750px;
+  box-sizing: border-box; /* Include padding and border in width */
+  display: block; /* Use flexbox for layout */
+  margin-left: auto; /* Center the container horizontally */
+  margin-right: auto; /* Center the container horizontally */
 }
 
 /* Styling for the main detector image */
