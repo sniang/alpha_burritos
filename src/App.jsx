@@ -85,8 +85,8 @@ function App() {
             setSelectedDetector={(value) => updateState('selectedDetector', value)}
           />
           {selectedDetector && <DetectorImage selectedFile={selectedFile} selectedDetector={selectedDetector} detectorList={detectorList} />}
+          <Comment selectedFile={selectedFile} />
         </div>
-        <Comment selectedFile={selectedFile} />
         <DetectorImageAll selectedFile={selectedFile} />
         <Skimmer
           jsonFiles={jsonFiles}

@@ -23,6 +23,7 @@
   flex-direction: column;       /* Stack children vertically */
   align-items: center;          /* Center children horizontally */
   justify-content: center;      /* Center children vertically */
+  flex: 1;                   /* Allow to grow and fill available space */
 }
 
 /* Styling for the container holding the detector image */

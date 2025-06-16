@@ -1,6 +1,7 @@
 /* Container for the comment section */
 #comment-block {
     align-self: stretch;
+    flex: 1;
 }
 
 /* Textarea for entering comments */

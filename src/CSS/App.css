@@ -78,26 +78,18 @@ button:hover {
   gap: 20px;                      /* Space between items */
 }
 
-/* Responsive layout adjustments for mobile/tablet screens */
-@media screen and (max-width: 950px) {
-  #selects-block {
-    flex-direction: column;       /* Stack items vertically on smaller screens */
-    width: 100%;                  /* Take full width */
-  }
-
-  #detector-block {
-    max-width: 500px;             /* Limit maximum width on small screens */
-    width: 100%;                  /* Take full width up to max-width */
-    flex-direction: column;       /* Stack items vertically */
-    align-items: stretch;         /* Make items take full width */
-    gap: 20px;                    /* Space between stacked items */
-  }
-}
-
 /* Styling for block-level containers */
 div.blocks {
   padding: 20px;                  /* Internal spacing */
   border: 2px solid #e33933;      /* Brand red border */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow effect */
   border-radius: 10px;            /* Rounded corners */
+}
+
+/* Responsive layout adjustments for mobile/tablet screens */
+@media screen and (max-width: 950px) {
+  #selects-block {
+    flex-direction: column;       /* Stack items vertically on smaller screens */
+    width: 100%;                  /* Take full width */
+  }
 }
