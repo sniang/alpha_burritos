@@ -137,7 +137,7 @@ const Skimmer = ({ jsonFiles, selectedDetector, setSelectedDetector, detectorLis
     , [jsonFilesSorted, data, startingIndex, endingIndex, selectedDetector]);
 
     return (
-        <div className="skimmer-container">
+        <div className="skimmer-container blocks">
             <h2>Skimmer</h2>
             {/* Control panel for detector and range selection */}
             <div className="skimmer-controls">

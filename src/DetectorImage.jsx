@@ -19,7 +19,7 @@ import "./CSS/DetectorImage.css";
  */
 const DetectorImage = ({ selectedFile, selectedDetector }) => {
     return (
-        <div id="detectorImageButtonContainer">
+        <div id="detectorImageButtonContainer" className="blocks">
             <img id="detectorImage"
                 src={`/api/img/${selectedDetector}/${selectedFile}`}
                 alt={`Preview for ${selectedFile} with ${selectedDetector}`}

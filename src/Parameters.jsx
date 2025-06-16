@@ -138,7 +138,7 @@ const Parameters = ({ selectedFile, detectorList, setDetectorList, setSelectedDe
         if (reverseTable) {
             // Table: parameters as rows, detectors as columns
             return (
-                <div id="parametersBlock">
+                <div id="parametersBlock" className="blocks">
                     <h4>{parseTimestamp(selectedFile)}</h4>
                     {displayTable && (<textarea
                         value={makeTable()}
@@ -181,7 +181,7 @@ const Parameters = ({ selectedFile, detectorList, setDetectorList, setSelectedDe
 
         // Table: detectors as rows, parameters as columns
         return (
-            <div id="parametersBlock">
+            <div id="parametersBlock" className="blocks">
                 <h4>{parseTimestamp(selectedFile)}</h4>
                 {displayTable && (<textarea
                     value={makeTable()}

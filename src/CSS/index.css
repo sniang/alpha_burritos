@@ -22,6 +22,11 @@ h1 {
   line-height: 1.1;
 }
 
+/* Heading style */
+h2 {
+  margin-top: 0;                  /* Remove top margin from headings */
+}
+
 /* Logo image styling */
 #alphaLogo {
   width: 55px;
