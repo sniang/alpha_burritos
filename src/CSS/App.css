@@ -49,6 +49,11 @@ button {
   background-color: #e33933;      /* Brand red color */
   color: white;                   /* White text */
   font-size: 14px;                /* Text size */
+  cursor: pointer;                /* Pointer cursor on hover */
+}
+/* Button hover effect - darken color on hover */
+button:hover {
+  transform: scale(1.05); /* Slightly enlarge button */
 }
 
 /* Block containing select elements - wrapped in a bordered container */

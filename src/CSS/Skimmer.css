@@ -8,7 +8,7 @@ div.skimmer-container {
 .skimmer-textarea {
     display: block;
     width: 95%; /* Take 95% of container width */
-    height: 300px;
+    height: 200px;
     margin: 10px auto; /* Center with margin */
     font-family: monospace; /* Use monospace font for code display */
     text-align: left;

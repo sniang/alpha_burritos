@@ -177,11 +177,22 @@ const Skimmer = ({ jsonFiles, selectedDetector, setSelectedDetector, detectorLis
             {isLoading ? (
                 <div className="loading-indicator">Loading data...</div>
             ) : (
+                <>
                 <textarea
                     value={textContent}
                     readOnly
                     className="skimmer-textarea"
                 />
+                    <a
+                        href={`data:text/csv;charset=utf-8,${encodeURIComponent(textContent)}`}
+                        download={`skimmer_data_${selectedDetector}.csv`}
+                        style={{ textDecoration: 'none', color: 'inherit' }}
+                    >
+                        <button>
+                        Download CSV
+                        </button>
+                    </a>
+                </>
             )}
         </div>
     );
