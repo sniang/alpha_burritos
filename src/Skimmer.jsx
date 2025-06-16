@@ -36,11 +36,6 @@ const Skimmer = ({ jsonFiles, selectedDetector, setSelectedDetector, detectorLis
     const [startingIndex, setStartingIndex] = useState(0);
     const [endingIndex, setEndingIndex] = useState(1);
     const [data, setData] = useState([]);
-    // const [jsonFiles, setjsonFiles] = useState(jsonFiles.sort((a, b) => {
-    //     const aTimestamp = parseTimestamp(a);
-    //     const bTimestamp = parseTimestamp(b);
-    //     return new Date(aTimestamp) - new Date(bTimestamp);
-    // }));
 
     if (!jsonFiles || jsonFiles.length === 0) {
         return <div className="skimmer-container">No JSON files available.</div>;
@@ -79,7 +74,7 @@ const Skimmer = ({ jsonFiles, selectedDetector, setSelectedDetector, detectorLis
     return (
         <div className="skimmer-container">
             <h2>Skimmer</h2>
-            <div>
+            <div className="skimmer-controls">
                 {/* <DetectorSelector
                     selectedDetector={selectedDetector}
                     setSelectedDetector={setSelectedDetector}

@@ -1,17 +1,28 @@
-
 div.skimmer-container {
     border: 2px solid #e33933;
     /* Red border */
     border-radius: 10px;
+    box-sizing: border-box;
+    /* Include border and padding in width */
+    padding: 10px;
+    /* Inner spacing */
     width: 100%;
 }
 
-.skimmer-textarea{
+.skimmer-textarea {
     display: block;
     width: 95%;
-    height: 120px;
+    height: 300px;
     margin: 10px auto;
     font-family: monospace;
     /* Center the textarea */
     text-align: left;
+
+}
+.skimmer-controls {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    /* Center children horizontally and vertically */
 }
