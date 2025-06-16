@@ -12,13 +12,14 @@ The application seamlessly communicates with a custom RESTful API to fetch and d
 
 - **Year/Month Selection:** Choose the year and month to filter available data files.
 - **Timestamp Selection:** Select a specific acquisition timestamp from available JSON files.
-- **Parameter Display:** View key parameters (area, FWHM, peak, rise, time peak, dt) for each detector.
+- **Parameter Display:** View key parameters (area, FWHM, peak, rise, time peak, dt, arrival) for each detector.
 - **Combined Image View:** See the combined detector image for the selected acquisition.
-- **Detector Selection:** Choose a specific detector (PDS, BDS, DSAT, USAT, PMT11) to view its processed image.
+- **Detector Selection:** Choose a specific detector (PDS, BDS, DSAT, USAT, PMT11, etc.) to view its processed image.
 - **Signal Download:** Download the raw signal as a text file for the selected detector and timestamp.
 - **Download All Signals:** Download signal files for all available detectors at once.
 - **Comments:** Add and edit comments for specific acquisition files.
 - **Auto-Refresh:** Automatically refresh the list of available files.
+- **Skimmer:** Browse and export a range of acquisitions and parameters as CSV.
 - **Responsive UI:** Built with React and styled for clarity and usability.
 
 ## Project Structure
@@ -37,6 +38,7 @@ src/
   DownloadAllButton.jsx  # Button to download all signals for all detectors
   AutoRefresh.jsx        # Checkbox to enable/disable auto-refresh
   Comment.jsx            # Add and edit comments for each acquisition
+  Skimmer.jsx            # Browse and export a range of acquisitions
   assets/                # Static assets (e.g., ALPHA logo)
   CSS/                   # App and global CSS
   main.jsx               # React entry point
@@ -67,6 +69,9 @@ src/
 7. **Auto-Refresh:**  
    Enable auto-refresh to automatically update the list of available files every 2 seconds.
 
+8. **Skimmer:**  
+   Use the Skimmer tool to select a range of acquisitions, view their parameters in tabular form, and export as CSV.
+
 ## API Endpoints
 
 The React app expects the following backend API (see [`server.js`](server.js)):
@@ -83,19 +88,19 @@ The React app expects the following backend API (see [`server.js`](server.js)):
 - **List JSON Files:**  
   `GET /api/:year/:month/json`  
   - Returns a list of JSON filenames for the specified year and month.  
-  - Example: `/api/2024/05/json`  
+  - Example: `/api/2025/06/json`  
   - Response:  
     ```json
-    ["data-2025-06-02_08-25-03.json", "file-2024-05-02.json"]
+    ["data-2025-06-02_08-25-03.json", "file-2025-06-02.json"]
     ```
 
 - **Get JSON File Content:**  
-  `GET /api/json/:filename`  
+  `GET /api/json/:jsonFilename`  
   - Returns the parsed JSON content of the specified file.  
   - Example: `/api/json/data-2025-06-02_08-25-03.json`  
   - Response:  
     ```json
-    { "key": "value", ... }
+    { "PDS": { "area": ..., ... }, ... }
     ```
 
 - **Get Combined Image:**  
@@ -108,14 +113,14 @@ The React app expects the following backend API (see [`server.js`](server.js)):
 - **Get Detector-Specific Image:**  
   `GET /api/img/:detector/:jsonFilename`  
   - Returns the PNG image for a specific detector and JSON file.  
-  - Example: `/api/img/DetectorA/data-2025-06-02_08-25-03.json`  
+  - Example: `/api/img/PDS/data-2025-06-02_08-25-03.json`  
   - Response:  
     Binary PNG image.
 
 - **Get Detector-Specific Signal:**  
   `GET /api/signal/:detector/:jsonFilename`  
   - Returns the signal as a text file for a specific detector and JSON file.  
-  - Example: `/api/signal/DetectorA/data-2025-06-02_08-25-03.json`  
+  - Example: `/api/signal/PDS/data-2025-06-02_08-25-03.json`  
   - Response:  
     Text file
 
@@ -160,12 +165,13 @@ MAIN_DIR/
         comments.json
       Together/
         file-YYYY-MM-DD.png
-      DetectorA/
+      PDS/
         file-YYYY-MM-DD.png
         file-YYYY-MM-DD.txt
-      DetectorB/
+      BDS/
         file-YYYY-MM-DD.png
         file-YYYY-MM-DD.txt
+      ...
 ```
 
 ## Development
