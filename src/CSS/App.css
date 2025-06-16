@@ -1,7 +1,7 @@
 /* Root container styling - controls the main app layout */
 #root {
   width: 90%;
-  max-width: 900px;
+  max-width: 1200px;
   margin: 0 auto; /* Center the container */
   display: flex;
   flex-direction: column;
@@ -28,7 +28,7 @@ label {
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  gap: 2px; /* Space between label text and form elements */
+  gap: 10px; /* Space between label text and form elements */
   font-weight: bold;
 }
 

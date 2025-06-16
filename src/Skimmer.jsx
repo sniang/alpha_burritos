@@ -19,11 +19,11 @@ const getText = (jsonFilesSorted, data, startingIndex, endingIndex, selectedDete
         text += `${parseTimestamp(jsonFilesSortedSlice[index])}\t`;
         parameterKeys.forEach(({ key }) => {
             if (!data[index] || !data[index][selectedDetector] || !data[index][selectedDetector][key]) {
-                text += "N/A\t"; // Handle missing data gracefully
+                text += "N/A\t\t"; // Handle missing data gracefully
                 return;
             } else {
                 let value = data[index][selectedDetector][key];
-                text += `${Number(value).toPrecision(5)}\t`;
+                text += `${Number(value).toPrecision(5)}\t\t`;
             }
 
         });

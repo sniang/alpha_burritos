@@ -27,12 +27,3 @@ div.skimmer-container {
     gap: 10px;
     /* Center children horizontally and vertically */
 }
-
-
-.skimmer-controls label {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-}
