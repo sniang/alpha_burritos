@@ -1,23 +1,32 @@
 /* Container for the skimmer component */
 div.skimmer-container {
-    box-sizing: border-box; /* Include border and padding in width */
-    width: 100%; /* Take full width of parent */
+    box-sizing: border-box;
+    /* Include border and padding in width */
+    width: 100%;
+    /* Take full width of parent */
 }
 
 /* Styling for the textarea element */
 .skimmer-textarea {
     display: block;
-    width: 95%; /* Take 95% of container width */
+    width: 95%;
+    /* Take 95% of container width */
     height: 200px;
-    margin: 10px auto; /* Center with margin */
-    font-family: monospace; /* Use monospace font for code display */
+    margin: 10px auto;
+    /* Center with margin */
+    font-family: monospace;
+    /* Use monospace font for code display */
     text-align: left;
-    resize: vertical; /* Allow vertical resizing only */
-    overflow: auto; /* Add scrollbars when needed */
-    white-space: pre; /* Preserve tabs and line breaks */
-    font-family: monospace; /* Repeated property for monospace font */
-    border: 1px solid #ccc; /* Light gray border */
-    border-radius: 5px; /* Rounded corners */
+    resize: vertical;
+    /* Allow vertical resizing only */
+    overflow: auto;
+    /* Add scrollbars when needed */
+    white-space: pre;
+    /* Preserve tabs and line breaks */
+    border: 1px solid #ccc;
+    /* Light gray border */
+    border-radius: 5px;
+    /* Rounded corners */
 }
 
 /* Container for the skimmer controls */
@@ -26,5 +35,6 @@ div.skimmer-container {
     flex-direction: row;
     align-items: center;
     justify-content: center;
-    gap: 10px; /* Space between child elements */
+    gap: 10px;
+    /* Space between child elements */
 }

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, use } from "react";
+import React, { useState, useEffect } from "react";
 import { parseTimestamp } from "./TimeStampSelector";
 import "./CSS/Parameters.css";
 
@@ -42,7 +42,7 @@ const Parameters = ({ selectedFile, detectorList, setDetectorList, setSelectedDe
      * @param {number} num
      * @returns {string}
      */
-  function formatToFiveSignificantDigits(num) {
+    function formatToFiveSignificantDigits(num) {
         return Number(num).toPrecision(5);
     }
 
@@ -94,10 +94,10 @@ const Parameters = ({ selectedFile, detectorList, setDetectorList, setSelectedDe
             });
             return [header, ...rows].join("\n");
         } else {
-            const header = ["Location", ...parameterKeys.map(({ label }) => label)].join(" ");
+            const header = ["Location", ...parameterKeys.map(({ label }) => label)].join("\t");
             const rows = keys.map((loc) => {
                 const values = parameterKeys.map(({ key }) => formatToFiveSignificantDigits(parameters[loc][key]));
-                return [loc, ...values].join("\t");
+                return [loc, ...values].join("\t\t");
             });
             return [header, ...rows].join("\n");
         }
