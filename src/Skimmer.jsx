@@ -5,7 +5,7 @@ import DetectorSelector from "./DetectorSelector";
 import { parameterKeys } from "./Parameters";
 
 
-const getText = (jsonFiles, data, startingIndex, endingIndex) => {
+const getText = (jsonFilesSorted, data, startingIndex, endingIndex) => {
     let text = "Timestamp\t\t";
     if (!data || data.length === 0) {
         return "No data available.";
@@ -14,9 +14,9 @@ const getText = (jsonFiles, data, startingIndex, endingIndex) => {
         text += `${label}\t`;
     });
     text += "\n";
-    const jsonFilesSlice = jsonFiles.slice(startingIndex, endingIndex + 1)
-    jsonFilesSlice.map((file, index) => {
-        text += `${parseTimestamp(jsonFilesSlice[index])}\t`;
+    const jsonFilesSortedSlice = jsonFilesSorted.slice(startingIndex, endingIndex + 1)
+    jsonFilesSortedSlice.map((file, index) => {
+        text += `${parseTimestamp(jsonFilesSortedSlice[index])}\t`;
         parameterKeys.forEach(({ key }) => {
             if (!data[index] || !data[index]["PMT11"] || !data[index]["PMT11"][key]) {
                 text += "N/A\t"; // Handle missing data gracefully
@@ -34,20 +34,23 @@ const getText = (jsonFiles, data, startingIndex, endingIndex) => {
 
 const Skimmer = ({ jsonFiles, selectedDetector, setSelectedDetector, detectorList }) => {
     const [startingIndex, setStartingIndex] = useState(0);
-    const [endingIndex, setEndingIndex] = useState(1);
+    const [endingIndex, setEndingIndex] = useState(0);
     const [data, setData] = useState([]);
+    const [jsonFilesSorted,setJsonFilesSorted] = useState([]);
 
     if (!jsonFiles || jsonFiles.length === 0) {
         return <div className="skimmer-container">No JSON files available.</div>;
     }
 
     useEffect(() => {
-
+        const sorted = [...jsonFiles].sort((a, b) => a.localeCompare(b));
+        setJsonFilesSorted(sorted);
+        
         const fetchData = async () => {
 
             setData([]);
             try {
-                const fileSlice = jsonFiles.slice(startingIndex, endingIndex + 1);
+                const fileSlice = jsonFilesSorted.slice(startingIndex, endingIndex + 1);
                 const localData = await Promise.all(
                     fileSlice.map(async (file) => {
                         const res = await fetch(`/api/json/${file}`);
@@ -64,12 +67,12 @@ const Skimmer = ({ jsonFiles, selectedDetector, setSelectedDetector, detectorLis
             }
         }
 
-        if (jsonFiles.length > 0) {
+        if (jsonFilesSorted.length > 0) {
             console.log("Fetching data...");
             fetchData();
         }
     }
-        , [startingIndex, endingIndex]);
+        , [jsonFiles, startingIndex, endingIndex]);
 
     return (
         <div className="skimmer-container">
@@ -87,7 +90,7 @@ const Skimmer = ({ jsonFiles, selectedDetector, setSelectedDetector, detectorLis
                         onChange={(event) => setStartingIndex(parseInt(event.target.value))}
                     >
                         <option value="" disabled>Acquisition timestamp</option>
-                        {jsonFiles.map((file, index) => (
+                        {jsonFilesSorted.map((file, index) => (
                             <option key={index} value={index}>{parseTimestamp(file)}</option>
                         ))}
                     </select>
@@ -99,7 +102,7 @@ const Skimmer = ({ jsonFiles, selectedDetector, setSelectedDetector, detectorLis
                         onChange={(event) => setEndingIndex(parseInt(event.target.value))}
                     >
                         <option value="" disabled>Acquisition timestamp</option>
-                        {jsonFiles.map((file, index) => (
+                        {jsonFilesSorted.map((file, index) => (
                             <option key={index} value={index}>{parseTimestamp(file)}</option>
                         ))}
                     </select>
@@ -107,7 +110,7 @@ const Skimmer = ({ jsonFiles, selectedDetector, setSelectedDetector, detectorLis
             </div>
             {data &&
                 <textarea
-                    value={getText(jsonFiles, data, startingIndex, endingIndex)}
+                    value={getText(jsonFilesSorted, data, startingIndex, endingIndex)}
                     readOnly
                     className="skimmer-textarea"
                 />}
