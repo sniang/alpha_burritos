@@ -18,13 +18,13 @@ const DetectorImageAll = ({selectedFile}) => {
   const imageUrl = `/api/img_all/${selectedFile}`;
 
   return (
-    <div className="detectorImageContainer">
-      <DownloadAllButton selectedFile={selectedFile} />
+    <div className="detectorImageContainer blocks">
       <img
         id="detectorImageAll"
         src={imageUrl}
         alt={`Preview for ${selectedFile}`}
       />
+      <DownloadAllButton selectedFile={selectedFile} />
     </div>
   );
 }

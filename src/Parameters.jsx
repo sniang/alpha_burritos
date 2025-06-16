@@ -2,6 +2,17 @@ import React, { useState, useEffect } from "react";
 import { parseTimestamp } from "./TimeStampSelector";
 import "./CSS/Parameters.css";
 
+// Parameter keys and display labels
+export const parameterKeys = [
+    { key: "area", label: "Area [V·ns]" },
+    { key: "fwhm", label: "FWHM [ns]" },
+    { key: "peak", label: "Peak [mV]" },
+    { key: "rise", label: "Rise [ns]" },
+    { key: "time peak", label: "Time Peak [ns]" },
+    { key: "dt", label: "Interval [ns]" },
+    { key: "time arrival", label: "Arrival [ns]" },
+];
+
 /**
  * Displays parameter data for a selected file and list of detectors.
  *
@@ -23,7 +34,8 @@ const Parameters = ({ selectedFile, detectorList, setDetectorList, setSelectedDe
     // Tracks API fetch errors
     const [error, setError] = useState(null);
     // Controls table orientation
-    const [reverseTable, setReverseTable] = useState(false);
+    const [reverseTable, setReverseTable] = useState(true);
+    const [displayTable, setDisplayTable] = useState(false);
 
     /**
      * Formats a number to five significant digits.
@@ -59,8 +71,53 @@ const Parameters = ({ selectedFile, detectorList, setDetectorList, setSelectedDe
 
         if (selectedFile) {
             fetchParameters();
+            setDisplayTable(false);
         }
     }, [selectedFile]);
+
+    /**
+     * 
+     * @returns {string} A formatted table of parameters for each detector.
+     * If reverseTable is true, parameters are rows and detectors are columns.
+     * If reverseTable is false, detectors are rows and parameters are columns.
+     */
+    const makeTable = () => {
+        if (!parameters) return "";
+        const keys = Object.keys(parameters);
+        if (keys.length === 0) return "";
+        if (reverseTable) {
+            const header = ["Parameters", ...keys].join("\t");
+            console.log(parameters)
+            const rows = parameterKeys.map(({ key, label }) => {
+                const values = keys.map((loc) => formatToFiveSignificantDigits(parameters[loc][key]));
+                return [label, ...values].join("\t");
+            });
+            return [header, ...rows].join("\n");
+        } else {
+            const header = ["Location", ...parameterKeys.map(({ label }) => label)].join("\t");
+            const rows = keys.map((loc) => {
+                const values = parameterKeys.map(({ key }) => formatToFiveSignificantDigits(parameters[loc][key]));
+                return [loc, ...values].join("\t\t");
+            });
+            return [header, ...rows].join("\n");
+        }
+    };
+
+    const displayButtons = () => {
+        return (
+            <div style={{ display: "flex", gap: "10px" }}>
+                <button
+                    className="button"
+                    onClick={() => setReverseTable(!reverseTable)}>
+                    Reverse Table
+                </button>
+                {displayTable && <button
+                    className="button"
+                    onClick={() => setDisplayTable(!displayTable)}>
+                    Back
+                </button>}
+            </div>);
+    };
 
     // Show error if fetch failed
     if (error) {
@@ -74,25 +131,20 @@ const Parameters = ({ selectedFile, detectorList, setDetectorList, setSelectedDe
 
     // Render parameter table if data is available
     if (parameters) {
-        // Parameter keys and display labels
-        const parameterKeys = [
-            { key: "area", label: "Area [V·ns]" },
-            { key: "fwhm", label: "FWHM [ns]" },
-            { key: "peak", label: "Peak [mV]" },
-            { key: "rise", label: "Rise [ns]" },
-            { key: "time peak", label: "Time Peak [ns]" },
-            { key: "dt", label: "dt [ns]" },
-        ];
 
         // Only show detectors present in the data
         const validDetectorList = detectorList.filter((loc) => parameters[loc]);
 
-        if (!reverseTable) {
+        if (reverseTable) {
             // Table: parameters as rows, detectors as columns
             return (
-                <div id="parametersBlock">
+                <div id="parametersBlock" className="blocks">
                     <h4>{parseTimestamp(selectedFile)}</h4>
-                    <div
+                    {displayTable && (<textarea
+                        value={makeTable()}
+                        readOnly
+                    />)}
+                    {!displayTable && <div
                         style={{
                             display: "grid",
                             gridTemplateColumns: `120px repeat(${validDetectorList.length}, min-content)`,
@@ -101,7 +153,9 @@ const Parameters = ({ selectedFile, detectorList, setDetectorList, setSelectedDe
                             alignItems: "center",
                             marginBottom: "10px"
                         }}
+                        onClick={() => setDisplayTable(!displayTable)}
                     >
+
                         {/* Header row */}
                         <div style={{ fontWeight: "bold" }}>Parameters</div>
                         {validDetectorList.map((loc) => (
@@ -119,21 +173,21 @@ const Parameters = ({ selectedFile, detectorList, setDetectorList, setSelectedDe
                                 ))}
                             </React.Fragment>
                         ))}
-                    </div>
-                    <button
-                        className="button"
-                        onClick={() => setReverseTable(!reverseTable)}>
-                        Reverse Table
-                    </button>
+                    </div>}
+                    {displayButtons()}
                 </div>
             );
         }
 
         // Table: detectors as rows, parameters as columns
         return (
-            <div id="parametersBlock">
+            <div id="parametersBlock" className="blocks">
                 <h4>{parseTimestamp(selectedFile)}</h4>
-                <div
+                {displayTable && (<textarea
+                    value={makeTable()}
+                    readOnly
+                />)}
+                {!displayTable && <div
                     style={{
                         display: "grid",
                         gridTemplateColumns: `80px repeat(${parameterKeys.length}, min-content)`,
@@ -142,6 +196,7 @@ const Parameters = ({ selectedFile, detectorList, setDetectorList, setSelectedDe
                         alignItems: "center",
                         marginBottom: "10px"
                     }}
+                    onClick={() => setDisplayTable(!displayTable)}
                 >
                     {/* Header row */}
                     <div style={{ fontWeight: "bold" }}>Location</div>
@@ -160,12 +215,8 @@ const Parameters = ({ selectedFile, detectorList, setDetectorList, setSelectedDe
                             ))}
                         </React.Fragment>
                     ))}
-                </div>
-                <button
-                    className="button"
-                    onClick={() => setReverseTable(!reverseTable)}>
-                    Reverse Table
-                </button>
+                </div>}
+                {displayButtons()}
             </div>
         );
     }
@@ -175,3 +226,5 @@ const Parameters = ({ selectedFile, detectorList, setDetectorList, setSelectedDe
 };
 
 export default Parameters;
+
+

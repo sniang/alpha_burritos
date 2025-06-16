@@ -1,37 +1,40 @@
+/* Container for the entire detector image section */
 #detectorImageAll {
   width: 95%;
   margin: 10px;
-
+  max-width: 1000px;
+  box-sizing: border-box; /* Include padding and border in width */
+  display: block; /* Use flexbox for layout */
+  margin-left: auto; /* Center the container horizontally */
+  margin-right: auto; /* Center the container horizontally */
 }
 
+/* Styling for the main detector image */
 #detectorImage {
   height: 280px;
   width: auto;
   display: block; /* Center the image horizontally */
-  margin: 0 auto;  /* Center the image horizontally */
+  margin: 0 auto; /* Center the image horizontally */
 }
 
+/* Container for buttons related to the detector image */
 #detectorImageButtonContainer {
   display: flex;                /* Use flexbox for layout */
   flex-direction: column;       /* Stack children vertically */
   align-items: center;          /* Center children horizontally */
   justify-content: center;      /* Center children vertically */
-  border: 2px solid #e33933;    /* Red border */
-  border-radius: 10px;          /* Rounded corners */
-  padding: 10px;                /* Inner spacing */
+  flex: 1;                   /* Allow to grow and fill available space */
 }
 
+/* Styling for the container holding the detector image */
 .detectorImageContainer {
-  border: 2px solid #e33933;    /* Red border */
-  border-radius: 10px;          /* Rounded corners */
   width: 100%;                  /* Full width */
   text-align: center;           /* Center text */
   box-sizing: border-box;       /* Include border and padding in width */
-  padding: 10px;                /* Inner spacing */
 }
 
+/* Responsive design for smaller screens */
 @media (max-width: 900px) {
-
   #detectorImageButtonContainer {
     height: auto;               /* Adjust height for small screens */
   }

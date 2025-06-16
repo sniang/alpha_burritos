@@ -1,18 +1,32 @@
 /* Main container for parameters block */
 #parametersBlock {
-    border: 2px solid #e33933;
-    /* Red border */
-    border-radius: 10px;
-    /* Rounded corners */
     text-align: center;
     /* Center text horizontally */
-    padding: 0 0 10px 0;
-    /* Top, right, bottom, left padding */
     flex: 1;
+    /* Take up available space in parent flex container */
     display: flex;
     /* Use flex layout */
     flex-direction: column;
     /* Stack children vertically */
     align-items: center;
     /* Center children horizontally */
+}
+
+/* Styling for textarea elements within parameters block */
+#parametersBlock textarea {
+    display: block;
+    /* Make textarea a block element */
+    width: 90%;
+    /* Set width to 90% of container */
+    height: 120px;
+    /* Fixed height of 120 pixels */
+    margin: 10px 10px;
+    /* Add 10px margin on all sides */
+    font-family: monospace;
+    /* Use monospace font for code-like appearance */
+    resize: vertical;
+    /* Allow vertical resizing only */
+    overflow: auto;
+    /* Add scrollbars when needed */
+    white-space: pre;
 }

@@ -80,7 +80,7 @@ const Comment = ({ selectedFile }) => {
     }
 
     return (
-        <div id="comment-block">
+        <div id="comment-block" className="blocks">
             <h2>Comments</h2>
             {/* Display the current comment when not in edit mode */}
             {!update && <p style={{whiteSpace: 'pre-wrap'}}>{comment}</p>}
