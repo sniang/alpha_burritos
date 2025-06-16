@@ -17,12 +17,14 @@
   align-items: center;          /* Center children horizontally */
   justify-content: center;      /* Center children vertically */
   border: 2px solid #e33933;    /* Red border */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Shadow for depth */
   border-radius: 10px;          /* Rounded corners */
   padding: 10px;                /* Inner spacing */
 }
 
 .detectorImageContainer {
   border: 2px solid #e33933;    /* Red border */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Shadow for depth */
   border-radius: 10px;          /* Rounded corners */
   width: 100%;                  /* Full width */
   text-align: center;           /* Center text */

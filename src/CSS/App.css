@@ -56,9 +56,10 @@ button {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  justify-content: space-between;
+  justify-content: space-around;
   width: 100%;
   border: 2px solid #e33933; /* Brand red border */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   border-radius: 10px;
   padding: 10px; /* Added padding for better spacing */
   box-sizing: border-box; /* Ensures padding doesn't increase width */
@@ -89,9 +90,5 @@ button {
     flex-direction: column; /* Stack items vertically on smaller screens */
     align-items: stretch;
     gap: 20px; /* Increased spacing between stacked items */
-  }
-
-  label {
-    margin: 4px; /* Reduced margins on smaller screens */
   }
 }

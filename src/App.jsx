@@ -87,13 +87,13 @@ function App() {
           {selectedDetector && <DetectorImage selectedFile={selectedFile} selectedDetector={selectedDetector} detectorList={detectorList} />}
         </div>
         <Comment selectedFile={selectedFile} />
-        <DetectorImageAll selectedFile={selectedFile} />
         <Skimmer
           jsonFiles={jsonFiles}
           selectedDetector={selectedDetector}
           setSelectedDetector={(value) => updateState('selectedDetector', value)}
           detectorList={detectorList}
         />
+        <DetectorImageAll selectedFile={selectedFile} />
       </>
     );
   };

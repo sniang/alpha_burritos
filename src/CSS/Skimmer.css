@@ -1,6 +1,8 @@
 div.skimmer-container {
     border: 2px solid #e33933;
     /* Red border */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    /* Shadow for depth */
     border-radius: 10px;
     box-sizing: border-box;
     /* Include border and padding in width */
