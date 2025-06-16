@@ -5,7 +5,7 @@ import DetectorSelector from "./DetectorSelector";
 import { parameterKeys } from "./Parameters";
 
 
-const getText = (jsonFilesSorted, data, startingIndex, endingIndex) => {
+const getText = (jsonFilesSorted, data, startingIndex, endingIndex, selectedDetector) => {
     let text = "Timestamp\t\t";
     if (!data || data.length === 0) {
         return "No data available.";
@@ -18,11 +18,11 @@ const getText = (jsonFilesSorted, data, startingIndex, endingIndex) => {
     jsonFilesSortedSlice.map((file, index) => {
         text += `${parseTimestamp(jsonFilesSortedSlice[index])}\t`;
         parameterKeys.forEach(({ key }) => {
-            if (!data[index] || !data[index]["PMT11"] || !data[index]["PMT11"][key]) {
+            if (!data[index] || !data[index][selectedDetector] || !data[index][selectedDetector][key]) {
                 text += "N/A\t"; // Handle missing data gracefully
                 return;
             } else {
-                let value = data[index]["PMT11"][key];
+                let value = data[index][selectedDetector][key];
                 text += `${Number(value).toPrecision(5)}\t`;
             }
 
@@ -45,7 +45,7 @@ const Skimmer = ({ jsonFiles, selectedDetector, setSelectedDetector, detectorLis
     useEffect(() => {
         const sorted = [...jsonFiles].sort((a, b) => a.localeCompare(b));
         setJsonFilesSorted(sorted);
-        
+
         const fetchData = async () => {
 
             setData([]);
@@ -78,11 +78,11 @@ const Skimmer = ({ jsonFiles, selectedDetector, setSelectedDetector, detectorLis
         <div className="skimmer-container">
             <h2>Skimmer</h2>
             <div className="skimmer-controls">
-                {/* <DetectorSelector
+                <DetectorSelector
                     selectedDetector={selectedDetector}
                     setSelectedDetector={setSelectedDetector}
                     detectorList={detectorList}
-                /> */}
+                />
                 <label>
                     Starting:
                     <select
@@ -110,7 +110,7 @@ const Skimmer = ({ jsonFiles, selectedDetector, setSelectedDetector, detectorLis
             </div>
             {data &&
                 <textarea
-                    value={getText(jsonFilesSorted, data, startingIndex, endingIndex)}
+                    value={getText(jsonFilesSorted, data, startingIndex, endingIndex, selectedDetector)}
                     readOnly
                     className="skimmer-textarea"
                 />}
