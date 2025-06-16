@@ -17,8 +17,16 @@ div.skimmer-container {
     font-family: monospace;
     /* Center the textarea */
     text-align: left;
-
+    resize: vertical;
+    /* ou 'none' ou 'both' selon ce que tu veux */
+    overflow: auto;
+    /* permet le scroll si nécessaire */
+    white-space: pre;
+    /* garde les tabulations et retours à la ligne */
+    font-family: monospace;
+    /* pour affichage lisible des tabulations */
 }
+
 .skimmer-controls {
     display: flex;
     flex-direction: row;
