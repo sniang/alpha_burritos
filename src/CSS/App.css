@@ -136,7 +136,7 @@ button:hover {
 }
 
 /* Styling for block-level containers */
-div.blocks {
+.blocks {
   padding: 20px;
   /* Internal spacing */
   border: 2px solid #e33933;
@@ -150,6 +150,8 @@ div.blocks {
   /* Stack children vertically */
   align-items: center;
   /* Center children horizontally */
+  gap: 10px;
+  /* Space between children */
 }
 
 /* Responsive layout adjustments for mobile/tablet screens */

@@ -10,6 +10,7 @@ import MainTitle from './MainTitle.jsx'
 import AutoRefresh from './AutoRefresh.jsx'
 import Comment from './Comment.jsx'
 import Skimmer from './Skimmer.jsx'
+import LoginForm from './LoginForm.jsx'
 
 /**
  * Root component of the application that orchestrates detector visualization and data management.
@@ -39,10 +40,18 @@ function App() {
     error: null,
     year: new Date().getFullYear(),
     month: new Date().getMonth() + 1,
-    detectorList: []
+    detectorList: [],
+    isLoggedIn: true // Assume user is logged in for initial state
   });
 
-  const { jsonFiles, selectedFile, selectedDetector, error, year, month, detectorList } = state;
+  const { jsonFiles, selectedFile, selectedDetector, error, year, month, detectorList, isLoggedIn } = state;
+
+  if (!isLoggedIn) {
+    return <>
+      <MainTitle />
+      <LoginForm onLogin={() => window.location.reload()} />
+    </>;
+  }
 
   // Display error message if application encounters an error
   if (error) {
