@@ -1,95 +1,154 @@
 /* Root container styling - controls the main app layout */
 #root {
-  width: 90%;                     /* Set container width to 90% of viewport */
-  max-width: 1400px;              /* Limit maximum width */
-  margin: 0 auto;                 /* Center the container horizontally */
-  display: flex;                  /* Use flexbox layout */
-  flex-direction: column;         /* Stack children vertically */
-  align-items: center;            /* Center children horizontally */
-  justify-content: center;        /* Center children vertically */
-  gap: 20px;                      /* Space between children */
-  opacity: 1;                     /* Fully visible */
-  animation: fadeIn 1s ease-in-out; /* Apply fade-in animation */
+  width: 90%;
+  /* Set container width to 90% of viewport */
+  max-width: 1400px;
+  /* Limit maximum width */
+  margin: 0 auto;
+  /* Center the container horizontally */
+  display: flex;
+  /* Use flexbox layout */
+  flex-direction: column;
+  /* Stack children vertically */
+  align-items: center;
+  /* Center children horizontally */
+  justify-content: center;
+  /* Center children vertically */
+  gap: 20px;
+  /* Space between children */
+  opacity: 1;
+  /* Fully visible */
+  animation: fadeIn 1s ease-in-out;
+  /* Apply fade-in animation */
 }
 
 /* Animation for fade-in effect when page loads */
 @keyframes fadeIn {
   from {
-    opacity: 0;                   /* Start completely transparent */
+    opacity: 0;
+    /* Start completely transparent */
   }
+
   to {
-    opacity: 1;                   /* End fully visible */
+    opacity: 1;
+    /* End fully visible */
   }
 }
 
 /* Label styling for form elements - horizontal layout with centered content */
 label {
-  display: flex;                  /* Use flexbox layout */
-  flex-direction: row;            /* Arrange items horizontally */
-  align-items: center;            /* Center items vertically */
-  justify-content: center;        /* Center items horizontally */
-  gap: 10px;                      /* Space between label text and form elements */
-  font-weight: bold;              /* Make label text bold */
+  display: flex;
+  /* Use flexbox layout */
+  flex-direction: row;
+  /* Arrange items horizontally */
+  align-items: center;
+  /* Center items vertically */
+  justify-content: center;
+  /* Center items horizontally */
+  gap: 10px;
+  /* Space between label text and form elements */
+  font-weight: bold;
+  /* Make label text bold */
 }
 
 /* Dropdown select styling */
 select {
-  width: 100%;                    /* Take full width of container */
-  padding: 10px;                  /* Internal spacing */
-  border: 1px solid #ccc;         /* Light gray border */
-  border-radius: 5px;             /* Rounded corners */
-  font-size: 12px;                /* Text size */
+  width: 100%;
+  /* Take full width of container */
+  padding: 10px;
+  /* Internal spacing */
+  border: 1px solid #ccc;
+  /* Light gray border */
+  border-radius: 5px;
+  /* Rounded corners */
+  font-size: 12px;
+  /* Text size */
 }
 
 /* Button styling - uses brand color (#e33933) */
 button {
-  padding: 10px 20px;             /* Vertical and horizontal padding */
-  border: none;                   /* Remove default border */
-  border-radius: 5px;             /* Rounded corners */
-  background-color: #e33933;      /* Brand red color */
-  color: white;                   /* White text */
-  font-size: 14px;                /* Text size */
-  cursor: pointer;                /* Pointer cursor on hover */
+  padding: 10px 20px;
+  /* Vertical and horizontal padding */
+  border: none;
+  /* Remove default border */
+  border-radius: 5px;
+  /* Rounded corners */
+  background-color: #e33933;
+  /* Brand red color */
+  color: white;
+  /* White text */
+  font-size: 14px;
+  /* Text size */
+  cursor: pointer;
+  /* Pointer cursor on hover */
 }
+
 /* Button hover effect - darken color on hover */
 button:hover {
-  transform: scale(1.05); /* Slightly enlarge button */
+  transform: scale(1.05);
+  /* Slightly enlarge button */
 }
 
 /* Block containing select elements - wrapped in a bordered container */
 #selects-block {
-  display: flex;                  /* Use flexbox layout */
-  flex-wrap: wrap;                /* Allow items to wrap to next line */
-  align-items: center;            /* Center items vertically */
-  justify-content: space-around;  /* Distribute items evenly */
-  width: 100%;                    /* Take full width of parent */
-  box-sizing: border-box;         /* Include padding in width calculation */
+  display: flex;
+  /* Use flexbox layout */
+  flex-wrap: wrap;
+  /* Allow items to wrap to next line */
+  align-items: center;
+  /* Center items vertically */
+  justify-content: space-around;
+  /* Distribute items evenly */
+  width: 100%;
+  /* Take full width of parent */
+  box-sizing: border-box;
+  /* Include padding in width calculation */
 }
 
 /* Block containing detector elements - flexible layout with even spacing */
 #detector-block {
-  display: flex;                  /* Use flexbox layout */
-  flex-wrap: wrap;                /* Allow items to wrap to next line */
-  flex-direction: row;            /* Arrange items horizontally */
-  justify-content: space-between; /* Space items evenly */
-  width: 100%;                    /* Take full width of parent */
-  margin: 0;                      /* Remove default margin */
-  align-items: stretch;           /* Make children equal height */
-  gap: 20px;                      /* Space between items */
+  display: flex;
+  /* Use flexbox layout */
+  flex-wrap: wrap;
+  /* Allow items to wrap to next line */
+  flex-direction: row;
+  /* Arrange items horizontally */
+  justify-content: space-between;
+  /* Space items evenly */
+  width: 100%;
+  /* Take full width of parent */
+  margin: 0;
+  /* Remove default margin */
+  align-items: stretch;
+  /* Make children equal height */
+  gap: 20px;
+  /* Space between items */
 }
 
 /* Styling for block-level containers */
 div.blocks {
-  padding: 20px;                  /* Internal spacing */
-  border: 2px solid #e33933;      /* Brand red border */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow effect */
-  border-radius: 10px;            /* Rounded corners */
+  padding: 20px;
+  /* Internal spacing */
+  border: 2px solid #e33933;
+  /* Brand red border */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  /* Subtle shadow effect */
+  border-radius: 10px;
+  /* Rounded corners */
+  display: flex;
+  flex-direction: column;
+  /* Stack children vertically */
+  align-items: center;
+  /* Center children horizontally */
+  padding: 20px;
 }
 
 /* Responsive layout adjustments for mobile/tablet screens */
 @media screen and (max-width: 950px) {
   #selects-block {
-    flex-direction: column;       /* Stack items vertically on smaller screens */
-    width: 100%;                  /* Take full width */
+    flex-direction: column;
+    /* Stack items vertically on smaller screens */
+    width: 100%;
+    /* Take full width */
   }
 }
