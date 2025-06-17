@@ -103,6 +103,16 @@ button:hover {
   /* Take full width of parent */
   box-sizing: border-box;
   /* Include padding in width calculation */
+  border: 2px solid #e33933;
+  /* Brand red border */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  /* Subtle shadow effect */
+  border-radius: 10px;
+  /* Rounded corners */
+  padding: 10px;
+  /* Internal spacing */
+  gap: 5px;
+  /* Space between items */
 }
 
 /* Block containing detector elements - flexible layout with even spacing */
@@ -140,7 +150,6 @@ div.blocks {
   /* Stack children vertically */
   align-items: center;
   /* Center children horizontally */
-  padding: 20px;
 }
 
 /* Responsive layout adjustments for mobile/tablet screens */

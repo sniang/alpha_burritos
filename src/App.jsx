@@ -108,7 +108,7 @@ function App() {
    */
   const renderSelectorComponents = () => {
     return (
-      <div id='selects-block' className="blocks">
+      <div id="selects-block">
         <AutoRefresh
           year={year}
           month={month}
