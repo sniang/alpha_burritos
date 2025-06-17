@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import './CSS/App.css'
 import TimeStampSelector from './TimeStampSelector.jsx'
 import Parameters from './Parameters.jsx'
@@ -41,10 +41,25 @@ function App() {
     year: new Date().getFullYear(),
     month: new Date().getMonth() + 1,
     detectorList: [],
-    isLoggedIn: true // Assume user is logged in for initial state
   });
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  const { jsonFiles, selectedFile, selectedDetector, error, year, month, detectorList, isLoggedIn } = state;
+  const { jsonFiles, selectedFile, selectedDetector, error, year, month, detectorList } = state;
+
+  // Check login status on mount
+  useEffect(() => {
+    const checkLogin = async () => {
+      try {
+        const res = await fetch('/api/profile', { credentials: 'include' });
+        if (!res.ok) throw new Error('Not authenticated');
+        await res.json();
+        setIsLoggedIn(true);
+      } catch (error){
+        setIsLoggedIn(false);
+      }
+    };
+    checkLogin();
+  }, []);
 
   if (!isLoggedIn) {
     return <>

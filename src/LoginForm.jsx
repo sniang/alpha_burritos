@@ -10,6 +10,7 @@ export default function LoginForm({ onLogin }) {
     // State for login and password fields
     const [login, setLogin] = useState('');
     const [password, setPassword] = useState('');
+    const [message, setMessage] = useState('');
 
     /**
      * Handles form submission for user login.
@@ -19,7 +20,7 @@ export default function LoginForm({ onLogin }) {
     const handleSubmit = async e => {
         e.preventDefault();
         try {
-            const res = await fetch('api/login', {
+            const res = await fetch('/api/login', {
                 method: 'POST',
                 credentials: 'include',
                 headers: { 'Content-Type': 'application/json' },
@@ -29,17 +30,16 @@ export default function LoginForm({ onLogin }) {
                 // Call the onLogin callback after successful authentication
                 onLogin();
             } else {
-                // Show an alert if authentication fails
-                alert('Login error');
+                throw new Error('Invalid login or password');
             }
         } catch (error) {
             // Show an alert if a network or server error occurs
-            alert('An error occurred');
+            setMessage(error.message || 'An error occurred during login');
         }
     };
 
     return (
-        <form onSubmit={handleSubmit} className="blocks">
+        <form onSubmit={handleSubmit} className="blocks" style={{ width: '300px', margin: '0 auto' }}>
             {/* Login input field */}
             <input
                 value={login}
@@ -55,6 +55,8 @@ export default function LoginForm({ onLogin }) {
             />
             {/* Submit button */}
             <button type="submit">Login</button>
+            {/* Message display area */}
+            {message && <span className="message">{message}</span>}
         </form>
     );
 }
