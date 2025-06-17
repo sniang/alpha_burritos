@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import './CSS/App.css'
 import TimeStampSelector from './TimeStampSelector.jsx'
 import Parameters from './Parameters.jsx'
@@ -10,6 +10,7 @@ import MainTitle from './MainTitle.jsx'
 import AutoRefresh from './AutoRefresh.jsx'
 import Comment from './Comment.jsx'
 import Skimmer from './Skimmer.jsx'
+import LoginForm from './LoginForm.jsx'
 
 /**
  * Root component of the application that orchestrates detector visualization and data management.
@@ -18,33 +19,98 @@ import Skimmer from './Skimmer.jsx'
  * 
  * @component
  * @author Samuel Niang
- * @returns {JSX.Element} The root application interface with navigation controls and visualization components
- * 
- * @state {Object} state - Application's global state object
- * @state {string[]} state.jsonFiles - List of available JSON data files for selection
- * @state {string} state.selectedFile - Currently selected data file path/identifier
- * @state {string} state.selectedDetector - Currently active detector identifier (default: 'PDS')
- * @state {Error|null} state.error - Error state for application-wide error handling
- * @state {number} state.year - Currently selected year for temporal data filtering
- * @state {number} state.month - Currently selected month (1-12) for temporal data filtering
- * @state {Array} state.detectorList - List of available detectors from the current dataset
+ * State:
+ * - jsonFiles: Array of available JSON data files
+ * - selectedFile: Currently selected data file
+ * - selectedDetector: Currently selected detector
+ * - error: Error object for global error handling
+ * - year: Selected year for filtering data
+ * - month: Selected month for filtering data
+ * - detectorList: List of detectors available in the selected file
+ * - isLoggedIn: Boolean indicating authentication status
+ *
+ * @returns {JSX.Element} The main application UI
  */
-
+/**
+ * App is the root component that manages global state and orchestrates
+ * the main UI for detector visualization, file selection, and authentication.
+ *
+ * Author: Samuel Niang
+ *
+ * State:
+ * - jsonFiles: Array of available JSON data files
+ * - selectedFile: Currently selected data file
+ * - selectedDetector: Currently selected detector
+ * - error: Error object for global error handling
+ * - year: Selected year for filtering data
+ * - month: Selected month for filtering data
+ * - detectorList: List of detectors available in the selected file
+ * - isLoggedIn: Boolean indicating authentication status
+ *
+ * @returns {JSX.Element} The main application UI
+ */
 function App() {
-  // Initialize application state with default values
+  // Global state for the application, all major UI state is centralized here
+  // Author: Samuel Niang
   const [state, setState] = useState({
-    jsonFiles: [],
-    selectedFile: '',
-    selectedDetector: '',
-    error: null,
-    year: new Date().getFullYear(),
-    month: new Date().getMonth() + 1,
-    detectorList: []
+    jsonFiles: [],           // List of available JSON files for selection
+    selectedFile: '',        // Currently selected JSON file
+    selectedDetector: '',    // Currently selected detector
+    error: null,             // Error object for error handling
+    year: new Date().getFullYear(), // Default to current year
+    month: new Date().getMonth() + 1, // Default to current month (1-based)
+    detectorList: [],        // List of detectors in the selected file
+    isLoggedIn: false,       // Authentication status
   });
 
-  const { jsonFiles, selectedFile, selectedDetector, error, year, month, detectorList } = state;
+  // Destructure state for easier access in render
+  const { jsonFiles, selectedFile, selectedDetector, error, year, month, detectorList, isLoggedIn } = state;
 
-  // Display error message if application encounters an error
+  /**
+   * Helper to update a single property in the state object.
+   * This keeps state updates concise and consistent.
+   * Author: Samuel Niang
+   * @param {string} key - State property to update
+   * @param {any} value - New value for the property
+   * @returns {void}
+   */
+  const updateState = (key, value) => {
+    setState(prevState => ({ ...prevState, [key]: value }));
+  };
+
+  // On mount, check if the user is authenticated by calling the profile API.
+  // If not authenticated, set isLoggedIn to false.
+  // Author: Samuel Niang
+  // @returns {void}
+  useEffect(() => {
+    const checkLogin = async () => {
+      try {
+        const res = await fetch('/api/profile', { credentials: 'include' });
+        if (!res.ok) throw new Error('Not authenticated');
+        await res.json();
+        updateState('isLoggedIn',true);
+      } catch (error){
+        updateState('isLoggedIn',false);
+      }
+    };
+    checkLogin();
+  }, []);
+
+  // Show login form if not authenticated.
+  // MainTitle is always shown for branding/context.
+  // Author: Samuel Niang
+  // @returns {JSX.Element|null}
+  if (!isLoggedIn) {
+    return <>
+      <MainTitle />
+      <LoginForm onLogin={() => window.location.reload()} />
+    </>;
+  }
+
+  // Show error message if an error occurred anywhere in the app.
+  // This is a global error boundary for the main UI.
+  // Author: Samuel Niang
+  // @returns {JSX.Element|null}
   if (error) {
     return (
       <>
@@ -55,39 +121,33 @@ function App() {
   }
 
   /**
-   * Updates a specific property in the application state while preserving other values
-   * Uses functional state update pattern to ensure state immutability
-   * 
-   * @param {string} key - The state property key to update
-   * @param {any} value - The new value to assign to the specified property
-   */
-  const updateState = (key, value) => {
-    setState(prevState => ({ ...prevState, [key]: value }));
-  };
-
-  /**
-   * Conditionally renders detector visualization components
-   * Only displays visualization when a data file is selected
-   * Groups related detector visualization components
-   * 
-   * @returns {JSX.Element|null} Detector visualization components or null if no file selected
+   * Renders detector-related components if a file is selected.
+   * Includes parameter controls, detector images, comments, and skimmer.
+   * Only shown after a file is chosen.
+   * Author: Samuel Niang
+   * @returns {JSX.Element|null} The detector-related UI or null if no file selected
    */
   const renderDetectorComponents = () => {
-    if (!selectedFile) return null;
+    if (!selectedFile) return null; // Don't render if no file is selected
 
     return (
       <>
         <div id='detector-block'>
+          {/* Parameters: Controls for detector selection and parameter adjustment */}
           <Parameters
             selectedFile={selectedFile}
             detectorList={detectorList}
             setDetectorList={(value) => updateState('detectorList', value)}
             setSelectedDetector={(value) => updateState('selectedDetector', value)}
           />
+          {/* Show image for selected detector if one is chosen */}
           {selectedDetector && <DetectorImage selectedFile={selectedFile} selectedDetector={selectedDetector} detectorList={detectorList} />}
+          {/* Comment section for the selected file */}
           <Comment selectedFile={selectedFile} />
         </div>
+        {/* Show all detector images for the selected file */}
         <DetectorImageAll selectedFile={selectedFile} />
+        {/* Skimmer: Allows browsing through files and detectors */}
         <Skimmer
           jsonFiles={jsonFiles}
           selectedDetector={selectedDetector}
@@ -98,17 +158,17 @@ function App() {
     );
   };
 
-
   /**
-   * Renders the control and selection components for the application
-   * Organizes year/month selectors, timestamp selector, auto-refresh, and detector selector
-   * Conditionally renders detector selector only when a file is selected
-   * 
-   * @returns {JSX.Element} A container with all selection and control components
+   * Renders the controls for selecting year, month, timestamp, and detector.
+   * Also includes auto-refresh functionality.
+   * These controls are always visible when logged in.
+   * Author: Samuel Niang
+   * @returns {JSX.Element} The selector controls UI
    */
   const renderSelectorComponents = () => {
     return (
-      <div id='selects-block' className="blocks">
+      <div id="selects-block">
+        {/* AutoRefresh: Handles periodic refresh of file list */}
         <AutoRefresh
           year={year}
           month={month}
@@ -116,12 +176,14 @@ function App() {
           setSelectedFile={(value) => updateState('selectedFile', value)}
           setError={(value) => updateState('error', value)}
         />
+        {/* YearMonthSelector: Allows user to pick year and month */}
         <YearMonthSelector
           year={year}
           month={month}
           setYear={(value) => updateState('year', value)}
           setMonth={(value) => updateState('month', value)}
         />
+        {/* TimeStampSelector: Lets user pick a file (timestamp) */}
         <TimeStampSelector
           year={year}
           month={month}
@@ -132,6 +194,7 @@ function App() {
           error={error}
           setError={(value) => updateState('error', value)}
         />
+        {/* DetectorSelector: Lets user pick a detector from the list */}
         <DetectorSelector
           selectedDetector={selectedDetector}
           setSelectedDetector={(value) => updateState('selectedDetector', value)}
@@ -141,6 +204,8 @@ function App() {
     );
   }
 
+  // Main render: Show title, selectors, and detector components (if file selected)
+  // @returns {JSX.Element} The main application UI
   return (
     <>
       <MainTitle />

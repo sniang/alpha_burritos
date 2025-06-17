@@ -7,6 +7,10 @@
 import express from 'express';      // Express.js web framework
 import cors from 'cors';            // Middleware for enabling CORS
 import dotenv from 'dotenv';        // Loads environment variables from .env file
+import cookieParser from 'cookie-parser';   // Middleware for parsing cookies
+import jwt from 'jsonwebtoken'; // JSON Web Token library for authentication
+import bcrypt from 'bcrypt'; // Library for hashing passwords
+
 import { getCurrentTimestamp } from './utils.js';
 import {
     getJsonFiles,
@@ -15,7 +19,7 @@ import {
     getImage,
     getComments,
     postComments,
-    MAIN_DIR
+    MAIN_DIR,
 } from './routehandlers.js';
 
 // ====================
@@ -30,16 +34,20 @@ const app = express();
 
 // Set server port from environment or default to 3001
 const PORT = process.env.PORT || 3001;
+const JWT_SECRET = process.env.JWT_SECRET;
+const USER_LOGIN = process.env.USER_LOGIN;
+const USER_PASSWORD_HASH = process.env.USER_PASSWORD_HASH;
 
 // ====================
 // Middleware
 // ====================
 
 // Enable CORS for all routes
-app.use(cors());
-
+app.use(cors({  credentials: true}));
 // Parse incoming JSON request bodies
 app.use(express.json());
+// Parse cookies from incoming requests
+app.use(cookieParser());
 
 // ====================
 // API Routes
@@ -70,6 +78,50 @@ app.get('/api/comments/:jsonFilename', (req, res) => getComments(req, res));
 
 // Post comments for a specific JSON file
 app.post('/api/comments/:jsonFilename', (req, res) => postComments(req, res));
+
+// ====================
+// Authentication Routes
+// ====================
+// Login route
+app.post('/api/login', async (req, res) => {
+  const { login, password } = req.body;
+  if (login !== USER_LOGIN) {
+    return res.status(401).json({ message: 'Invalid login' });
+  }
+
+  const isValid = await bcrypt.compare(password, USER_PASSWORD_HASH);
+  if (!isValid) {
+    return res.status(401).json({ message: 'Incorrect password' });
+  }
+
+  const token = jwt.sign({ login }, JWT_SECRET, { expiresIn: '1h' });
+
+  res.cookie('token', token, {
+    httpOnly: true,
+    secure: false, // set to true in production (HTTPS)
+    sameSite: 'Strict'
+  });
+
+  res.json({ message: 'Login successful' });
+});
+// Auth middleware
+function verifyToken(req, res, next) {
+  const token = req.cookies.token;
+  if (!token) return res.status(401).json({ message: 'Not authenticated' });
+
+  try {
+    const user = jwt.verify(token, JWT_SECRET);
+    req.user = user;
+    next();
+  } catch {
+    return res.status(401).json({ message: 'Invalid token' });
+  }
+}
+// Profile route to get user information
+app.get('/api/profile', verifyToken, (req, res) => {
+  res.json({ login: req.user.login });
+});
+
 
 // ====================
 // Error Handling
