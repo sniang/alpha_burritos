@@ -2,7 +2,7 @@
 
 Alpha Burritos is a modern, interactive React application developed for CERN's ALPHA experiment. It provides researchers and analysts with a user-friendly interface to browse, visualize, and analyze signal data from the experiment's "burrito detectors"—specialized detection systems that capture antimatter annihilation events.
 
-The application seamlessly communicates with a custom RESTful API to fetch and display critical data, including JSON parameter files and detector-specific PNG images captured at various timestamps. By consolidating multiple data streams into a single, responsive interface, Alpha Burritos simplifies the complex task of antimatter detection analysis and monitoring.
+The application communicates with a custom RESTful API to fetch and display critical data, including JSON parameter files and detector-specific PNG images captured at various timestamps. By consolidating multiple data streams into a single, responsive interface, Alpha Burritos simplifies the complex task of antimatter detection analysis and monitoring.
 
 <p align="center">
   <img src="alpha-burritos.png" alt="Alpha Burritos Logo" width="400"/>
@@ -21,6 +21,7 @@ The application seamlessly communicates with a custom RESTful API to fetch and d
 - **Auto-Refresh:** Automatically refresh the list of available files.
 - **Skimmer:** Browse and export a range of acquisitions and parameters as CSV.
 - **Responsive UI:** Built with React and styled for clarity and usability.
+- **Authentication:** Secure login for authorized users.
 
 ## Project Structure
 
@@ -39,6 +40,7 @@ src/
   AutoRefresh.jsx        # Checkbox to enable/disable auto-refresh
   Comment.jsx            # Add and edit comments for each acquisition
   Skimmer.jsx            # Browse and export a range of acquisitions
+  LoginForm.jsx          # User authentication form
   assets/                # Static assets (e.g., ALPHA logo)
   CSS/                   # App and global CSS
   main.jsx               # React entry point
@@ -71,6 +73,9 @@ src/
 
 8. **Skimmer:**  
    Use the Skimmer tool to select a range of acquisitions, view their parameters in tabular form, and export as CSV.
+
+9. **Authentication:**  
+   Login is required to access the main features. Credentials are checked via the backend API.
 
 ## API Endpoints
 
@@ -147,6 +152,10 @@ The React app expects the following backend API (see [`server.js`](server.js)):
     { "success": true, "message": "Comment updated successfully" }
     ```
 
+- **Authentication:**  
+  - `POST /api/login` — Authenticate user (expects `{ login, password }` in body).
+  - `GET /api/profile` — Returns user info if authenticated.
+
 ### Error Handling
 
 - Returns `404` if a file or image is not found.
@@ -197,9 +206,21 @@ The app will be available at [http://localhost:5173](http://localhost:5173) by d
 
 ### Start the backend API
 
+You have two options:
+
+**Option 1: Run directly with Node.js**
 ```bash
 node server.js
 ```
+
+**Option 2: Run with [PM2](https://pm2.keymetrics.io/) for production process management**
+```bash
+npm install -g pm2
+pm2 start server.js --name alpha-burritos-api
+```
+- To view logs: `pm2 logs alpha-burritos-api`
+- To stop: `pm2 stop alpha-burritos-api`
+- To restart: `pm2 restart alpha-burritos-api`
 
 The API will run on [http://localhost:3001](http://localhost:3001).
 
@@ -208,9 +229,26 @@ The API will run on [http://localhost:3001](http://localhost:3001).
 - **API URL:**  
   If your backend runs on a different host or port, update the API URLs in the React components (e.g., `Parameters.jsx`, `DetectorImage.jsx`, etc.).
 
-- **Data Directory:**  
+- **Data Directory and Environment Variables:**  
   The backend expects data in a specific directory structure (see API documentation above).  
-  The main directory of the data must be declared in the variable `MAIN_DIR` in [`server.js`](server.js) or in your `.env` file.
+  The main directory of the data and other sensitive configuration must be declared in a `.env` file at the project root.
+
+  Example `.env` file:
+  ```
+  MAIN_DIR=/absolute/path/to/your/data
+  PORT=3001
+  USER_LOGIN=your_login
+  USER_PASSWORD_HASH=your_bcrypt_hash
+  JWT_SECRET=your_jwt_secret
+  ```
+
+  - `MAIN_DIR`: Absolute path to the main data directory (required).
+  - `PORT`: Port for the backend server (default: 3001).
+  - `USER_LOGIN`: Username for authentication (required).
+  - `USER_PASSWORD_HASH`: Bcrypt hash of the password for authentication (required).
+  - `JWT_SECRET`: Secret key for JWT authentication (required).
+
+  **Note:** Never commit your `.env` file to version control as it may contain sensitive information.
 
 ---
 
@@ -220,6 +258,7 @@ The API will run on [http://localhost:3001](http://localhost:3001).
 - [Vite Documentation](https://vitejs.dev/guide/)
 - [Express Documentation](https://expressjs.com/)
 - [Node.js Documentation](https://nodejs.org/en/docs)
+- [PM2 documentation](https://pm2.keymetrics.io/)
 - [JavaScript Reference (MDN)](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference)
 - [JSON Format](https://www.json.org/json-en.html)
 - [RESTful API Design](https://restfulapi.net/)
