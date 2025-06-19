@@ -17,14 +17,12 @@ export const getJsonFiles = async (req, res) => {
   try {
     const { year, month } = req.params;
     const dirPath = path.join(MAIN_DIR, `${year}/${padToTwoDigits(month)}/JSON`);
-    console.log(`Reading directory: ${dirPath}`);
 
     // Create directory if it doesn't exist
     await fs.mkdir(dirPath, { recursive: true });
 
     const files = await fs.readdir(dirPath);
     const jsonFiles = files.filter(file => file.endsWith('.json'));
-    console.log(`Found ${jsonFiles.length} JSON files`);
     res.json(jsonFiles);
   } catch (error) {
     console.error(getCurrentTimestamp());
