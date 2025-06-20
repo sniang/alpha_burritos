@@ -56,7 +56,7 @@ const Parameters = ({ selectedFile, detectorList, setDetectorList, setSelectedDe
                 const data = await res.json();
                 setParameters(data);
                 setDetectorList(Object.keys(data));
-                if (data[Object.keys(data)[0]].autodetect){
+                if (Object.keys(data) && Object.keys(data)[0] && data[Object.keys(data)[0]] && data[Object.keys(data)[0]].autodetect){
                     setAutodetect(data[Object.keys(data)[0]].autodetect);
                 }
                 // Ensure selected detector is valid
