@@ -36,6 +36,7 @@ const Parameters = ({ selectedFile, detectorList, setDetectorList, setSelectedDe
     // Controls table orientation
     const [reverseTable, setReverseTable] = useState(true);
     const [displayTable, setDisplayTable] = useState(false);
+    const [autodetect, setAutodetect] = useState(null);
 
     /**
      * Formats a number to five significant digits.
@@ -55,6 +56,9 @@ const Parameters = ({ selectedFile, detectorList, setDetectorList, setSelectedDe
                 const data = await res.json();
                 setParameters(data);
                 setDetectorList(Object.keys(data));
+                if (Object.keys(data) && Object.keys(data)[0] && data[Object.keys(data)[0]] && data[Object.keys(data)[0]].autodetect){
+                    setAutodetect(data[Object.keys(data)[0]].autodetect);
+                }
                 // Ensure selected detector is valid
                 const dataKeys = Object.keys(data);
                 const areArraysEqual =
@@ -87,7 +91,6 @@ const Parameters = ({ selectedFile, detectorList, setDetectorList, setSelectedDe
         if (keys.length === 0) return "";
         if (reverseTable) {
             const header = ["Parameters", ...keys].join("\t");
-            console.log(parameters)
             const rows = parameterKeys.map(({ key, label }) => {
                 const values = keys.map((loc) => formatToFiveSignificantDigits(parameters[loc][key]));
                 return [label, ...values].join("\t");
@@ -140,6 +143,7 @@ const Parameters = ({ selectedFile, detectorList, setDetectorList, setSelectedDe
             return (
                 <div id="parametersBlock" className="blocks">
                     <h4>{parseTimestamp(selectedFile)}</h4>
+                    <strong>{autodetect && `Particles: ${autodetect}`}</strong>
                     {displayTable && (<textarea
                         value={makeTable()}
                         readOnly
@@ -183,6 +187,7 @@ const Parameters = ({ selectedFile, detectorList, setDetectorList, setSelectedDe
         return (
             <div id="parametersBlock" className="blocks">
                 <h4>{parseTimestamp(selectedFile)}</h4>
+                <strong>{autodetect && `Particles: ${autodetect}`}</strong>
                 {displayTable && (<textarea
                     value={makeTable()}
                     readOnly

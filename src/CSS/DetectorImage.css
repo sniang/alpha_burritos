@@ -11,7 +11,7 @@
 
 /* Styling for the main detector image */
 #detectorImage {
-  height: 280px;
+  height: 350px;
   width: auto;
   display: block; /* Center the image horizontally */
   margin: 0 auto; /* Center the image horizontally */

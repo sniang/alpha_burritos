@@ -94,7 +94,7 @@ app.post('/api/login', async (req, res) => {
     return res.status(401).json({ message: 'Incorrect password' });
   }
 
-  const token = jwt.sign({ login }, JWT_SECRET, { expiresIn: '1h' });
+  const token = jwt.sign({ login }, JWT_SECRET, { expiresIn: '48h' });
 
   res.cookie('token', token, {
     httpOnly: true,
