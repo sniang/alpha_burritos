@@ -152,6 +152,7 @@ button:hover {
   /* Center children horizontally */
   gap: 10px;
   /* Space between children */
+  justify-content: space-between;
 }
 
 /* Responsive layout adjustments for mobile/tablet screens */
