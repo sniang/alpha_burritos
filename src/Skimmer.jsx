@@ -18,12 +18,12 @@ const formatValue = (value) => {
  * Generates formatted text content from the processed JSON data.
  * @param {Array<string>} jsonFilesSorted - Sorted array of JSON filenames
  * @param {Array<Object>} data - Array of data objects fetched from JSON files
- * @param {number} startingIndex - Starting index in the files array
- * @param {number} endingIndex - Ending index in the files array
+ * @param {number} endingIndex - Starting index in the files array
+ * @param {number} startingIndex - Ending index in the files array
  * @param {string} selectedDetector - The currently selected detector
  * @returns {string} Formatted text content for display
  */
-const getText = (jsonFilesSorted, data, startingIndex, endingIndex, selectedDetector) => {
+const getText = (jsonFilesSorted, data, endingIndex, startingIndex, selectedDetector) => {
     if (!data || data.length === 0) {
         return "No data available.";
     }
@@ -82,14 +82,14 @@ const getText = (jsonFilesSorted, data, startingIndex, endingIndex, selectedDete
  */
 const Skimmer = ({ jsonFiles, selectedDetector, setSelectedDetector, detectorList }) => {
     // State for managing the data and UI
-    const [startingIndex, setStartingIndex] = useState(0);
     const [endingIndex, setEndingIndex] = useState(0);
+    const [startingIndex, setStartingIndex] = useState(0);
     const [data, setData] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     
     // Sort JSON files alphabetically for consistent display
     const jsonFilesSorted = useMemo(() => 
-        jsonFiles ? [...jsonFiles].sort((a, b) => a.localeCompare(b)) : []
+        jsonFiles ? [...jsonFiles].sort((a, b) => b.localeCompare(a)) : []
     , [jsonFiles]);
     
     /**
@@ -103,7 +103,7 @@ const Skimmer = ({ jsonFiles, selectedDetector, setSelectedDetector, detectorLis
         setData([]);
         
         try {
-            const fileSlice = jsonFilesSorted.slice(startingIndex, endingIndex + 1);
+            const fileSlice = jsonFilesSorted.slice(startingIndex ,  endingIndex + 1);
             const localData = await Promise.all(
                 fileSlice.map(async (file) => {
                     const res = await fetch(`/api/json/${file}`);
@@ -117,7 +117,7 @@ const Skimmer = ({ jsonFiles, selectedDetector, setSelectedDetector, detectorLis
         } finally {
             setIsLoading(false);
         }
-    }, [jsonFilesSorted, startingIndex, endingIndex]);
+    }, [jsonFilesSorted, endingIndex, startingIndex]);
     
     // Fetch data when component mounts or dependencies change
     useEffect(() => {
@@ -133,8 +133,8 @@ const Skimmer = ({ jsonFiles, selectedDetector, setSelectedDetector, detectorLis
     
     // Generate the text content to display in the textarea
     const textContent = useMemo(() => 
-        getText(jsonFilesSorted, data, startingIndex, endingIndex, selectedDetector)
-    , [jsonFilesSorted, data, startingIndex, endingIndex, selectedDetector]);
+        getText(jsonFilesSorted, data, endingIndex, startingIndex, selectedDetector)
+    , [jsonFilesSorted, data, endingIndex, startingIndex, selectedDetector]);
 
     return (
         <div className="skimmer-container blocks">
@@ -150,8 +150,8 @@ const Skimmer = ({ jsonFiles, selectedDetector, setSelectedDetector, detectorLis
                 <label>
                     Starting:
                     <select
-                        value={startingIndex}
-                        onChange={(e) => setStartingIndex(Number(e.target.value))}
+                        value={endingIndex}
+                        onChange={(e) => setEndingIndex(Number(e.target.value))}
                     >
                         <option value="" disabled>Acquisition timestamp</option>
                         {jsonFilesSorted.map((file, index) => (
@@ -163,8 +163,8 @@ const Skimmer = ({ jsonFiles, selectedDetector, setSelectedDetector, detectorLis
                 <label>
                     Ending:
                     <select
-                        value={endingIndex}
-                        onChange={(e) => setEndingIndex(Number(e.target.value))}
+                        value={startingIndex}
+                        onChange={(e) => setStartingIndex(Number(e.target.value))}
                     >
                         <option value="" disabled>Acquisition timestamp</option>
                         {jsonFilesSorted.map((file, index) => (
