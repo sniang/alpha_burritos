@@ -1,5 +1,5 @@
 // Utility functions imported from local utils.js
-import { getCurrentTimestamp, padToTwoDigits, validateFilename, parseYearMonthFromFilename } from './utils.js';
+import { getCurrentTimestamp, padToTwoDigits, validateFilename, parseDateFromFilename } from './utils.js';
 import dotenv from 'dotenv';    // Loads environment variables from .env file
 import fs from 'fs/promises';   // Modern promise-based filesystem operations
 import path from 'path';        // Cross-platform path handling
@@ -12,11 +12,11 @@ export const MAIN_DIR = process.env.MAIN_DIR || '/home/alpha/Desktop/eos'; // Ba
 // Route handler
 // ====================
 
-// Route handler to get list of JSON files for a specific year/month
+// Route handler to get list of JSON files for a specific year/month/day
 export const getJsonFiles = async (req, res) => {
   try {
-    const { year, month } = req.params;
-    const dirPath = path.join(MAIN_DIR, `${year}/${padToTwoDigits(month)}/JSON`);
+    const { year, month, day } = req.params;
+    const dirPath = path.join(MAIN_DIR, `${year}/${padToTwoDigits(month)}/${padToTwoDigits(day)}/JSON`);
 
     // Create directory if it doesn't exist
     await fs.mkdir(dirPath, { recursive: true });
@@ -38,12 +38,13 @@ export const getSignal = async (req, res) => {
     console.log(`Getting signal file for JSON file: ${jsonFilename}, detector: ${detector}`);
     validateFilename(jsonFilename);
 
-    const { year, month } = parseYearMonthFromFilename(jsonFilename);
+    const { year, month, day } = parseDateFromFilename(jsonFilename);
     const baseName = jsonFilename.replace('.json', '.txt');
     const filePath = path.join(
       MAIN_DIR,
       year,
       padToTwoDigits(month),
+      padToTwoDigits(day),
       detector,
       baseName
     );
@@ -70,8 +71,8 @@ export const getJsonContent = async (req, res) => {
     const { jsonFilename } = req.params;
     console.log(`Getting content for file: ${jsonFilename}`);
     validateFilename(jsonFilename);
-    const { year, month } = parseYearMonthFromFilename(jsonFilename);
-    const filePath = path.join(MAIN_DIR, year, padToTwoDigits(month), 'JSON', jsonFilename);
+    const { year, month, day } = parseDateFromFilename(jsonFilename);
+    const filePath = path.join(MAIN_DIR, year, padToTwoDigits(month), padToTwoDigits(day), 'JSON', jsonFilename);
     console.log(`Reading file from: ${filePath}`);
     const data = await fs.readFile(filePath, 'utf8');
     const jsonData = JSON.parse(data);
@@ -95,12 +96,13 @@ export const getImage = async (req, res, subdir = 'Together') => {
     console.log(`Getting image for JSON file: ${jsonFilename}, detector: ${detector || subdir}`);
     validateFilename(jsonFilename);
 
-    const { year, month } = parseYearMonthFromFilename(jsonFilename);
+    const { year, month, day } = parseDateFromFilename(jsonFilename);
     const baseName = jsonFilename.replace('.json', '.png');
     const imagePath = path.join(
       MAIN_DIR,
       year,
       padToTwoDigits(month),
+      padToTwoDigits(day),
       detector || subdir,
       baseName
     );
@@ -126,8 +128,8 @@ export const getComments = async (req, res) => {
     const { jsonFilename } = req.params;
     console.log(`Getting comments for file: ${jsonFilename}`);
     validateFilename(jsonFilename);
-    const { year, month } = parseYearMonthFromFilename(jsonFilename);
-    const filePath = path.join(MAIN_DIR, year, padToTwoDigits(month), 'JSON', 'comments.json');
+    const { year, month, day } = parseDateFromFilename(jsonFilename);
+    const filePath = path.join(MAIN_DIR, year, padToTwoDigits(month),padToTwoDigits(day), 'JSON', 'comments.json');
     console.log(`Reading comments from: ${filePath}`);
 
     let jsonData = {};
@@ -137,7 +139,7 @@ export const getComments = async (req, res) => {
     } catch (error) {
       if (error.code === 'ENOENT') {
         // File doesn't exist, create directory and empty comments file
-        const dirPath = path.join(MAIN_DIR, year, padToTwoDigits(month), 'JSON');
+        const dirPath = path.join(MAIN_DIR, year, padToTwoDigits(month), padToTwoDigits(day), 'JSON');
         await fs.mkdir(dirPath, { recursive: true });
         await fs.writeFile(filePath, JSON.stringify({}), 'utf8');
         console.log(`Created new comments file at: ${filePath}`);
@@ -163,8 +165,8 @@ export const postComments = async (req, res) => {
 
     validateFilename(jsonFilename);
 
-    const { year, month } = parseYearMonthFromFilename(jsonFilename);
-    const filePath = path.join(MAIN_DIR, year, padToTwoDigits(month), 'JSON', 'comments.json');
+    const { year, month, day } = parseDateFromFilename(jsonFilename);
+    const filePath = path.join(MAIN_DIR, year, padToTwoDigits(month), padToTwoDigits(day), 'JSON', 'comments.json');
 
     // Read existing comments file or create empty object if it doesn't exist
     let commentsData = {};
@@ -183,7 +185,7 @@ export const postComments = async (req, res) => {
     console.log(`Updating comment for ${jsonFilename}: ${comment}`);
 
     // Ensure directory exists
-    const dirPath = path.join(MAIN_DIR, year, padToTwoDigits(month), 'JSON');
+    const dirPath = path.join(MAIN_DIR, year, padToTwoDigits(month), padToTwoDigits(day), 'JSON');
     await fs.mkdir(dirPath, { recursive: true });
 
     // Write updated comments back to file

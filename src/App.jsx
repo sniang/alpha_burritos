@@ -5,7 +5,7 @@ import Parameters from './Parameters.jsx'
 import DetectorImageAll from './DetectorImageAll.jsx'
 import DetectorSelector from './DetectorSelector.jsx'
 import DetectorImage from './DetectorImage.jsx'
-import YearMonthSelector from './YearMonthSelector.jsx'
+import DateSelector from './DateSelector.jsx'
 import MainTitle from './MainTitle.jsx'
 import AutoRefresh from './AutoRefresh.jsx'
 import Comment from './Comment.jsx'
@@ -26,6 +26,7 @@ import LoginForm from './LoginForm.jsx'
  * - error: Error object for global error handling
  * - year: Selected year for filtering data
  * - month: Selected month for filtering data
+ * - day: Selected day for filtering data
  * - detectorList: List of detectors available in the selected file
  * - isLoggedIn: Boolean indicating authentication status
  *
@@ -59,12 +60,13 @@ function App() {
     error: null,             // Error object for error handling
     year: new Date().getFullYear(), // Default to current year
     month: new Date().getMonth() + 1, // Default to current month (1-based)
+    day: new Date().getDate(), // Default to current day
     detectorList: [],        // List of detectors in the selected file
     isLoggedIn: false,       // Authentication status
   });
 
   // Destructure state for easier access in render
-  const { jsonFiles, selectedFile, selectedDetector, error, year, month, detectorList, isLoggedIn } = state;
+  const { jsonFiles, selectedFile, selectedDetector, error, year, month, day, detectorList, isLoggedIn } = state;
 
   /**
    * Helper to update a single property in the state object.
@@ -172,21 +174,25 @@ function App() {
         <AutoRefresh
           year={year}
           month={month}
+          day={day}
           setJsonFiles={(value) => updateState('jsonFiles', value)}
           setSelectedFile={(value) => updateState('selectedFile', value)}
           setError={(value) => updateState('error', value)}
         />
-        {/* YearMonthSelector: Allows user to pick year and month */}
-        <YearMonthSelector
+        {/* DateSelector: Allows user to pick year, month and day */}
+        <DateSelector
           year={year}
           month={month}
+          day={day}
           setYear={(value) => updateState('year', value)}
           setMonth={(value) => updateState('month', value)}
+          setDay={(value) => updateState('day', value)}
         />
         {/* TimeStampSelector: Lets user pick a file (timestamp) */}
         <TimeStampSelector
           year={year}
           month={month}
+          day={day}
           jsonFiles={jsonFiles}
           setJsonFiles={(value) => updateState('jsonFiles', value)}
           selectedFile={selectedFile}

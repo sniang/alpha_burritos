@@ -59,7 +59,7 @@ app.get('/api/test', (req, res) => {
 });
 
 // Retrieve list of JSON files for a given year and month
-app.get('/api/:year/:month/json', getJsonFiles);
+app.get('/api/:year/:month/:day/json', getJsonFiles);
 
 // Retrieve content of a specific JSON file
 app.get('/api/json/:jsonFilename', getJsonContent);
