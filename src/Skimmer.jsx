@@ -27,31 +27,34 @@ const getText = (jsonFilesSorted, data, endingIndex, startingIndex, selectedDete
     if (!data || data.length === 0) {
         return "No data available.";
     }
-    
+    const sortedData = [...data].reverse();
+
     // Create header row with parameter labels
     const headerRow = ["Timestamp\t\t"];
     parameterKeys.forEach(({ label }) => {
         headerRow.push(label);
     });
-    
+
     const rows = [headerRow.join("\t")];
-    
+
     // Get only the files within the selected range
-    const jsonFilesSortedSlice = jsonFilesSorted.slice(startingIndex, endingIndex + 1);
-    
+    const jsonFilesSortedSlice = jsonFilesSorted
+        .slice(startingIndex, endingIndex + 1)
+        .sort((a, b) => a.localeCompare(b));
+
     // Build data rows with timestamp and parameter values
     jsonFilesSortedSlice.forEach((file, index) => {
         const row = [parseTimestamp(file)];
-        
+
         parameterKeys.forEach(({ key }) => {
-            const detectorData = data[index]?.[selectedDetector];
-            row.push(detectorData && detectorData[key] !== undefined ? 
+            const detectorData = sortedData[index]?.[selectedDetector];
+            row.push(detectorData && detectorData[key] !== undefined ?
                 formatValue(detectorData[key]) : "N/A");
         });
-        
+
         rows.push(row.join("\t\t"));
     });
-    
+
     return rows.join("\n");
 };
 
@@ -86,24 +89,24 @@ const Skimmer = ({ jsonFiles, selectedDetector, setSelectedDetector, detectorLis
     const [startingIndex, setStartingIndex] = useState(0);
     const [data, setData] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
-    
+
     // Sort JSON files alphabetically for consistent display
-    const jsonFilesSorted = useMemo(() => 
+    const jsonFilesSorted = useMemo(() =>
         jsonFiles ? [...jsonFiles].sort((a, b) => b.localeCompare(a)) : []
-    , [jsonFiles]);
-    
+        , [jsonFiles]);
+
     /**
      * Fetches data for the selected range of JSON files
      * Uses Promise.all to fetch multiple files concurrently
      */
     const fetchData = useCallback(async () => {
         if (!jsonFilesSorted.length) return;
-        
+
         setIsLoading(true);
         setData([]);
-        
+
         try {
-            const fileSlice = jsonFilesSorted.slice(startingIndex ,  endingIndex + 1);
+            const fileSlice = jsonFilesSorted.slice(startingIndex, endingIndex + 1);
             const localData = await Promise.all(
                 fileSlice.map(async (file) => {
                     const res = await fetch(`/api/json/${file}`);
@@ -118,23 +121,23 @@ const Skimmer = ({ jsonFiles, selectedDetector, setSelectedDetector, detectorLis
             setIsLoading(false);
         }
     }, [jsonFilesSorted, endingIndex, startingIndex]);
-    
+
     // Fetch data when component mounts or dependencies change
     useEffect(() => {
         if (jsonFilesSorted.length > 0) {
             fetchData();
         }
     }, [fetchData, jsonFilesSorted.length]);
-    
+
     // Early return if no files are available
     if (!jsonFiles || jsonFiles.length === 0) {
         return <div className="skimmer-container">No JSON files available.</div>;
     }
-    
+
     // Generate the text content to display in the textarea
-    const textContent = useMemo(() => 
+    const textContent = useMemo(() =>
         getText(jsonFilesSorted, data, endingIndex, startingIndex, selectedDetector)
-    , [jsonFilesSorted, data, endingIndex, startingIndex, selectedDetector]);
+        , [jsonFilesSorted, data, endingIndex, startingIndex, selectedDetector]);
 
     return (
         <div className="skimmer-container blocks">
@@ -178,18 +181,18 @@ const Skimmer = ({ jsonFiles, selectedDetector, setSelectedDetector, detectorLis
                 <div className="loading-indicator">Loading data...</div>
             ) : (
                 <>
-                <textarea
-                    value={textContent}
-                    readOnly
-                    className="skimmer-textarea"
-                />
+                    <textarea
+                        value={textContent}
+                        readOnly
+                        className="skimmer-textarea"
+                    />
                     <a
                         href={`data:text/csv;charset=utf-8,${encodeURIComponent(textContent)}`}
                         download={`skimmer_data_${selectedDetector}.csv`}
                         style={{ textDecoration: 'none', color: 'inherit' }}
                     >
                         <button>
-                        Download CSV
+                            Download CSV
                         </button>
                     </a>
                 </>
