@@ -2,7 +2,8 @@ import React, { useState, useEffect } from "react";
 
 /**
  * AutoRefresh component provides an auto-refresh toggle for periodically fetching JSON files
- * from a backend API based on the selected year and month. When enabled, it fetches the files
+ * from a backend API based on the selected year, month and day.
+ * When enabled, it fetches the files
  * every 2 seconds and updates the parent state with the latest file list and selection.
  *
  * @author Samuel Niang
@@ -13,6 +14,7 @@ import React, { useState, useEffect } from "react";
  * @param {Function} props.setError - Callback to handle and display errors.
  * @param {string|number} props.year - The year used to fetch files from the API.
  * @param {string|number} props.month - The month used to fetch files from the API.
+ * @param {string|number} props.day - The day used to fetch files from the API.
  *
  * @returns {JSX.Element} A checkbox UI for toggling auto-refresh functionality.
  */
@@ -24,6 +26,7 @@ function AutoRefresh({
     setError,
     year,
     month,
+    day
 }) {
     // State to track whether auto-refresh is enabled
     const [autoRefresh, setAutoRefresh] = useState(true);
@@ -35,7 +38,7 @@ function AutoRefresh({
     const fetchFiles = async () => {
         try {
             // Fetch files from backend using year and month
-            const res = await fetch(`/api/${year}/${month}/json`);
+            const res = await fetch(`/api/${year}/${month}/${day}/json`);
             if (!res.ok) {
                 // Throw error if response is not ok
                 throw new Error(`${res.status} ${res.statusText}`);
@@ -69,7 +72,7 @@ function AutoRefresh({
         const interval = setInterval(fetchFiles, 2000);
         return () => clearInterval(interval);
         // eslint-disable-next-line
-    }, [autoRefresh, year, month]);
+    }, [autoRefresh, year, month, day]);
 
     /**
      * Handler for file selection change (not used in this component, but present for future use).

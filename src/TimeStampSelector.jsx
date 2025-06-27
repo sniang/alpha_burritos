@@ -18,6 +18,7 @@ import React, { useState, useEffect } from "react";
  * @param {Function} props.setError - Setter function to update the error state.
  * @param {string} props.year - Year for fetching JSON files.
  * @param {string} props.month - Month for fetching JSON files.
+ * @param {string} props.day - Day for fetching JSON files.
  *
  * @example
  * <TimeStampSelector
@@ -29,6 +30,7 @@ import React, { useState, useEffect } from "react";
  *   setError={setError}
  *   year={year}
  *   month={month}
+ *   day={day}
  * />
  */
 /**
@@ -44,12 +46,13 @@ function TimeStampSelector({
   setError,
   year,
   month,
+  day
 }) {
   // Fetch JSON files from backend API on mount
   useEffect(() => {
     const fetchFiles = async () => {
       try {
-        const res = await fetch(`/api/${year}/${month}/json`);
+        const res = await fetch(`/api/${year}/${month}/${day}/json`);
         if (!res.ok) {
           throw new Error(`${res.status} ${res.statusText}`);
         }
@@ -67,7 +70,7 @@ function TimeStampSelector({
       }
     };
     fetchFiles();
-  }, [year, month]);
+  }, [year, month, day]);
 
   // Handle dropdown selection change
   const handleSelectChange = (event) => {
