@@ -9,6 +9,7 @@
     /* Include border and padding in width */
     width: 100%;
     /* Take full width of parent */
+    flex-wrap: wrap;
 }
 
 #ChooseConfig > button {
