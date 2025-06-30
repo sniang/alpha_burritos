@@ -213,3 +213,17 @@ export const getConfiguration = async (req, res) => {
     res.status(500).json({ error: 'Unable to read configuration file' });
   }
 }
+
+export const postConfiguration = async (req, res) => {
+  try {
+    const configPath = path.join(ANALYSIS_DIR, 'configuration.json');
+    const newConfig = req.body;
+    await fs.writeFile(configPath, JSON.stringify(newConfig, null, 2), 'utf8');
+    console.log('Configuration updated successfully');
+    res.json({ success: true, message: 'Configuration updated successfully' });
+  } catch (error) {
+    console.error(getCurrentTimestamp());
+    console.error('Error in postConfiguration:', error.message);
+    res.status(400).json({ error: error.message });
+  }
+};

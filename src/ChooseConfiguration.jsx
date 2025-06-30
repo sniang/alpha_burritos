@@ -37,21 +37,34 @@ const ChooseConfiguration = ({selectedFile}) => {
     return () => clearInterval(interval);
   }, []);
 
-  const handleConfigChange = (newConfig) => {
+  const handleConfigChange = async (newConfig) => {
     if (newConfig !== 'positrons' && newConfig !== 'antiprotons')
       throw new Error('Config has to be defined (positrons or antiprotons)');
     setConfig(newConfig);
-    // Optionally, you can also update the fit state based on the new config
+    const newData = {...data}
     if (newConfig === 'positrons') {
       console.log('Positrons configuration selected');
+      newData.config = 'positrons';
     } else if (newConfig === 'antiprotons') {
       console.log('Antiprotons configuration selected');
+      newData.config = 'antiprotons';
     }
+    try {
+        fetch('/api/configuration', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(newData),
+        })}
+      catch (error) {
+        setError('Error updating configuration: ' + error.message);
+      }
   }
 
   return (
     <div id="ChooseConfig" className="blocks">
-      <h3>Choose configuration (it's not working it)</h3>
+      <h3>Choose configuration (it's not working yet)</h3>
       <div className="buttonBlock">
         <button
           className="green"
