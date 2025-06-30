@@ -25,6 +25,7 @@ const ChooseConfiguration = ({selectedFile}) => {
         setDataKeys(Object.keys(result));
         setError(null);
         setFit(result.fit || false);
+        setConfig(result.config);
       } catch (err) {
         setError(err.message);
         setData(null);
@@ -32,32 +33,44 @@ const ChooseConfiguration = ({selectedFile}) => {
       }
     };
     fetchData();
-    const interval = setInterval(fetchData, 2000);
+    const interval = setInterval(fetchData, 1000);
     return () => clearInterval(interval);
   }, []);
 
+  const handleConfigChange = (newConfig) => {
+    if (newConfig !== 'positrons' && newConfig !== 'antiprotons')
+      throw new Error('Config has to be defined (positrons or antiprotons)');
+    setConfig(newConfig);
+    // Optionally, you can also update the fit state based on the new config
+    if (newConfig === 'positrons') {
+      console.log('Positrons configuration selected');
+    } else if (newConfig === 'antiprotons') {
+      console.log('Antiprotons configuration selected');
+    }
+  }
+
   return (
     <div id="ChooseConfig" className="blocks">
-      <h3>Choose configuration</h3>
+      <h3>Choose configuration (it's not working it)</h3>
       <div className="buttonBlock">
         <button
           className="green"
           style={{ opacity: config !== 'positrons' ? 0.5 : 1 }}
-          onClick={() => { setConfig('positrons'); alert("This doesn't work yet") }}
+          onClick={() => handleConfigChange('positrons')}
         >
           Positrons
         </button>
         <button
           className="green"
           style={{ opacity: config !== 'antiprotons' ? 0.5 : 1 }}
-          onClick={() => { setConfig('antiprotons'); alert("This doesn't work yet"); }}
+          onClick={() => handleConfigChange('antiprotons')}
         >
           Antiprotons
         </button>
         <button
           className="green"
           style={{ opacity: fit ? 1 : 0.5 }}
-          onClick={() => { setFit(!fit); alert("This doesn't work yet"); }}
+          onClick={() => { setFit(!fit);}}
         >
           {fit ? "Fit enabled" : "Fit disabled"}
         </button>
