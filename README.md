@@ -10,7 +10,7 @@ The application communicates with a custom RESTful API to fetch and display crit
 
 ## Features
 
-- **Year/Month Selection:** Choose the year and month to filter available data files.
+- **Year/Month/Day Selection:** Choose the year, month, and day to filter available data files.
 - **Timestamp Selection:** Select a specific acquisition timestamp from available JSON files.
 - **Parameter Display:** View key parameters (area, FWHM, peak, rise, time peak, dt, arrival) for each detector.
 - **Combined Image View:** See the combined detector image for the selected acquisition.
@@ -48,8 +48,8 @@ src/
 
 ## How It Works
 
-1. **Select Year/Month:**  
-   Use the dropdowns to pick a year and month. The app fetches available JSON files for that period.
+1. **Select Year/Month/Day:**  
+   Use the dropdowns to pick a year, month, and day. The app fetches available JSON files for that period.
 
 2. **Select Timestamp:**  
    Choose a file (timestamp) from the dropdown. The app loads its parameters and images.
@@ -58,11 +58,11 @@ src/
    The `Parameters` panel displays key values for each detector.
 
 4. **View Images:**  
-   - The combined image is shown by default.
+   - The combined image is shown by default.  
    - Use the detector dropdown to view images for individual detectors.
 
 5. **Download Signals:**  
-   - Use the "Download the signal" button to download the raw signal for the selected detector.
+   - Use the "Download the signal" button to download the raw signal for the selected detector.  
    - Use the "Download the signals" button to download signals for all available detectors at once.
 
 6. **Add Comments:**  
@@ -91,9 +91,9 @@ The React app expects the following backend API (see [`server.js`](server.js)):
     ```
 
 - **List JSON Files:**  
-  `GET /api/:year/:month/json`  
-  - Returns a list of JSON filenames for the specified year and month.  
-  - Example: `/api/2025/06/json`  
+  `GET /api/:year/:month/:day/json`  
+  - Returns a list of JSON filenames for the specified year, month, and day.  
+  - Example: `/api/2025/06/02/json`  
   - Response:  
     ```json
     ["data-2025-06-02_08-25-03.json", "file-2025-06-02.json"]
@@ -152,6 +152,13 @@ The React app expects the following backend API (see [`server.js`](server.js)):
     { "success": true, "message": "Comment updated successfully" }
     ```
 
+- **Get/Update Configuration:**  
+  - `GET /api/configuration` — Get the current configuration (from `ANALYSIS_DIR/configuration.json`).
+  - `POST /api/configuration` — Update the configuration (expects JSON body).
+
+- **Re-analyse a JSON file:**  
+  - `GET /api/reanalyse/:filename` — Triggers a re-analysis for the specified JSON file.
+
 - **Authentication:**  
   - `POST /api/login` — Authenticate user (expects `{ login, password }` in body).
   - `GET /api/profile` — Returns user info if authenticated.
@@ -169,18 +176,19 @@ The API expects files to be organized as:
 MAIN_DIR/
   YYYY/
     MM/
-      JSON/
-        file-YYYY-MM-DD.json
-        comments.json
-      Together/
-        file-YYYY-MM-DD.png
-      PDS/
-        file-YYYY-MM-DD.png
-        file-YYYY-MM-DD.txt
-      BDS/
-        file-YYYY-MM-DD.png
-        file-YYYY-MM-DD.txt
-      ...
+      DD/
+        JSON/
+          file-YYYY-MM-DD.json
+          comments.json
+        Together/
+          file-YYYY-MM-DD.png
+        PDS/
+          file-YYYY-MM-DD.png
+          file-YYYY-MM-DD.txt
+        BDS/
+          file-YYYY-MM-DD.png
+          file-YYYY-MM-DD.txt
+        ...
 ```
 
 ## Development
@@ -236,6 +244,7 @@ The API will run on [http://localhost:3001](http://localhost:3001).
   Example `.env` file:
   ```
   MAIN_DIR=/absolute/path/to/your/data
+  ANALYSIS_DIR=/absolute/path/to/your/analysis
   PORT=3001
   USER_LOGIN=your_login
   USER_PASSWORD_HASH=your_bcrypt_hash
@@ -243,6 +252,7 @@ The API will run on [http://localhost:3001](http://localhost:3001).
   ```
 
   - `MAIN_DIR`: Absolute path to the main data directory (required).
+  - `ANALYSIS_DIR`: Absolute path to the analysis directory (required).
   - `PORT`: Port for the backend server (default: 3001).
   - `USER_LOGIN`: Username for authentication (required).
   - `USER_PASSWORD_HASH`: Bcrypt hash of the password for authentication (required).
