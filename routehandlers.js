@@ -201,6 +201,7 @@ export const postComments = async (req, res) => {
   }
 };
 
+// Route handler to get configuration data
 export const getConfiguration = async (req, res) => {
   try {
     const configPath = path.join(ANALYSIS_DIR, 'configuration.json');
@@ -214,6 +215,7 @@ export const getConfiguration = async (req, res) => {
   }
 }
 
+// Route handler to post/update configuration
 export const postConfiguration = async (req, res) => {
   try {
     const configPath = path.join(ANALYSIS_DIR, 'configuration.json');
@@ -226,3 +228,26 @@ export const postConfiguration = async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 };
+
+// Route handler to re-analyse from a specific JSON file
+export const reAnalyse = async (req, res) => {
+  try {
+    const { filename } = req.params;
+    console.log(`Re-analysing file: ${filename}`);
+    validateFilename(filename);
+    
+    const { year, month, day } = parseDateFromFilename(filename);
+    const filePath = path.join(MAIN_DIR, year, padToTwoDigits(month), padToTwoDigits(day), 'JSON', filename);
+    
+    // Simulate re-analysis process done by launching a python script or similar
+    // In a real application, you would call your analysis function here
+    console.log(`Re-analysing file at: ${filePath}`);
+    
+    // For now, just return success
+    res.json({ success: true });
+  } catch (error) {
+    console.error(getCurrentTimestamp());
+    console.error('Error in reAnalyse:', error.message);
+    res.status(400).json({ error: error.message });
+  }
+}

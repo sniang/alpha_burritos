@@ -1,0 +1,16 @@
+{
+  "TrigVal": 1.5,
+  "red_pitaya_1": true,
+  "red_pitaya_2": true,
+  "red_pitaya_3": false,
+  "red_pitaya_4": true,
+  "red_pitaya_5": false,
+  "AcqTime": 31536000,
+  "nPoint": 100,
+  "nPoint_pmt11": 300,
+  "run_avg": 1,
+  "fft": true,
+  "cutoff": 100,
+  "fit": true,
+  "config": "positrons"
+}

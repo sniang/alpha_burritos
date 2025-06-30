@@ -21,6 +21,7 @@ import {
     postComments,
     getConfiguration,
     postConfiguration,
+    reAnalyse,
     MAIN_DIR,
 } from './routehandlers.js';
 
@@ -83,8 +84,12 @@ app.post('/api/comments/:jsonFilename', (req, res) => postComments(req, res));
 
 // Get the configuration for the analysis
 app.get('/api/configuration', (req, res) => getConfiguration(req, res));
+
 // Post the configuration for the analysis
 app.post('/api/configuration', (req, res) => postConfiguration(req, res));
+
+// Re-analyse a specific JSON file
+app.get('/api/reanalyse/:filename', (req, res) => reAnalyse(req, res));
 
 // ====================
 // Authentication Routes
