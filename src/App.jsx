@@ -217,7 +217,7 @@ function App() {
     <>
       <MainTitle />
       {renderSelectorComponents()}
-       <ChooseConfiguration />
+       <ChooseConfiguration selectedFile={selectedFile}/>
       {renderDetectorComponents()}
     </>
   )

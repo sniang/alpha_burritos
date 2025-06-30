@@ -155,6 +155,11 @@ button:hover {
   justify-content: space-between;
 }
 
+
+button.green {
+    background-color: #008C45;
+}
+
 /* Responsive layout adjustments for mobile/tablet screens */
 @media screen and (max-width: 950px) {
   #selects-block {

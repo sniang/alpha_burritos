@@ -19,6 +19,7 @@ import {
     getImage,
     getComments,
     postComments,
+    getConfiguration,
     MAIN_DIR,
 } from './routehandlers.js';
 
@@ -78,6 +79,9 @@ app.get('/api/comments/:jsonFilename', (req, res) => getComments(req, res));
 
 // Post comments for a specific JSON file
 app.post('/api/comments/:jsonFilename', (req, res) => postComments(req, res));
+
+// Get the configuration for the analysis
+app.get('/api/configuration', (req, res) => getConfiguration(req, res));
 
 // ====================
 // Authentication Routes

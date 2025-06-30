@@ -7,6 +7,7 @@ import path from 'path';        // Cross-platform path handling
 // Load environment variables and set base directory
 dotenv.config();
 export const MAIN_DIR = process.env.MAIN_DIR || '/home/alpha/Desktop/eos'; // Base directory for all data files
+export const ANALYSIS_DIR = process.env.ANALYSIS_DIR || '/home/alpha/Desktop/eos/analysis'; // Directory for analysis files
 
 // ====================
 // Route handler
@@ -199,3 +200,16 @@ export const postComments = async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 };
+
+export const getConfiguration = async (req, res) => {
+  try {
+    const configPath = path.join(ANALYSIS_DIR, 'configuration.json');
+    const data = await fs.readFile(configPath, 'utf8');
+    const configData = JSON.parse(data);
+    res.json(configData);
+  } catch (error) {
+    console.error(getCurrentTimestamp());
+    console.error('Error in getConfiguration:', error.message);
+    res.status(500).json({ error: 'Unable to read configuration file' });
+  }
+}
