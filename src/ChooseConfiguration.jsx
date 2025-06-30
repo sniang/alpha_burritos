@@ -1,8 +1,8 @@
 import React from "react";
 import { useState, useEffect } from "react";
-import './CSS/ChooseConfig.css';
+import './CSS/ChooseConfiguration.css';
 
-const ChooseConfig = () => {
+const ChooseConfiguration = () => {
     const [config, setConfig] = useState('positrons');
     const [fit, setFit] = useState(false);
     const [error, setError] = useState(null);
@@ -32,7 +32,7 @@ const ChooseConfig = () => {
     );
 }
 
-export default ChooseConfig;
+export default ChooseConfiguration;
 
 
 
