@@ -11,6 +11,7 @@ import AutoRefresh from './AutoRefresh.jsx'
 import Comment from './Comment.jsx'
 import Skimmer from './Skimmer.jsx'
 import LoginForm from './LoginForm.jsx'
+import ChooseConfig from './chooseConfig.jsx'
 
 /**
  * Root component of the application that orchestrates detector visualization and data management.
@@ -216,6 +217,7 @@ function App() {
     <>
       <MainTitle />
       {renderSelectorComponents()}
+       <ChooseConfig />
       {renderDetectorComponents()}
     </>
   )
