@@ -217,7 +217,7 @@ function App() {
     <>
       <MainTitle />
       {renderSelectorComponents()}
-       <ChooseConfig />
+       <ChooseConfiguration />
       {renderDetectorComponents()}
     </>
   )
