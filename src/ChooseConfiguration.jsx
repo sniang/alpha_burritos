@@ -33,22 +33,22 @@ const ChooseConfiguration = ({selectedFile}) => {
       }
     };
     fetchData();
-    const interval = setInterval(fetchData, 1000);
+    const interval = setInterval(fetchData, 500);
     return () => clearInterval(interval);
   }, []);
 
-  const handleConfigChange = async (newConfig) => {
+  const handleConfigChange = async (newConfig,newFit=fit) => {
     if (newConfig !== 'positrons' && newConfig !== 'antiprotons')
       throw new Error('Config has to be defined (positrons or antiprotons)');
     setConfig(newConfig);
     const newData = {...data}
     if (newConfig === 'positrons') {
-      console.log('Positrons configuration selected');
       newData.config = 'positrons';
     } else if (newConfig === 'antiprotons') {
       console.log('Antiprotons configuration selected');
       newData.config = 'antiprotons';
     }
+    newData.fit = newFit;
     try {
         fetch('/api/configuration', {
           method: 'POST',
@@ -83,7 +83,7 @@ const ChooseConfiguration = ({selectedFile}) => {
         <button
           className="green"
           style={{ opacity: fit ? 1 : 0.5 }}
-          onClick={() => { setFit(!fit);}}
+          onClick={() => { handleConfigChange(config, !fit);}}
         >
           {fit ? "Fit enabled" : "Fit disabled"}
         </button>
@@ -102,7 +102,7 @@ const ChooseConfiguration = ({selectedFile}) => {
           <ul>
             {dataKeys.map((key) => (
               <li key={key}>
-                <strong>{key}:</strong> {data[key] ? JSON.stringify(data[key]) : "No data available"}
+                <strong>{key}:</strong> { JSON.stringify(data[key]) }
               </li>
             ))}
           </ul>

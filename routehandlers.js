@@ -219,7 +219,6 @@ export const postConfiguration = async (req, res) => {
     const configPath = path.join(ANALYSIS_DIR, 'configuration.json');
     const newConfig = req.body;
     await fs.writeFile(configPath, JSON.stringify(newConfig, null, 2), 'utf8');
-    console.log('Configuration updated successfully');
     res.json({ success: true, message: 'Configuration updated successfully' });
   } catch (error) {
     console.error(getCurrentTimestamp());
