@@ -228,7 +228,6 @@ function App() {
       {renderSelectorComponents()}
       <ChooseConfiguration
         selectedFile={selectedFile}
-        setSelectedFile={(value) => updateState('selectedFile', value)}
         forceRefreshSelectedFile={forceRefreshSelectedFile}
       />
       {renderDetectorComponents()}

@@ -17,7 +17,7 @@ import antiprotonConfig from './assets/default_config_antiprotons.json';
  * @returns {JSX.Element|null} The rendered configuration selection UI, or null if no data is loaded.
  */
 
-const ChooseConfiguration = ({ selectedFile, setSelectedFile, forceRefreshSelectedFile }) => {
+const ChooseConfiguration = ({ selectedFile, forceRefreshSelectedFile }) => {
   // State for error messages
   const [error, setError] = useState(null);
   // State for configuration data fetched from backend
@@ -115,7 +115,6 @@ const ChooseConfiguration = ({ selectedFile, setSelectedFile, forceRefreshSelect
       // Optionally handle result here
       if (result.success) {
         setMessage('Re-analysis successful');
-        // FORCE REFRESH OF THE IMAGE
         forceRefreshSelectedFile();
       }
     }
