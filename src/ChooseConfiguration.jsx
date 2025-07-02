@@ -1,4 +1,4 @@
-import React from "react";
+import React, { use } from "react";
 import { useState, useEffect } from "react";
 import './CSS/ChooseConfiguration.css';
 import positronConfig from './assets/default_config_positrons.json';
@@ -17,7 +17,7 @@ import antiprotonConfig from './assets/default_config_antiprotons.json';
  * @returns {JSX.Element|null} The rendered configuration selection UI, or null if no data is loaded.
  */
 
-const ChooseConfiguration = ({ selectedFile }) => {
+const ChooseConfiguration = ({ selectedFile, setSelectedFile, forceRefreshSelectedFile }) => {
   // State for error messages
   const [error, setError] = useState(null);
   // State for configuration data fetched from backend
@@ -26,6 +26,8 @@ const ChooseConfiguration = ({ selectedFile }) => {
   const [dataKeys, setDataKeys] = useState([]);
   // State to toggle display of configuration details
   const [showDetails, setShowDetails] = useState(false);
+  // State for displaying messages (e.g., success messages)
+  const [message, setMessage] = useState(null);
 
   // Fetch configuration data from backend on mount and every 500ms
   useEffect(() => {
@@ -103,6 +105,7 @@ const ChooseConfiguration = ({ selectedFile }) => {
     setError(null);
     setShowDetails(false);
     try {
+      setMessage("Re-analyzing the file...");
       // Call backend API to re-analyse the selected file
       const response = await fetch(`/api/reanalyse/${selectedFile}`)
       if (!response.ok) {
@@ -110,10 +113,22 @@ const ChooseConfiguration = ({ selectedFile }) => {
       }
       const result = await response.json();
       // Optionally handle result here
+      if (result.success) {
+        setMessage('Re-analysis successful');
+        // FORCE REFRESH OF THE IMAGE
+        forceRefreshSelectedFile();
+      }
     }
     catch (error) {
       // Handle errors during re-analysis
       setError(error.message);
+    }
+    finally {
+      // Clear message after 3 seconds
+      setTimeout(() => {
+        setMessage(null);
+        setError(null);
+      }, 3000);
     }
   }
 
@@ -174,6 +189,8 @@ const ChooseConfiguration = ({ selectedFile }) => {
       )}
       {/* Display error message if any */}
       {error && <p>{error}</p>}
+      {/* Display success message if any */}
+      {message && <p>{message}</p>}
     </div>
   );
 }

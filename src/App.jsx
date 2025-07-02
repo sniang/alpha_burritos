@@ -64,10 +64,11 @@ function App() {
     day: new Date().getDate(), // Default to current day
     detectorList: [],        // List of detectors in the selected file
     isLoggedIn: false,       // Authentication status
+    fileVersion: 0,          // Version counter for selectedFile (for image refresh)
   });
 
   // Destructure state for easier access in render
-  const { jsonFiles, selectedFile, selectedDetector, error, year, month, day, detectorList, isLoggedIn } = state;
+  const { jsonFiles, selectedFile, selectedDetector, error, year, month, day, detectorList, isLoggedIn, fileVersion } = state;
 
   /**
    * Helper to update a single property in the state object.
@@ -79,6 +80,14 @@ function App() {
    */
   const updateState = (key, value) => {
     setState(prevState => ({ ...prevState, [key]: value }));
+  };
+
+  // Special setter to force refresh of selectedFile (increments fileVersion)
+  const forceRefreshSelectedFile = () => {
+    setState(prevState => ({
+      ...prevState,
+      fileVersion: prevState.fileVersion + 1
+    }));
   };
 
   // On mount, check if the user is authenticated by calling the profile API.
@@ -144,7 +153,7 @@ function App() {
             setSelectedDetector={(value) => updateState('selectedDetector', value)}
           />
           {/* Show image for selected detector if one is chosen */}
-          {selectedDetector && <DetectorImage selectedFile={selectedFile} selectedDetector={selectedDetector} detectorList={detectorList} />}
+          {selectedDetector && <DetectorImage selectedFile={selectedFile} selectedDetector={selectedDetector} detectorList={detectorList} fileVersion={fileVersion} />}
           {/* Comment section for the selected file */}
           <Comment selectedFile={selectedFile} />
         </div>
@@ -217,7 +226,11 @@ function App() {
     <>
       <MainTitle />
       {renderSelectorComponents()}
-       <ChooseConfiguration selectedFile={selectedFile}/>
+      <ChooseConfiguration
+        selectedFile={selectedFile}
+        setSelectedFile={(value) => updateState('selectedFile', value)}
+        forceRefreshSelectedFile={forceRefreshSelectedFile}
+      />
       {renderDetectorComponents()}
     </>
   )

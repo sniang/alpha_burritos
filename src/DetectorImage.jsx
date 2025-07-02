@@ -17,12 +17,25 @@ import "./CSS/DetectorImage.css";
  * @example
  * <DetectorImage selectedFile={selectedFile} selectedDetector={selectedDetector} />
  */
-const DetectorImage = ({ selectedFile, selectedDetector }) => {
+const DetectorImage = ({ selectedFile, selectedDetector, fileVersion }) => {
+    // Use fileVersion as cache buster and key
+    const imgSrc = `/api/img/${selectedDetector}/${selectedFile}?v=${fileVersion}`;
+
     return (
         <div id="detectorImageButtonContainer" className="blocks">
-            <img id="detectorImage"
-                src={`/api/img/${selectedDetector}/${selectedFile}`}
+            <img
+                key={fileVersion}
+                id="detectorImage"
+                src={imgSrc}
                 alt={`Preview for ${selectedFile} with ${selectedDetector}`}
+                loading="eager"
+                style={{ imageRendering: "auto" }}
+                crossOrigin="anonymous"
+                ref={img => {
+                    if (img) {
+                        img.setAttribute("referrerPolicy", "no-referrer");
+                    }
+                }}
             />
             <DownloadButton
                 selectedFile={selectedFile}

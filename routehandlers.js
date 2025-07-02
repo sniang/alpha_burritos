@@ -261,13 +261,12 @@ export const reAnalyse = async (req, res) => {
       if (code !== 0) {
         return res.status(500).json({ error: `Re-analysis process failed with exit code ${code}` });
       }
+      return res.json({ success: true });
     });
 
-    // For now, just return success
-    return res.json({ success: true });
   } catch (error) {
     console.error(getCurrentTimestamp());
     console.error('Error in reAnalyse:', error.message);
     return res.status(400).json({ error: error.message });
   }
-}
+};
