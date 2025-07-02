@@ -30,27 +30,10 @@ import ChooseConfiguration from './ChooseConfiguration.jsx'
  * - day: Selected day for filtering data
  * - detectorList: List of detectors available in the selected file
  * - isLoggedIn: Boolean indicating authentication status
+ * - fileVersion: Version counter for selectedFile (for image refresh)
  *
  * @returns {JSX.Element} The main application UI
- */
-/**
- * App is the root component that manages global state and orchestrates
- * the main UI for detector visualization, file selection, and authentication.
- *
- * Author: Samuel Niang
- *
- * State:
- * - jsonFiles: Array of available JSON data files
- * - selectedFile: Currently selected data file
- * - selectedDetector: Currently selected detector
- * - error: Error object for global error handling
- * - year: Selected year for filtering data
- * - month: Selected month for filtering data
- * - detectorList: List of detectors available in the selected file
- * - isLoggedIn: Boolean indicating authentication status
- *
- * @returns {JSX.Element} The main application UI
- */
+ **/
 function App() {
   // Global state for the application, all major UI state is centralized here
   // Author: Samuel Niang

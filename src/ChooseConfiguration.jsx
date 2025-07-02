@@ -5,16 +5,16 @@ import positronConfig from './assets/default_config_positrons.json';
 import antiprotonConfig from './assets/default_config_antiprotons.json';
 
 /**
- * ChooseConfiguration component allows users to select and update the analysis configuration
- * (either "positrons" or "antiprotons") and toggle the "fit" option for the current session.
- * It fetches the current configuration from the backend, provides UI controls to change it,
- * and displays configuration details. Also provides a "Re-analyse" action for the selected file.
+ * ChooseConfiguration component provides UI controls for selecting the analysis configuration
+ * ("positrons" or "antiprotons") and toggling the "fit" option. It fetches the current configuration
+ * from the backend, allows users to update it, and displays configuration details. Also includes
+ * a "Re-analyse" button to trigger re-analysis of the selected file.
  *
  * @component
- * @author Samuel Niang
  * @param {Object} props
- * @param {string} props.selectedFile - The filename to be re-analysed when requested.
- * @returns {JSX.Element|null} The rendered configuration selection UI, or null if no data is loaded.
+ * @param {string} props.selectedFile - The filename to re-analyse.
+ * @param {Function} props.forceRefreshSelectedFile - Callback to refresh the selected file after re-analysis.
+ * @returns {JSX.Element|null} The configuration selection UI, or null if configuration is not loaded.
  */
 
 const ChooseConfiguration = ({ selectedFile, forceRefreshSelectedFile }) => {
