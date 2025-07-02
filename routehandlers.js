@@ -3,11 +3,13 @@ import { getCurrentTimestamp, padToTwoDigits, validateFilename, parseDateFromFil
 import dotenv from 'dotenv';    // Loads environment variables from .env file
 import fs from 'fs/promises';   // Modern promise-based filesystem operations
 import path from 'path';        // Cross-platform path handling
+import { spawn } from 'child_process';
+
 
 // Load environment variables and set base directory
 dotenv.config();
 export const MAIN_DIR = process.env.MAIN_DIR || '/home/alpha/Desktop/eos'; // Base directory for all data files
-export const ANALYSIS_DIR = process.env.ANALYSIS_DIR || '/home/alpha/Desktop/eos/analysis'; // Directory for analysis files
+export const ANALYSIS_DIR = process.env.ANALYSIS_DIR || '/home/alpha/Desktop/burrito/software'; // Directory for analysis files
 
 // ====================
 // Route handler
@@ -130,7 +132,7 @@ export const getComments = async (req, res) => {
     console.log(`Getting comments for file: ${jsonFilename}`);
     validateFilename(jsonFilename);
     const { year, month, day } = parseDateFromFilename(jsonFilename);
-    const filePath = path.join(MAIN_DIR, year, padToTwoDigits(month),padToTwoDigits(day), 'JSON', 'comments.json');
+    const filePath = path.join(MAIN_DIR, year, padToTwoDigits(month), padToTwoDigits(day), 'JSON', 'comments.json');
     console.log(`Reading comments from: ${filePath}`);
 
     let jsonData = {};
@@ -235,14 +237,37 @@ export const reAnalyse = async (req, res) => {
     const { filename } = req.params;
     console.log(`Re-analysing file: ${filename}`);
     validateFilename(filename);
-    
+
     const { year, month, day } = parseDateFromFilename(filename);
     const filePath = path.join(MAIN_DIR, year, padToTwoDigits(month), padToTwoDigits(day), 'JSON', filename);
-    
-    // Simulate re-analysis process done by launching a python script or similar
+
+    const pythonProcess = spawn('python3', [
+      path.join(ANALYSIS_DIR,'commandLine.py'),
+      '--json', filename,
+      '--dir', MAIN_DIR,
+      '--verbose'
+    ]);
+
+    pythonProcess.stdout.on('data', (data) => {
+      console.log(`[stdout] ${data}`);
+    });
+
+    pythonProcess.stderr.on('data', (data) => {
+      console.error(`[stderr] ${data}`);
+    });
+
+    pythonProcess.on('close', (code) => {
+      console.log(`Python script exited with code ${code}`);
+      if (code !== 0) {
+        return res.status(500).json({ error: `Re-analysis process failed with exit code ${code}` });
+      }
+      // For now, just return success
+      res.json({ success: true });
+    });
+
     // In a real application, you would call your analysis function here
     console.log(`Re-analysing file at: ${filePath}`);
-    
+
     // For now, just return success
     res.json({ success: true });
   } catch (error) {
