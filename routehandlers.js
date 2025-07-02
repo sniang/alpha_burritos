@@ -261,18 +261,13 @@ export const reAnalyse = async (req, res) => {
       if (code !== 0) {
         return res.status(500).json({ error: `Re-analysis process failed with exit code ${code}` });
       }
-      // For now, just return success
-      res.json({ success: true });
     });
 
-    // In a real application, you would call your analysis function here
-    console.log(`Re-analysing file at: ${filePath}`);
-
     // For now, just return success
-    res.json({ success: true });
+    return res.json({ success: true });
   } catch (error) {
     console.error(getCurrentTimestamp());
     console.error('Error in reAnalyse:', error.message);
-    res.status(400).json({ error: error.message });
+    return res.status(400).json({ error: error.message });
   }
 }
