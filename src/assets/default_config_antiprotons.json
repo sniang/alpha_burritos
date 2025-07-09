@@ -12,5 +12,10 @@
   "fft": true,
   "cutoff": 100,
   "fit": true,
-  "config": "antiprotons"
+  "config": "antiprotons",
+    "Mapping" : {
+    "red_pitaya_1": ["pitaya1_ch1.txt; PDS; PDS","pitaya1_ch2.txt; BDS; BDS"],
+    "red_pitaya_2": ["pitaya2_ch1.txt; DSAT; DSAT","pitaya2_ch2.txt; PMT11; PMT11"],
+    "red_pitaya_4": ["pitaya4_ch1.txt; USAT; DSCT"]
+  }
 }
