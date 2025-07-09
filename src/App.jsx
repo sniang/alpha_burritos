@@ -134,6 +134,7 @@ function App() {
             detectorList={detectorList}
             setDetectorList={(value) => updateState('detectorList', value)}
             setSelectedDetector={(value) => updateState('selectedDetector', value)}
+            fileVersion={fileVersion}
           />
           {/* Show image for selected detector if one is chosen */}
           {selectedDetector && <DetectorImage selectedFile={selectedFile} selectedDetector={selectedDetector} detectorList={detectorList} fileVersion={fileVersion} />}
