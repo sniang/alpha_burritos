@@ -15,7 +15,7 @@ import "./CSS/DetectorImage.css";
  * @example
  * <DetectorImage
  *   selectedFile="example.jpg"
- *   selectedDetector="yolo"
+ *   selectedDetector="PDS"
  *   fileVersion={1}
  * />
  */
