@@ -76,7 +76,6 @@ const ChooseConfiguration = ({ selectedFile, forceRefreshSelectedFile }) => {
     if (newConfig === 'positrons') {
       newData = positronConfig;
     } else if (newConfig === 'antiprotons') {
-      console.log('Antiprotons configuration selected');
       newData = antiprotonConfig;
     }
     // Set the fit property
@@ -175,21 +174,34 @@ const ChooseConfiguration = ({ selectedFile, forceRefreshSelectedFile }) => {
       </div>
       {/* Display configuration details if toggled */}
       {showDetails && (
-        <div>
+        <div style={{ display: 'flex', flexDirection: "column", alignItems: "center" }}>
           <strong>Details of the configuration</strong>
           <ul>
             {dataKeys.map((key) => {
               if (key === "Mapping") return null;
               return (
                 <li key={key}>
-                  <span>
-                    <strong>{key}:</strong> {data[key].toString()}
-                  </span>
+                  <strong>{key}:</strong> {data[key].toString()}
                 </li>
               );
             })
             }
           </ul>
+          {/* Display Mapping details if available */}
+          {data.Mapping && <>
+            <strong>Mapping</strong>
+            <ul>
+              {Object.keys(data.Mapping).map((key, index) => (
+                <li key={key + String(index)}>
+                  <strong>{key}:</strong> <ul>
+                    {data.Mapping[key].map((item, itemIndex) => (
+                      <li key={item + String(itemIndex)}>{item}</li>
+                    ))}
+                  </ul>
+                </li>
+              ))}
+            </ul>
+          </>}
         </div>
       )}
       {/* Display error message if any */}
