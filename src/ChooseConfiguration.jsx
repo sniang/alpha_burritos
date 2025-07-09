@@ -178,11 +178,17 @@ const ChooseConfiguration = ({ selectedFile, forceRefreshSelectedFile }) => {
         <div>
           <strong>Details of the configuration</strong>
           <ul>
-            {dataKeys.map((key) => (
-              <li key={key}>
-                <strong>{key}:</strong> {JSON.stringify(data[key])}
-              </li>
-            ))}
+            {dataKeys.map((key) => {
+              if (key === "Mapping") return null;
+              return (
+                <li key={key}>
+                  <span>
+                    <strong>{key}:</strong> {data[key].toString()}
+                  </span>
+                </li>
+              );
+            })
+            }
           </ul>
         </div>
       )}
