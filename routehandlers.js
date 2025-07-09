@@ -38,7 +38,6 @@ export const getJsonFiles = async (req, res) => {
 export const getSignal = async (req, res) => {
   try {
     const { jsonFilename, detector } = req.params;
-    console.log(`Getting signal file for JSON file: ${jsonFilename}, detector: ${detector}`);
     validateFilename(jsonFilename);
 
     const { year, month, day } = parseDateFromFilename(jsonFilename);
@@ -51,10 +50,8 @@ export const getSignal = async (req, res) => {
       detector,
       baseName
     );
-    console.log(`Looking for signal file at: ${filePath}`);
 
     await fs.access(filePath, fs.constants.F_OK);
-    console.log('Signal file found, sending file');
     res.setHeader('Content-Disposition', `attachment; filename="${baseName}"`);
     res.sendFile(filePath);
   } catch (error) {
@@ -72,14 +69,11 @@ export const getSignal = async (req, res) => {
 export const getJsonContent = async (req, res) => {
   try {
     const { jsonFilename } = req.params;
-    console.log(`Getting content for file: ${jsonFilename}`);
     validateFilename(jsonFilename);
     const { year, month, day } = parseDateFromFilename(jsonFilename);
     const filePath = path.join(MAIN_DIR, year, padToTwoDigits(month), padToTwoDigits(day), 'JSON', jsonFilename);
-    console.log(`Reading file from: ${filePath}`);
     const data = await fs.readFile(filePath, 'utf8');
     const jsonData = JSON.parse(data);
-    console.log('Successfully parsed JSON data');
     res.json(jsonData);
   } catch (error) {
     console.error(getCurrentTimestamp());
@@ -96,7 +90,6 @@ export const getJsonContent = async (req, res) => {
 export const getImage = async (req, res, subdir = 'Together') => {
   try {
     const { jsonFilename, detector } = req.params;
-    console.log(`Getting image for JSON file: ${jsonFilename}, detector: ${detector || subdir}`);
     validateFilename(jsonFilename);
 
     const { year, month, day } = parseDateFromFilename(jsonFilename);
@@ -109,10 +102,8 @@ export const getImage = async (req, res, subdir = 'Together') => {
       detector || subdir,
       baseName
     );
-    console.log(`Looking for image at: ${imagePath}`);
 
     await fs.access(imagePath, fs.constants.F_OK);
-    console.log('Image found, sending file');
     res.sendFile(imagePath);
   } catch (error) {
     console.error(getCurrentTimestamp());
@@ -129,11 +120,9 @@ export const getImage = async (req, res, subdir = 'Together') => {
 export const getComments = async (req, res) => {
   try {
     const { jsonFilename } = req.params;
-    console.log(`Getting comments for file: ${jsonFilename}`);
     validateFilename(jsonFilename);
     const { year, month, day } = parseDateFromFilename(jsonFilename);
     const filePath = path.join(MAIN_DIR, year, padToTwoDigits(month), padToTwoDigits(day), 'JSON', 'comments.json');
-    console.log(`Reading comments from: ${filePath}`);
 
     let jsonData = {};
     try {
@@ -145,13 +134,11 @@ export const getComments = async (req, res) => {
         const dirPath = path.join(MAIN_DIR, year, padToTwoDigits(month), padToTwoDigits(day), 'JSON');
         await fs.mkdir(dirPath, { recursive: true });
         await fs.writeFile(filePath, JSON.stringify({}), 'utf8');
-        console.log(`Created new comments file at: ${filePath}`);
       } else {
         throw error;
       }
     }
 
-    console.log(`Comments found: ${jsonData[jsonFilename] ? 'Yes' : 'No'}`);
     res.json({ comment: jsonData[jsonFilename] || null });
   } catch (error) {
     console.error(getCurrentTimestamp());
@@ -185,7 +172,6 @@ export const postComments = async (req, res) => {
 
     // Update the comment for this file
     commentsData[jsonFilename] = comment;
-    console.log(`Updating comment for ${jsonFilename}: ${comment}`);
 
     // Ensure directory exists
     const dirPath = path.join(MAIN_DIR, year, padToTwoDigits(month), padToTwoDigits(day), 'JSON');
@@ -194,7 +180,6 @@ export const postComments = async (req, res) => {
     // Write updated comments back to file
     await fs.writeFile(filePath, JSON.stringify(commentsData, null, 2), 'utf8');
 
-    console.log(`Comment updated successfully for ${jsonFilename}`);
     res.json({ success: true, message: 'Comment updated successfully' });
   } catch (error) {
     console.error(getCurrentTimestamp());
@@ -235,7 +220,6 @@ export const postConfiguration = async (req, res) => {
 export const reAnalyse = async (req, res) => {
   try {
     const { filename } = req.params;
-    console.log(`Re-analysing file: ${filename}`);
     validateFilename(filename);
 
     const { year, month, day } = parseDateFromFilename(filename);
