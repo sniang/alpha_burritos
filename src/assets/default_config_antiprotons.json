@@ -8,7 +8,7 @@
   "AcqTime": 31536000,
   "nPoint": 10000,
   "nPoint_pmt11": 10000,
-  "run_avg": 5,
+  "run_avg": 25,
   "fft": true,
   "cutoff": 100,
   "fit": true,
@@ -24,6 +24,9 @@
     ],
     "red_pitaya_4": [
       ["pitaya4_ch1.txt", "USAT","DSCT"]
+    ],
+    "red_pitaya_5": [
+      ["pitaya5_ch1.txt", "UDSC","UDSC"]
     ]
   }
 }
