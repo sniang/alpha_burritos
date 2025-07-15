@@ -22,7 +22,7 @@ const DetectorImageAll = ({selectedFile}) => {
       <img
         id="detectorImageAll"
         src={imageUrl}
-        alt={`Preview for ${selectedFile}`}
+        alt={`Preview for ${selectedFile.replace('.json', '.png')}`}
       />
       <DownloadAllButton selectedFile={selectedFile} />
     </div>
