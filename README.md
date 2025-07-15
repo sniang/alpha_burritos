@@ -109,16 +109,16 @@ The React app expects the following backend API (see [`server.js`](server.js)):
     ```
 
 - **Get Combined Image:**  
-  `GET /api/img_all/:jsonFilename`  
-  - Returns the PNG image associated with the JSON file (from the `Together` subdirectory).  
-  - Example: `/api/img_all/data-2025-06-02_08-25-03.json`  
+  `GET /api/img_all/:imageName`  
+  - Returns the PNG image (from the `Together` subdirectory).  
+  - Example: `/api/img_all/data-2025-06-02_08-25-03.png`  
   - Response:  
     Binary PNG image.
 
 - **Get Detector-Specific Image:**  
-  `GET /api/img/:detector/:jsonFilename`  
-  - Returns the PNG image for a specific detector and JSON file.  
-  - Example: `/api/img/PDS/data-2025-06-02_08-25-03.json`  
+  `GET /api/img/:detector/:imageName`  
+  - Returns the PNG image for a specific detector.  
+  - Example: `/api/img/PDS/data-2025-06-02_08-25-03.png`  
   - Response:  
     Binary PNG image.
 

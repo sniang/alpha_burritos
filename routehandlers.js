@@ -89,18 +89,18 @@ export const getJsonContent = async (req, res) => {
 // Route handler to serve image files
 export const getImage = async (req, res, subdir = 'Together') => {
   try {
-    const { jsonFilename, detector } = req.params;
+    const { imageName, detector } = req.params;
+    const jsonFilename = imageName.replace('.png', '.json');
     validateFilename(jsonFilename);
 
     const { year, month, day } = parseDateFromFilename(jsonFilename);
-    const baseName = jsonFilename.replace('.json', '.png');
     const imagePath = path.join(
       MAIN_DIR,
       year,
       padToTwoDigits(month),
       padToTwoDigits(day),
       detector || subdir,
-      baseName
+      imageName
     );
 
     await fs.access(imagePath, fs.constants.F_OK);

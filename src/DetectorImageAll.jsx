@@ -15,7 +15,7 @@ import DownloadAllButton from "./DownloadAllButton";
  * <DetectorImageAll selectedFile={selectedFile} />
  */
 const DetectorImageAll = ({selectedFile}) => {
-  const imageUrl = `/api/img_all/${selectedFile}`;
+  const imageUrl = `/api/img_all/${selectedFile.replace('.json', '.png')}`;
 
   return (
     <div className="detectorImageContainer blocks">
