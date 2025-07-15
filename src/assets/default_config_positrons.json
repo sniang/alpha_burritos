@@ -24,9 +24,6 @@
     ],
     "red_pitaya_4": [
       ["pitaya4_ch1.txt", "USAT","DSCT"]
-    ],
-    "red_pitaya_5": [
-      ["pitaya5_ch1.txt", "UDSC","UDSC"]
     ]
   }
 }
