@@ -187,7 +187,11 @@ const Skimmer = ({ jsonFiles, selectedDetector, setSelectedDetector, detectorLis
                         className="skimmer-textarea"
                     />
                     <a
-                        href={`data:text/csv;charset=utf-8,${encodeURIComponent(textContent)}`}
+                        href={`data:text/csv;charset=utf-8,${encodeURIComponent(
+                            textContent
+                                .replace(/\t+/g, '\t') // collapse multiple tabs to one
+                                .replace(/\t/g, ',')   // then replace tabs with commas
+                        )}`}
                         download={`skimmer_data_${selectedDetector}.csv`}
                         style={{ textDecoration: 'none', color: 'inherit' }}
                     >
