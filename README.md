@@ -249,6 +249,7 @@ The API will run on [http://localhost:3001](http://localhost:3001).
   USER_LOGIN=your_login
   USER_PASSWORD_HASH=your_bcrypt_hash
   JWT_SECRET=your_jwt_secret
+  PYTHON_PATH=/usr/bin/python3
   ```
 
   - `MAIN_DIR`: Absolute path to the main data directory (required).
@@ -257,6 +258,7 @@ The API will run on [http://localhost:3001](http://localhost:3001).
   - `USER_LOGIN`: Username for authentication (required).
   - `USER_PASSWORD_HASH`: Bcrypt hash of the password for authentication (required).
   - `JWT_SECRET`: Secret key for JWT authentication (required).
+  - `PYTHON_PATH`: Path to the Python executable used for analysis scripts. If not specified, defaults to `python3`.
 
   **Note:** Never commit your `.env` file to version control as it may contain sensitive information.
 

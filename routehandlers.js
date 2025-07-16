@@ -10,6 +10,7 @@ import { spawn } from 'child_process';
 dotenv.config();
 export const MAIN_DIR = process.env.MAIN_DIR || '/home/alpha/Desktop/eos'; // Base directory for all data files
 export const ANALYSIS_DIR = process.env.ANALYSIS_DIR || '/home/alpha/Desktop/burrito/software'; // Directory for analysis files
+export const PYTHON_PATH = process.env.PYTHON_PATH || 'python3'; // Path to Python executable, default to 'python3'
 
 // ====================
 // Route handler
@@ -225,7 +226,7 @@ export const reAnalyse = async (req, res) => {
     const { year, month, day } = parseDateFromFilename(filename);
     const filePath = path.join(MAIN_DIR, year, padToTwoDigits(month), padToTwoDigits(day), 'JSON', filename);
 
-    const pythonProcess = spawn(process.env.PYTHON_PATH, [
+    const pythonProcess = spawn(PYTHON_PATH, [
       path.join(ANALYSIS_DIR,'commandLine.py'),
       '--json', filename,
       '--dir', MAIN_DIR,
