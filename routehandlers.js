@@ -225,7 +225,7 @@ export const reAnalyse = async (req, res) => {
     const { year, month, day } = parseDateFromFilename(filename);
     const filePath = path.join(MAIN_DIR, year, padToTwoDigits(month), padToTwoDigits(day), 'JSON', filename);
 
-    const pythonProcess = spawn(path.join(ANALYSIS_DIR,'venv/bin/python'), [
+    const pythonProcess = spawn(process.env.PYTHON_PATH, [
       path.join(ANALYSIS_DIR,'commandLine.py'),
       '--json', filename,
       '--dir', MAIN_DIR,
