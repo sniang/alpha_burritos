@@ -135,7 +135,7 @@ const ChooseConfiguration = ({ selectedFile, forceRefreshSelectedFile }) => {
 
   return (
     <div id="ChooseConfig" className="blocks">
-      <h3>Choose configuration (almost working)</h3>
+      <h3>Choose configuration</h3>
       <div className="buttonBlock">
         {/* Button to select positrons configuration */}
         <button

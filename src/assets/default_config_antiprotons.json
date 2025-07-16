@@ -10,7 +10,7 @@
   "AcqTime": 31536000,
   "nPoint": 10000,
   "nPoint_pmt11": 10000,
-  "run_avg": 25,
+  "run_avg": 5,
   "fft": true,
   "cutoff": 100,
   "fit": true,
