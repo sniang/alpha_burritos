@@ -162,9 +162,9 @@ const ChooseConfiguration = ({ selectedFile, forceRefreshSelectedFile }) => {
           {data.fit ? "Fit enabled" : "Fit disabled"}
         </button>
         {/* Button to trigger re-analysis */}
-        {/* <button onClick={handleReAnalyse}>
+        <button onClick={handleReAnalyse}>
           Re-analyse
-        </button> */}
+        </button>
         {/* Button to show/hide configuration details */}
         <button
           onClick={() => { setShowDetails(!showDetails); }}
