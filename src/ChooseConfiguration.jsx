@@ -204,7 +204,7 @@ const ChooseConfiguration = ({ selectedFile, forceRefreshSelectedFile }) => {
                 <li key={key + String(index)}>
                   <strong>{key}:</strong> <ul>
                     {data.Mapping[key].map((item, itemIndex) => (
-                      <li key={item + String(itemIndex)}>{item}</li>
+                      <li key={item + String(itemIndex)}>{item.join('; ')}</li>
                     ))}
                   </ul>
                 </li>
