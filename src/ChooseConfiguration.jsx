@@ -171,6 +171,15 @@ const ChooseConfiguration = ({ selectedFile, forceRefreshSelectedFile }) => {
         >
           {showDetails ? "Hide details" : "Show details"}
         </button>
+        <a
+          href="https://alphacpc05.cern.ch/elog/ALPHA/36053"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <button>
+            Go to the guide
+          </button>
+        </a>
       </div>
       {/* Display configuration details if toggled */}
       {showDetails && (
