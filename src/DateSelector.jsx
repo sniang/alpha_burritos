@@ -64,8 +64,7 @@ const DateSelector = ({ year, setYear, month, setMonth, day, setDay }) => {
             {/* Day selector */}
             <label>
                 Day:
-                <select value={day} onChange={(e) => setDay(Number(e.target.value
-                ))}>
+                <select value={day} onChange={(e) => setDay(Number(e.target.value))}>
                     {/* Generate days 1-today as options */}
                     {
                         getAllDaysOfMonth(year, month).map((day) => (
