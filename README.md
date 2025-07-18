@@ -1,3 +1,4 @@
+---
 # Alpha Burritos
 
 Alpha Burritos is a modern, interactive React application developed for CERN's ALPHA experiment. It provides researchers and analysts with a user-friendly interface to browse, visualize, and analyze signal data from the experiment's "burrito detectors"—specialized detection systems that capture antimatter annihilation events.
@@ -7,6 +8,8 @@ The application communicates with a custom RESTful API to fetch and display crit
 <p align="center">
   <img src="alpha-burritos.png" alt="Alpha Burritos Logo" width="400"/>
 </p>
+
+---
 
 ## Features
 
@@ -22,6 +25,8 @@ The application communicates with a custom RESTful API to fetch and display crit
 - **Skimmer:** Browse and export a range of acquisitions and parameters as CSV.
 - **Responsive UI:** Built with React and styled for clarity and usability.
 - **Authentication:** Secure login for authorized users.
+
+---
 
 ## Project Structure
 
@@ -45,6 +50,8 @@ src/
   CSS/                   # App and global CSS
   main.jsx               # React entry point
 ```
+
+---
 
 ## How It Works
 
@@ -76,6 +83,8 @@ src/
 
 9. **Authentication:**  
    Login is required to access the main features. Credentials are checked via the backend API.
+
+---
 
 ## API Endpoints
 
@@ -169,6 +178,8 @@ The React app expects the following backend API (see [`server.js`](server.js)):
 - Returns `400` for invalid requests.
 - Returns `500` for server errors.
 
+---
+
 ### Directory Structure
 
 The API expects files to be organized as:
@@ -191,6 +202,8 @@ MAIN_DIR/
         ...
 ```
 
+---
+
 ## Development
 
 ### Prerequisites
@@ -198,39 +211,58 @@ MAIN_DIR/
 - Node.js (v18+ recommended)
 - npm
 
+---
+
 ### Install dependencies
 
 ```bash
 npm install
 ```
 
-### Start the React app
+---
 
+### Start the React App
+
+**Development mode:**
 ```bash
 npm run dev
 ```
-
 The app will be available at [http://localhost:5173](http://localhost:5173) by default.
 
-### Start the backend API
+For production deployments, it is recommended to use a web server such as **NGINX** to serve the built frontend.  
+See the [NGINX documentation](https://nginx.org/en/docs/) for setup instructions and configuration examples.
+
+---
+
+### Start the Backend API
 
 You have two options:
 
-**Option 1: Run directly with Node.js**
+**Option 1: Run directly with Node.js** (recommended for development):
 ```bash
 node server.js
 ```
 
-**Option 2: Run with [PM2](https://pm2.keymetrics.io/) for production process management**
+**Option 2: Run with [PM2](https://pm2.keymetrics.io/)** (recommended for production):
 ```bash
-npm install -g pm2
-pm2 start server.js --name alpha-burritos-api
-```
-- To view logs: `pm2 logs alpha-burritos-api`
-- To stop: `pm2 stop alpha-burritos-api`
-- To restart: `pm2 restart alpha-burritos-api`
+# Start the server
+pm2 start server.js --name burritos
 
-The API will run on [http://localhost:3001](http://localhost:3001).
+# Save the process list
+pm2 save
+
+# Set up PM2 to start on system boot
+pm2 startup
+
+# Follow the instructions and run the command output by the previous step
+```
+- View logs: `pm2 logs burritos`
+- Stop the server: `pm2 stop burritos`
+- Restart the server: `pm2 restart burritos`
+
+The API will be available at [http://localhost:3001](http://localhost:3001) by default.
+
+---
 
 ## Customization
 
@@ -271,6 +303,7 @@ The API will run on [http://localhost:3001](http://localhost:3001).
 - [Express Documentation](https://expressjs.com/)
 - [Node.js Documentation](https://nodejs.org/en/docs)
 - [PM2 documentation](https://pm2.keymetrics.io/)
+- [NGINX Documentation](https://nginx.org/en/docs/)
 - [JavaScript Reference (MDN)](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference)
 - [JSON Format](https://www.json.org/json-en.html)
 - [RESTful API Design](https://restfulapi.net/)
