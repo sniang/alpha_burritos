@@ -82,13 +82,16 @@ const ChooseConfiguration = ({ selectedFile, forceRefreshSelectedFile }) => {
     newData.fit = newFit;
     try {
       // Send updated configuration to backend API
-      fetch('/api/configuration', {
+      const response = await fetch('/api/configuration', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(newData),
-      })
+      });
+      if (!response.ok) {
+        throw new Error(`Failed to update configuration: ${response.statusText}`);
+      }
     }
     catch (error) {
       // Handle errors during update
