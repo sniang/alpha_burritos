@@ -30,23 +30,20 @@ export const getCurrentTimestamp = () => {
 };
 
 /**
- * Extracts year and month from a filename with format xxx-YYYY-MM-xxx.json.
+ * Extracts year, month, and day from a filename with format xxx-YYYY-MM-DD_xxx.json.
  * 
  * @param {string} jsonFilename - Filename to parse
- * @returns {Object} Object containing year and month as strings
- * @throws {Error} If filename format is invalid or year/month format is incorrect
+ * @returns {Object} Object containing year, month, and day as strings
+ * @throws {Error} If filename format is invalid or year/month/day format is incorrect
  * @author Samuel Niang
  */
-export const parseYearMonthFromFilename = (jsonFilename) => {
-  const parts = jsonFilename.split("-");
-  if (parts.length < 3) {
-    throw new Error("Invalid filename format: year and month not found.");
+export const parseDateFromFilename = (jsonFilename) => {
+  const match = jsonFilename.match(/-(\d{4})-(\d{2})-(\d{2})_/);
+  if (!match) {
+    throw new Error("Invalid filename format: year, month, or day not found.");
   }
-  const [, year, month] = parts;
-  if (!/^\d{4}$/.test(year) || !/^\d{2}$/.test(month)) {
-    throw new Error("Invalid year or month format.");
-  }
-  return { year, month };
+  const [, year, month, day] = match;
+  return { year, month, day };
 };
 
 /**

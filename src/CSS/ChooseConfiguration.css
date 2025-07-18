@@ -1,0 +1,23 @@
+#ChooseConfig {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+        box-sizing: border-box;
+    /* Include border and padding in width */
+    width: 100%;
+    /* Take full width of parent */
+    flex-wrap: wrap;
+}
+
+#ChooseConfig .buttonBlock {
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    /* Space between buttons */
+}

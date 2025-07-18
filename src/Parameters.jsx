@@ -25,10 +25,11 @@ export const parameterKeys = [
  * @param {string[]} props.detectorList - List of detector locations to display.
  * @param {Function} props.setDetectorList - Updates the detector list.
  * @param {Function} props.setSelectedDetector - Sets the currently selected detector.
+ * @param {number} props.fileVersion - Version counter for selectedFile (to force refresh when re-analyzed).
  * @returns {JSX.Element|null}
  *  * 
  * @author Samuel Niang */
-const Parameters = ({ selectedFile, detectorList, setDetectorList, setSelectedDetector }) => {
+const Parameters = ({ selectedFile, detectorList, setDetectorList, setSelectedDetector, fileVersion }) => {
     // Holds fetched parameter data
     const [parameters, setParameters] = useState(null);
     // Tracks API fetch errors
@@ -77,7 +78,7 @@ const Parameters = ({ selectedFile, detectorList, setDetectorList, setSelectedDe
             fetchParameters();
             setDisplayTable(false);
         }
-    }, [selectedFile]);
+    }, [selectedFile, fileVersion]);
 
     /**
      * 

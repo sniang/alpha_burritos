@@ -19,6 +19,9 @@ import {
     getImage,
     getComments,
     postComments,
+    getConfiguration,
+    postConfiguration,
+    reAnalyse,
     MAIN_DIR,
 } from './routehandlers.js';
 
@@ -59,16 +62,16 @@ app.get('/api/test', (req, res) => {
 });
 
 // Retrieve list of JSON files for a given year and month
-app.get('/api/:year/:month/json', getJsonFiles);
+app.get('/api/:year/:month/:day/json', getJsonFiles);
 
 // Retrieve content of a specific JSON file
 app.get('/api/json/:jsonFilename', getJsonContent);
 
-// Retrieve combined image for a JSON file
-app.get('/api/img_all/:jsonFilename', (req, res) => getImage(req, res));
+// Retrieve combined image 
+app.get('/api/img_all/:imageName', (req, res) => getImage(req, res));
 
-// Retrieve detector-specific image for a JSON file
-app.get('/api/img/:detector/:jsonFilename', (req, res) => getImage(req, res, req.params.detector));
+// Retrieve detector-specific image 
+app.get('/api/img/:detector/:imageName', (req, res) => getImage(req, res, req.params.detector));
 
 // Retrieve signal data as a text file for a detector and JSON file
 app.get('/api/signal/:detector/:jsonFilename', (req, res) => getSignal(req, res));
@@ -78,6 +81,15 @@ app.get('/api/comments/:jsonFilename', (req, res) => getComments(req, res));
 
 // Post comments for a specific JSON file
 app.post('/api/comments/:jsonFilename', (req, res) => postComments(req, res));
+
+// Get the configuration for the analysis
+app.get('/api/configuration', (req, res) => getConfiguration(req, res));
+
+// Post the configuration for the analysis
+app.post('/api/configuration', (req, res) => postConfiguration(req, res));
+
+// Re-analyse a specific JSON file
+app.get('/api/reanalyse/:filename', (req, res) => reAnalyse(req, res));
 
 // ====================
 // Authentication Routes

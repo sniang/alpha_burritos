@@ -5,12 +5,13 @@ import Parameters from './Parameters.jsx'
 import DetectorImageAll from './DetectorImageAll.jsx'
 import DetectorSelector from './DetectorSelector.jsx'
 import DetectorImage from './DetectorImage.jsx'
-import YearMonthSelector from './YearMonthSelector.jsx'
+import DateSelector from './DateSelector.jsx'
 import MainTitle from './MainTitle.jsx'
 import AutoRefresh from './AutoRefresh.jsx'
 import Comment from './Comment.jsx'
 import Skimmer from './Skimmer.jsx'
 import LoginForm from './LoginForm.jsx'
+import ChooseConfiguration from './ChooseConfiguration.jsx'
 
 /**
  * Root component of the application that orchestrates detector visualization and data management.
@@ -26,29 +27,13 @@ import LoginForm from './LoginForm.jsx'
  * - error: Error object for global error handling
  * - year: Selected year for filtering data
  * - month: Selected month for filtering data
+ * - day: Selected day for filtering data
  * - detectorList: List of detectors available in the selected file
  * - isLoggedIn: Boolean indicating authentication status
+ * - fileVersion: Version counter for selectedFile (for image refresh)
  *
  * @returns {JSX.Element} The main application UI
- */
-/**
- * App is the root component that manages global state and orchestrates
- * the main UI for detector visualization, file selection, and authentication.
- *
- * Author: Samuel Niang
- *
- * State:
- * - jsonFiles: Array of available JSON data files
- * - selectedFile: Currently selected data file
- * - selectedDetector: Currently selected detector
- * - error: Error object for global error handling
- * - year: Selected year for filtering data
- * - month: Selected month for filtering data
- * - detectorList: List of detectors available in the selected file
- * - isLoggedIn: Boolean indicating authentication status
- *
- * @returns {JSX.Element} The main application UI
- */
+ **/
 function App() {
   // Global state for the application, all major UI state is centralized here
   // Author: Samuel Niang
@@ -59,12 +44,14 @@ function App() {
     error: null,             // Error object for error handling
     year: new Date().getFullYear(), // Default to current year
     month: new Date().getMonth() + 1, // Default to current month (1-based)
+    day: new Date().getDate(), // Default to current day
     detectorList: [],        // List of detectors in the selected file
     isLoggedIn: false,       // Authentication status
+    fileVersion: 0,          // Version counter for selectedFile (for image refresh)
   });
 
   // Destructure state for easier access in render
-  const { jsonFiles, selectedFile, selectedDetector, error, year, month, detectorList, isLoggedIn } = state;
+  const { jsonFiles, selectedFile, selectedDetector, error, year, month, day, detectorList, isLoggedIn, fileVersion } = state;
 
   /**
    * Helper to update a single property in the state object.
@@ -76,6 +63,14 @@ function App() {
    */
   const updateState = (key, value) => {
     setState(prevState => ({ ...prevState, [key]: value }));
+  };
+
+  // Special setter to force refresh of selectedFile (increments fileVersion)
+  const forceRefreshSelectedFile = () => {
+    setState(prevState => ({
+      ...prevState,
+      fileVersion: prevState.fileVersion + 1
+    }));
   };
 
   // On mount, check if the user is authenticated by calling the profile API.
@@ -139,9 +134,10 @@ function App() {
             detectorList={detectorList}
             setDetectorList={(value) => updateState('detectorList', value)}
             setSelectedDetector={(value) => updateState('selectedDetector', value)}
+            fileVersion={fileVersion}
           />
           {/* Show image for selected detector if one is chosen */}
-          {selectedDetector && <DetectorImage selectedFile={selectedFile} selectedDetector={selectedDetector} detectorList={detectorList} />}
+          {selectedDetector && <DetectorImage selectedFile={selectedFile} selectedDetector={selectedDetector} detectorList={detectorList} fileVersion={fileVersion} />}
           {/* Comment section for the selected file */}
           <Comment selectedFile={selectedFile} />
         </div>
@@ -172,21 +168,25 @@ function App() {
         <AutoRefresh
           year={year}
           month={month}
+          day={day}
           setJsonFiles={(value) => updateState('jsonFiles', value)}
           setSelectedFile={(value) => updateState('selectedFile', value)}
           setError={(value) => updateState('error', value)}
         />
-        {/* YearMonthSelector: Allows user to pick year and month */}
-        <YearMonthSelector
+        {/* DateSelector: Allows user to pick year, month and day */}
+        <DateSelector
           year={year}
           month={month}
+          day={day}
           setYear={(value) => updateState('year', value)}
           setMonth={(value) => updateState('month', value)}
+          setDay={(value) => updateState('day', value)}
         />
         {/* TimeStampSelector: Lets user pick a file (timestamp) */}
         <TimeStampSelector
           year={year}
           month={month}
+          day={day}
           jsonFiles={jsonFiles}
           setJsonFiles={(value) => updateState('jsonFiles', value)}
           selectedFile={selectedFile}
@@ -210,6 +210,10 @@ function App() {
     <>
       <MainTitle />
       {renderSelectorComponents()}
+      <ChooseConfiguration
+        selectedFile={selectedFile}
+        forceRefreshSelectedFile={forceRefreshSelectedFile}
+      />
       {renderDetectorComponents()}
     </>
   )
