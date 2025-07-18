@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
 /**
- * A component that renders year and month selector dropdowns.
+ * A component that renders year, month, and day selector dropdowns.
  * 
  * @component
  * @author Samuel Niang
