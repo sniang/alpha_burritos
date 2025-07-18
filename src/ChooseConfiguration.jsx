@@ -1,4 +1,4 @@
-import React, { use } from "react";
+import React from "react";
 import { useState, useEffect } from "react";
 import './CSS/ChooseConfiguration.css';
 import positronConfig from './assets/default_config_positrons.json';
