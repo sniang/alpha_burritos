@@ -18,7 +18,7 @@ const formatValue = (value) => {
  * Generates formatted text content from the processed JSON data.
  * @param {Array<string>} jsonFilesSorted - Sorted array of JSON filenames
  * @param {Array<Object>} data - Array of data objects fetched from JSON files
- * @param {number} endingIndex - Starting index in the files array
+ * @param {number} endingIndex - Ending index in the files array
  * @param {number} startingIndex - Ending index in the files array
  * @param {string} selectedDetector - The currently selected detector
  * @returns {string} Formatted text content for display
