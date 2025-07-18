@@ -14,7 +14,7 @@ import React, { useState } from "react";
  * @param {number} props.day - The currently selected day (1-31)
  * @param {function} props.setDay - Function to update the selected day
  * 
- * @returns {JSX.Element} A div containing two select dropdowns for year and month selection
+ * @returns {JSX.Element} A div containing three select dropdowns for year, month, and day selection
  */
 const DateSelector = ({ year, setYear, month, setMonth, day, setDay }) => {
     // Start year for the dropdown options
