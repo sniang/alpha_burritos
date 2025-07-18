@@ -19,7 +19,7 @@ const formatValue = (value) => {
  * @param {Array<string>} jsonFilesSorted - Sorted array of JSON filenames
  * @param {Array<Object>} data - Array of data objects fetched from JSON files
  * @param {number} endingIndex - Ending index in the files array
- * @param {number} startingIndex - Ending index in the files array
+ * @param {number} startingIndex - Starting index in the files array
  * @param {string} selectedDetector - The currently selected detector
  * @returns {string} Formatted text content for display
  */
