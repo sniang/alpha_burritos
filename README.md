@@ -25,6 +25,8 @@ The application communicates with a custom RESTful API to fetch and display crit
 - **Skimmer:** Browse and export a range of acquisitions and parameters as CSV.
 - **Responsive UI:** Built with React and styled for clarity and usability.
 - **Authentication:** Secure login for authorized users.
+- **Choose Configuration:** Select the analysis mode ("positrons" or "antiprotons") and toggle the fit option for the current session.
+- **Re-analyse:** Trigger a new analysis of the currently selected file with the current configuration.
 
 ---
 
@@ -83,6 +85,12 @@ src/
 
 9. **Authentication:**  
    Login is required to access the main features. Credentials are checked via the backend API.
+
+10. **Choose Configuration:**  
+    Use the "Choose configuration" panel to select the analysis mode ("positrons" or "antiprotons") and toggle the fit option for the current session.
+
+11. **Re-analyse:**  
+    Use the "Re-analyse" button to trigger a new analysis of the currently selected file with the current configuration.
 
 ---
 
