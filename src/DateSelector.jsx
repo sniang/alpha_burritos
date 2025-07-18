@@ -23,8 +23,6 @@ const DateSelector = ({ year, setYear, month, setMonth, day, setDay }) => {
     // Get current year for the year dropdown's range
     const currentYear = new Date().getFullYear();
 
-    // Get current day for the day dropdown's range
-    const currentDay = new Date().getDate();
 
     // Handler for year selection changes
     const handleYearChange = (e) => {
