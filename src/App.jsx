@@ -142,7 +142,7 @@ function App() {
           <Comment selectedFile={selectedFile} />
         </div>
         {/* Show all detector images for the selected file */}
-        <DetectorImageAll selectedFile={selectedFile} />
+        <DetectorImageAll selectedFile={selectedFile} fileVersion={fileVersion} />
         {/* Skimmer: Allows browsing through files and detectors */}
         <Skimmer
           jsonFiles={jsonFiles}
