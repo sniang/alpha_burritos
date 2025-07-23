@@ -27,7 +27,7 @@
       ["pitaya4_ch1.txt", "DSCT","DSCT"]
     ],
     "red_pitaya_5": [
-      ["pitaya5_ch1.txt", "UDS","UDS"]
+      ["pitaya5_ch2.txt", "UDS","UDS"]
     ]
   }
 }
