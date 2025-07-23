@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./CSS/DetectorImage.css";
 import DownloadAllButton from "./DownloadAllButton";
 
@@ -32,6 +32,16 @@ const DetectorImageAll = ({ selectedFile, fileVersion = 0 }) => {
       return newAllSignals;
     });
   };
+
+  useEffect(() => {
+    // Update the image source whenever the selected file or file version changes
+    if(allSignals) {
+      setImgSrc(`/api/img_same/${selectedFile.replace('.json', '.png')}?v=${fileVersion}`);
+    } else {
+      setImgSrc(`/api/img_all/${selectedFile.replace('.json', '.png')}?v=${fileVersion}`);
+    }
+  }, [selectedFile, allSignals, fileVersion]);
+
   return (
     <div className="detectorImageContainer blocks">
       <img
