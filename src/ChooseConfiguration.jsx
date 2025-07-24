@@ -1,8 +1,5 @@
-import React from "react";
 import { useState, useEffect } from "react";
 import './CSS/ChooseConfiguration.css';
-import positronConfig from './assets/default_config_positrons.json';
-import antiprotonConfig from './assets/default_config_antiprotons.json';
 
 /**
  * ChooseConfiguration component provides UI controls for selecting the analysis configuration
@@ -22,6 +19,10 @@ const ChooseConfiguration = ({ selectedFile, forceRefreshSelectedFile }) => {
   const [error, setError] = useState(null);
   // State for configuration data fetched from backend
   const [data, setData] = useState(null);
+  // State for positron configuration data
+  const [positronConfig, setPositronConfig] = useState(null);
+  // State for antiproton configuration data
+  const [antiprotonConfig, setAntiprotonConfig] = useState(null);
   // State for keys of the configuration object (for details display)
   const [dataKeys, setDataKeys] = useState([]);
   // State to toggle display of configuration details
@@ -41,12 +42,15 @@ const ChooseConfiguration = ({ selectedFile, forceRefreshSelectedFile }) => {
         if (!result || Object.keys(result).length === 0) {
           throw new Error('No configuration data available');
         }
-        if (!result.config || (result.config !== 'positrons' && result.config !== 'antiprotons')) {
+        if (!result.configData.config || (result.configData.config !== 'positrons' && result.configData.config !== 'antiprotons')) {
           throw new Error('Config has to be defined (positrons or antiprotons)');
         }
         // Set configuration data and its keys for details display
-        setData(result);
-        setDataKeys(Object.keys(result));
+        setData(result.configData);
+        setDataKeys(Object.keys(result.configData));
+        // Set positron and antiproton configurations
+        setPositronConfig(result.configPos);
+        setAntiprotonConfig(result.configPbar);
       } catch (err) {
         // Handle errors and reset data
         setError(err.message);

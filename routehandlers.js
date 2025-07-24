@@ -192,10 +192,20 @@ export const postComments = async (req, res) => {
 // Route handler to get configuration data
 export const getConfiguration = async (req, res) => {
   try {
-    const configPath = path.join(ANALYSIS_DIR, 'configuration.json');
-    const data = await fs.readFile(configPath, 'utf8');
-    const configData = JSON.parse(data);
-    res.json(configData);
+    // Read configuration file
+    let configPath = path.join(ANALYSIS_DIR, 'configuration.json');
+    let data = await fs.readFile(configPath, 'utf8');
+    let configData = JSON.parse(data);
+    // Read positron configuration
+    configPath = path.join(ANALYSIS_DIR, 'default_config_positrons.json');
+    data = await fs.readFile(configPath, 'utf8');
+    const configPos = JSON.parse(data);
+    // Read antiproton configuration
+    configPath = path.join(ANALYSIS_DIR, 'default_config_antiprotons.json');
+    data = await fs.readFile(configPath, 'utf8');
+    const configPbar = JSON.parse(data);
+    // Send the configuration data
+    res.json({ configData, configPos, configPbar });
   } catch (error) {
     console.error(getCurrentTimestamp());
     console.error('Error in getConfiguration:', error.message);
@@ -227,7 +237,7 @@ export const reAnalyse = async (req, res) => {
     const filePath = path.join(MAIN_DIR, year, padToTwoDigits(month), padToTwoDigits(day), 'JSON', filename);
 
     const pythonProcess = spawn(PYTHON_PATH, [
-      path.join(ANALYSIS_DIR,'commandLine.py'),
+      path.join(ANALYSIS_DIR, 'commandLine.py'),
       '--json', filename,
       '--dir', MAIN_DIR,
       '--verbose'
