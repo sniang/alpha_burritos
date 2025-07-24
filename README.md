@@ -222,16 +222,18 @@ MAIN_DIR/
     MM/
       DD/
         JSON/
-          file-YYYY-MM-DD.json
+          data-YYYY-MM-DD.json
           comments.json
         Together/
-          file-YYYY-MM-DD.png
+          data-YYYY-MM-DD.png
+        Same/
+          data-YYYY-MM-DD.png
         PDS/
-          file-YYYY-MM-DD.png
-          file-YYYY-MM-DD.txt
+          data-YYYY-MM-DD.png
+          data-YYYY-MM-DD.txt
         BDS/
-          file-YYYY-MM-DD.png
-          file-YYYY-MM-DD.txt
+          data-YYYY-MM-DD.png
+          data-YYYY-MM-DD.txt
         ...
 ```
 
