@@ -66,6 +66,7 @@ export const getSignal = async (req, res) => {
   }
 };
 
+
 // Route handler to get contents of a specific JSON file
 export const getJsonContent = async (req, res) => {
   try {
@@ -73,8 +74,21 @@ export const getJsonContent = async (req, res) => {
     validateFilename(jsonFilename);
     const { year, month, day } = parseDateFromFilename(jsonFilename);
     const filePath = path.join(MAIN_DIR, year, padToTwoDigits(month), padToTwoDigits(day), 'JSON', jsonFilename);
-    const data = await fs.readFile(filePath, 'utf8');
-    const jsonData = JSON.parse(data);
+    let data = await fs.readFile(filePath, 'utf8');
+
+    // Replace invalid JSON values before parsing
+    data = data
+      .replace(/\bNaN\b/g, 'null')
+      .replace(/\bInfinity\b/g, 'null')
+      .replace(/\b-Infinity\b/g, 'null');
+
+    let jsonData;
+    try {
+      jsonData = JSON.parse(data);
+    } catch (parseError) {
+      throw new Error('Invalid JSON format');
+    }
+
     res.json(jsonData);
   } catch (error) {
     console.error(getCurrentTimestamp());
