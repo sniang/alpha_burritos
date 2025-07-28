@@ -1,4 +1,3 @@
-import React from "react";
 import alphaLogo from './assets/ALPHA_Logo_png.png';
 
 /**

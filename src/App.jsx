@@ -83,17 +83,31 @@ function App() {
         const res = await fetch('/api/profile', { credentials: 'include' });
         if (!res.ok) throw new Error('Not authenticated');
         await res.json();
-        updateState('isLoggedIn',true);
-      } catch (error){
-        updateState('isLoggedIn',false);
+        updateState('isLoggedIn', true);
+      } catch (error) {
+        updateState('isLoggedIn', false);
       }
     };
     checkLogin();
   }, []);
 
+  // Handle logout by calling the logout API and clearing the state.
+  // This will also clear the authentication cookie.
+  const handleLogout = async () => {
+  try {
+    const res = await fetch('/api/logout', {
+      method: 'POST',
+      credentials: 'include' // This sends the cookie!
+    });
+    if (!res.ok) throw new Error('Logout failed');
+    updateState('isLoggedIn', false);
+  } catch (err) {
+    console.error('Logout error:', err);
+  }
+};
+
   // Show login form if not authenticated.
   // MainTitle is always shown for branding/context.
-  // Author: Samuel Niang
   // @returns {JSX.Element|null}
   if (!isLoggedIn) {
     return <>
@@ -209,6 +223,7 @@ function App() {
   return (
     <>
       <MainTitle />
+      <button onClick={handleLogout}>Log out</button>
       {renderSelectorComponents()}
       <ChooseConfiguration
         selectedFile={selectedFile}

@@ -123,7 +123,6 @@ app.post('/api/login', async (req, res) => {
 function verifyToken(req, res, next) {
   const token = req.cookies.token;
   if (!token) return res.status(401).json({ message: 'Not authenticated' });
-
   try {
     const user = jwt.verify(token, JWT_SECRET);
     req.user = user;
@@ -135,6 +134,15 @@ function verifyToken(req, res, next) {
 // Profile route to get user information
 app.get('/api/profile', verifyToken, (req, res) => {
   res.json({ login: req.user.login });
+});
+// Logout route
+app.post('/api/logout', (req, res) => {
+  res.clearCookie('token', {
+    httpOnly: true,
+    secure: false,
+    sameSite: 'Strict'
+  });
+  res.json({ message: 'Logout successful' });
 });
 
 
