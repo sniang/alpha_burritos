@@ -111,7 +111,7 @@ const ChooseConfiguration = ({ selectedFile, forceRefreshSelectedFile }) => {
     setError(null);
     setShowDetails(false);
     try {
-      setMessage("Re-analyzing the file...");
+      setMessage("Re-analysing the file...");
       // Call backend API to re-analyse the selected file
       const response = await fetch(`/api/reanalyse/${selectedFile}`)
       if (!response.ok) {
