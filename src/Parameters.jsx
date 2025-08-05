@@ -143,8 +143,7 @@ const Parameters = ({ selectedFile, detectorList, setDetectorList, setSelectedDe
             // Table: parameters as rows, detectors as columns
             return (
                 <div id="parametersBlock" className="blocks">
-                    <h4>{parseTimestamp(selectedFile)}</h4>
-                    <strong>{particleConfig && `Particles: ${particleConfig}`}</strong>
+                    <h4>{particleConfig && `${particleConfig} - `}{parseTimestamp(selectedFile)}</h4>
                     {displayTable && (<textarea
                         value={makeTable()}
                         readOnly
@@ -187,8 +186,7 @@ const Parameters = ({ selectedFile, detectorList, setDetectorList, setSelectedDe
         // Table: detectors as rows, parameters as columns
         return (
             <div id="parametersBlock" className="blocks">
-                <h4>{parseTimestamp(selectedFile)}</h4>
-                <strong>{particleConfig && `Particles: ${particleConfig}`}</strong>
+                <h4>{particleConfig && `${particleConfig} - `}{parseTimestamp(selectedFile)}</h4>
                 {displayTable && (<textarea
                     value={makeTable()}
                     readOnly
