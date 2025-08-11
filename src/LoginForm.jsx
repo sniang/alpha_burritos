@@ -54,7 +54,7 @@ export default function LoginForm({ onLogin }) {
                 placeholder="Password"
             />
             {/* Submit button */}
-            <button type="submit">Login</button>
+            <button type="submit">Log in</button>
             {/* Message display area */}
             {message && <span className="message">{message}</span>}
         </form>

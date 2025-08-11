@@ -67,8 +67,11 @@ app.get('/api/:year/:month/:day/json', getJsonFiles);
 // Retrieve content of a specific JSON file
 app.get('/api/json/:jsonFilename', getJsonContent);
 
-// Retrieve combined image 
+// Retrieve multiplot image 
 app.get('/api/img_all/:imageName', (req, res) => getImage(req, res));
+
+// Retrieve the image containing a single plot for all signals
+app.get('/api/img_same/:imageName', (req, res) => getImage(req, res, 'Same'));
 
 // Retrieve detector-specific image 
 app.get('/api/img/:detector/:imageName', (req, res) => getImage(req, res, req.params.detector));
@@ -120,7 +123,6 @@ app.post('/api/login', async (req, res) => {
 function verifyToken(req, res, next) {
   const token = req.cookies.token;
   if (!token) return res.status(401).json({ message: 'Not authenticated' });
-
   try {
     const user = jwt.verify(token, JWT_SECRET);
     req.user = user;
@@ -132,6 +134,15 @@ function verifyToken(req, res, next) {
 // Profile route to get user information
 app.get('/api/profile', verifyToken, (req, res) => {
   res.json({ login: req.user.login });
+});
+// Logout route
+app.post('/api/logout', (req, res) => {
+  res.clearCookie('token', {
+    httpOnly: true,
+    secure: false,
+    sameSite: 'Strict'
+  });
+  res.json({ message: 'Logout successful' });
 });
 
 

@@ -66,7 +66,8 @@ src/
    The `Parameters` panel displays key values for each detector.
 
 4. **View Images:**  
-   - The combined image is shown by default.  
+   - An image containing subplots (one signal per subplot) is shown by default.  
+   - Use the "Combined plot" button to switch to a single plot with all signals overlaid.  
    - Use the detector dropdown to view images for individual detectors.
 
 5. **Download Signals:**  
@@ -124,9 +125,16 @@ The React app expects the following backend API (see [`server.js`](server.js)):
     { "PDS": { "area": ..., ... }, ... }
     ```
 
-- **Get Combined Image:**  
+- **Get Combined Image (single plot, all signals):**  
+  `GET /api/img_same/:imageName`  
+  - Returns the PNG image with all signals overlaid in a single plot ("Combined plot"). The image is from the `Same` subdirectory.  
+  - Example: `/api/img_same/data-2025-06-02_08-25-03.png`  
+  - Response:  
+    Binary PNG image.
+
+- **Get Subplots Image (default):**  
   `GET /api/img_all/:imageName`  
-  - Returns the PNG image (from the `Together` subdirectory).  
+  - Returns the PNG image containing subplots (one signal per subplot) for all signals. This is the default image shown. The image is from the `Together` subdirectory.  
   - Example: `/api/img_all/data-2025-06-02_08-25-03.png`  
   - Response:  
     Binary PNG image.
@@ -179,6 +187,24 @@ The React app expects the following backend API (see [`server.js`](server.js)):
   - `POST /api/login` — Authenticate user (expects `{ login, password }` in body).
   - `GET /api/profile` — Returns user info if authenticated.
 
+### Additional Endpoints
+
+- **Get Subplots Image:**  
+  `GET /api/img_same/:imageName`  
+  - Returns the PNG image showing subplots for all signals.  
+  - Example: `/api/img_same/data-2025-06-02_08-25-03.png`  
+  - Response:  
+    Binary PNG image.
+
+- **Get User Profile:**  
+  `GET /api/profile`  
+  - Returns the authenticated user's profile information.  
+  - Example: `/api/profile`  
+  - Response:  
+    ```json
+    { "login": "your_login" }
+    ```
+
 ### Error Handling
 
 - Returns `404` if a file or image is not found.
@@ -196,16 +222,18 @@ MAIN_DIR/
     MM/
       DD/
         JSON/
-          file-YYYY-MM-DD.json
+          data-YYYY-MM-DD.json
           comments.json
         Together/
-          file-YYYY-MM-DD.png
+          data-YYYY-MM-DD.png
+        Same/
+          data-YYYY-MM-DD.png
         PDS/
-          file-YYYY-MM-DD.png
-          file-YYYY-MM-DD.txt
+          data-YYYY-MM-DD.png
+          data-YYYY-MM-DD.txt
         BDS/
-          file-YYYY-MM-DD.png
-          file-YYYY-MM-DD.txt
+          data-YYYY-MM-DD.png
+          data-YYYY-MM-DD.txt
         ...
 ```
 
