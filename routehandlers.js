@@ -74,17 +74,17 @@ export const getJsonContent = async (req, res) => {
     validateFilename(jsonFilename);
     const { year, month, day } = parseDateFromFilename(jsonFilename);
     const filePath = path.join(MAIN_DIR, year, padToTwoDigits(month), padToTwoDigits(day), 'JSON', jsonFilename);
-    let data = await fs.readFile(filePath, 'utf8');
+    let fileContent = await fs.readFile(filePath, 'utf8');
 
     // Replace invalid JSON values before parsing
-    data = data
+    fileContent = fileContent
       .replace(/\bNaN\b/g, 'null')
       .replace(/\bInfinity\b/g, 'null')
       .replace(/\b-Infinity\b/g, 'null');
 
     let jsonData;
     try {
-      jsonData = JSON.parse(data);
+      jsonData = JSON.parse(fileContent);
     } catch (parseError) {
       throw new Error('Invalid JSON format');
     }
