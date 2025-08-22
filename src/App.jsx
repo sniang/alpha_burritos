@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import './CSS/App.css'
-import TimeStampSelector from './TimeStampSelector.jsx'
+import TimeStampSelector, { getDateFromFileName } from './TimeStampSelector.jsx'
 import Parameters from './Parameters.jsx'
 import DetectorImageAll from './DetectorImageAll.jsx'
 import DetectorSelector from './DetectorSelector.jsx'
@@ -30,13 +30,13 @@ import ChooseConfiguration from './ChooseConfiguration.jsx'
  * - day: Selected day for filtering data
  * - detectorList: List of detectors available in the selected file
  * - isLoggedIn: Boolean indicating authentication status
+ * - fileFromUrl: File extracted from URL parameters
  * - fileVersion: Version counter for selectedFile (for image refresh)
  *
  * @returns {JSX.Element} The main application UI
  **/
 function App() {
   // Global state for the application, all major UI state is centralized here
-  // Author: Samuel Niang
   const [state, setState] = useState({
     jsonFiles: [],           // List of available JSON files for selection
     selectedFile: '',        // Currently selected JSON file
@@ -47,16 +47,16 @@ function App() {
     day: new Date().getDate(), // Default to current day
     detectorList: [],        // List of detectors in the selected file
     isLoggedIn: false,       // Authentication status
+    fileFromUrl: null,      // File extracted from URL parameters
     fileVersion: 0,          // Version counter for selectedFile (for image refresh)
   });
 
   // Destructure state for easier access in render
-  const { jsonFiles, selectedFile, selectedDetector, error, year, month, day, detectorList, isLoggedIn, fileVersion } = state;
+  const { jsonFiles, selectedFile, selectedDetector, error, year, month, day, detectorList, isLoggedIn, fileVersion, fileFromUrl } = state;
 
   /**
    * Helper to update a single property in the state object.
    * This keeps state updates concise and consistent.
-   * Author: Samuel Niang
    * @param {string} key - State property to update
    * @param {any} value - New value for the property
    * @returns {void}
@@ -75,7 +75,6 @@ function App() {
 
   // On mount, check if the user is authenticated by calling the profile API.
   // If not authenticated, set isLoggedIn to false.
-  // Author: Samuel Niang
   // @returns {void}
   useEffect(() => {
     const checkLogin = async () => {
@@ -90,6 +89,26 @@ function App() {
     };
     checkLogin();
   }, []);
+
+  // On mount, check URL parameters for a file ID to pre-select.
+  const searchParams = new URLSearchParams(window.location.search);
+  const json_id = searchParams.get("id");
+  useEffect(() => {
+    if (json_id) {
+      // updateState("selectedFile", json_id);
+      // console.log("Set selectedFile from URL:", json_id);
+      getDateFromFileName(json_id);
+      console.log("Extracted date from filename:", getDateFromFileName(json_id));
+      setState(prevState => ({
+        ...prevState,
+        ...getDateFromFileName(json_id)
+      }));
+      setState(prevState => ({
+        ...prevState,
+        fileFromUrl: json_id
+      }));
+    }
+  }, [json_id]);
 
   // Handle logout by calling the logout API and clearing the state.
   // This will also clear the authentication cookie.
@@ -118,7 +137,6 @@ function App() {
 
   // Show error message if an error occurred anywhere in the app.
   // This is a global error boundary for the main UI.
-  // Author: Samuel Niang
   // @returns {JSX.Element|null}
   if (error) {
     return (
@@ -133,7 +151,6 @@ function App() {
    * Renders detector-related components if a file is selected.
    * Includes parameter controls, detector images, comments, and skimmer.
    * Only shown after a file is chosen.
-   * Author: Samuel Niang
    * @returns {JSX.Element|null} The detector-related UI or null if no file selected
    */
   const renderDetectorComponents = () => {
@@ -172,7 +189,6 @@ function App() {
    * Renders the controls for selecting year, month, timestamp, and detector.
    * Also includes auto-refresh functionality.
    * These controls are always visible when logged in.
-   * Author: Samuel Niang
    * @returns {JSX.Element} The selector controls UI
    */
   const renderSelectorComponents = () => {
@@ -207,6 +223,7 @@ function App() {
           setSelectedFile={(value) => updateState('selectedFile', value)}
           error={error}
           setError={(value) => updateState('error', value)}
+          fileFromUrl={fileFromUrl}
         />
         {/* DetectorSelector: Lets user pick a detector from the list */}
         <DetectorSelector
