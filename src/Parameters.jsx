@@ -113,7 +113,9 @@ const Parameters = ({ selectedFile, detectorList, setDetectorList, setSelectedDe
                 <button
                     className="green"
                     onClick={() => {
-                        const text = `${window.location.href}?id=${selectedFile}`;
+                        const url = new URL(window.location.href);
+                        url.searchParams.set("id", selectedFile);
+                        const text = url.toString();
 
                         if (navigator.clipboard && navigator.clipboard.writeText) {
                             navigator.clipboard.writeText(text)
