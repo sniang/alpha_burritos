@@ -153,12 +153,12 @@ function App() {
         {/* Show all detector images for the selected file */}
         <DetectorImageAll selectedFile={selectedFile} fileVersion={fileVersion} />
         {/* Skimmer: Allows browsing through files and detectors */}
-        {/* <Skimmer
+        <Skimmer
           jsonFiles={jsonFiles}
           selectedDetector={selectedDetector}
           setSelectedDetector={(value) => updateState('selectedDetector', value)}
           detectorList={detectorList}
-        /> */}
+        />
       </>
     );
   };
