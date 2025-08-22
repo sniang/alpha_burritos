@@ -113,8 +113,29 @@ const Parameters = ({ selectedFile, detectorList, setDetectorList, setSelectedDe
                 <button
                     className="green"
                     onClick={() => {
-                        navigator.clipboard.writeText(`${window.location.href}?id=${selectedFile}`);
-                        alert("Share link copied to clipboard");
+                        const text = `${window.location.href}?id=${selectedFile}`;
+
+                        if (navigator.clipboard && navigator.clipboard.writeText) {
+                            // ✅ Méthode moderne
+                            navigator.clipboard.writeText(text)
+                                .then(() => alert("Share link copied to clipboard"))
+                                .catch(() => alert("Erreur lors de la copie"));
+                        } else {
+                            // ⚠️ Fallback pour vieux navigateurs
+                            const textarea = document.createElement("textarea");
+                            textarea.value = text;
+                            textarea.style.position = "fixed";
+                            textarea.style.left = "-9999px";
+                            document.body.appendChild(textarea);
+                            textarea.select();
+                            try {
+                                document.execCommand("copy");
+                                alert("Share link copied to clipboard");
+                            } catch (err) {
+                                alert("Erreur lors de la copie");
+                            }
+                            document.body.removeChild(textarea);
+                        }
                     }}
                 >
                     Share link
