@@ -57,7 +57,7 @@ const Parameters = ({ selectedFile, detectorList, setDetectorList, setSelectedDe
                 const data = await res.json();
                 setParameters(data);
                 setDetectorList(Object.keys(data));
-                if (Object.keys(data) && Object.keys(data)[0] && data[Object.keys(data)[0]] && data[Object.keys(data)[0]].config){
+                if (Object.keys(data) && Object.keys(data)[0] && data[Object.keys(data)[0]] && data[Object.keys(data)[0]].config) {
                     setParticleConfig(data[Object.keys(data)[0]].config);
                 }
                 // Ensure selected detector is valid
@@ -110,6 +110,15 @@ const Parameters = ({ selectedFile, detectorList, setDetectorList, setSelectedDe
     const displayButtons = () => {
         return (
             <div style={{ display: "flex", gap: "10px" }}>
+                <button
+                    className="green"
+                    onClick={() => {
+                        navigator.clipboard.writeText(`${window.location.href}?id=${selectedFile}`);
+                        alert("Share link copied to clipboard");
+                    }}
+                >
+                    Share link
+                </button>
                 <button
                     className="button"
                     onClick={() => setReverseTable(!reverseTable)}>

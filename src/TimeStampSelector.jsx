@@ -75,7 +75,6 @@ function TimeStampSelector({
   // Handle dropdown selection change
   const handleSelectChange = (event) => {
     setSelectedFile(event.target.value); // Update selected file
-    window.history.replaceState(null, '', `?id=${event.target.value}`); // Update URL with selected file ID
   };
   return (
     <label>

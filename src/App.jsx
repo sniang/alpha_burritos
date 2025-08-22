@@ -91,17 +91,17 @@ function App() {
   // Handle logout by calling the logout API and clearing the state.
   // This will also clear the authentication cookie.
   const handleLogout = async () => {
-  try {
-    const res = await fetch('/api/logout', {
-      method: 'POST',
-      credentials: 'include' // This sends the cookie!
-    });
-    if (!res.ok) throw new Error('Logout failed');
-    updateState('isLoggedIn', false);
-  } catch (err) {
-    console.error('Logout error:', err);
-  }
-};
+    try {
+      const res = await fetch('/api/logout', {
+        method: 'POST',
+        credentials: 'include' // This sends the cookie!
+      });
+      if (!res.ok) throw new Error('Logout failed');
+      updateState('isLoggedIn', false);
+    } catch (err) {
+      console.error('Logout error:', err);
+    }
+  };
 
   // Show login form if not authenticated.
   // MainTitle is always shown for branding/context.

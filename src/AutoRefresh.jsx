@@ -64,12 +64,13 @@ function AutoRefresh({
                         const res = await fetch(`/api/json/${json_id}`);
                         if (!res.ok) throw new Error('Failed to fetch JSON');
                         fileToSelect = json_id;
+                        setAutoRefresh(false);
                     } catch (error) {
                         alert(`Failed to fetch JSON from URL: ${json_id}`);
                     }
                 }
                 setSelectedFile(fileToSelect); // Set default selected file
-                window.history.replaceState(null, '', `?id=${fileToSelect}`);
+                window.history.replaceState({}, "", window.location.pathname);
             }
         } catch (error) {
             // Pass error to parent
