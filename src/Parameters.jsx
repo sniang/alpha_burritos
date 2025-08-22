@@ -116,12 +116,11 @@ const Parameters = ({ selectedFile, detectorList, setDetectorList, setSelectedDe
                         const text = `${window.location.href}?id=${selectedFile}`;
 
                         if (navigator.clipboard && navigator.clipboard.writeText) {
-                            // ✅ Méthode moderne
                             navigator.clipboard.writeText(text)
                                 .then(() => alert("Share link copied to clipboard"))
-                                .catch(() => alert("Erreur lors de la copie"));
+                                .catch(() =>  alert("Error copying link"));
                         } else {
-                            // ⚠️ Fallback pour vieux navigateurs
+                            // Fallback for older browsers
                             const textarea = document.createElement("textarea");
                             textarea.value = text;
                             textarea.style.position = "fixed";
@@ -132,7 +131,7 @@ const Parameters = ({ selectedFile, detectorList, setDetectorList, setSelectedDe
                                 document.execCommand("copy");
                                 alert("Share link copied to clipboard");
                             } catch (err) {
-                                alert("Erreur lors de la copie");
+                                alert("Error copying link");
                             }
                             document.body.removeChild(textarea);
                         }
