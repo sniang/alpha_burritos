@@ -26,7 +26,7 @@ const Comment = ({ selectedFile }) => {
             const data = await response.json();
             // Update the comment state with the fetched data
             setComment(data.comment || "No comment");
-            setNewComment(data.comment || ""); 
+            setNewComment(data.comment || "");
         } catch (err) {
             // Handle and display any errors during API call
             setError(err);
@@ -83,7 +83,7 @@ const Comment = ({ selectedFile }) => {
         <div id="comment-block" className="blocks">
             <h2>Comments</h2>
             {/* Display the current comment when not in edit mode */}
-            {!update && <p style={{whiteSpace: 'pre-wrap'}}>{comment}</p>}
+            {!update && <p style={{ whiteSpace: 'pre-wrap' }}>{comment}</p>}
             {/* Render textarea only when in edit mode */}
             {update &&
                 <textarea
@@ -94,7 +94,7 @@ const Comment = ({ selectedFile }) => {
                 />
             }
             <div id="comment-buttons-block">
-                 {/* Cancel button only appears in edit mode */}
+                {/* Cancel button only appears in edit mode */}
                 {update && <button onClick={() => setUpdate(!update)}>Cancel</button>}
                 {/* Button text changes based on edit mode */}
                 <button onClick={updateComment}>{!update ? "Update comments" : "Save comments"}</button>

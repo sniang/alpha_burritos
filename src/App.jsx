@@ -36,7 +36,6 @@ import ChooseConfiguration from './ChooseConfiguration.jsx'
  **/
 function App() {
   // Global state for the application, all major UI state is centralized here
-  // Author: Samuel Niang
   const [state, setState] = useState({
     jsonFiles: [],           // List of available JSON files for selection
     selectedFile: '',        // Currently selected JSON file
@@ -56,7 +55,6 @@ function App() {
   /**
    * Helper to update a single property in the state object.
    * This keeps state updates concise and consistent.
-   * Author: Samuel Niang
    * @param {string} key - State property to update
    * @param {any} value - New value for the property
    * @returns {void}
@@ -75,7 +73,6 @@ function App() {
 
   // On mount, check if the user is authenticated by calling the profile API.
   // If not authenticated, set isLoggedIn to false.
-  // Author: Samuel Niang
   // @returns {void}
   useEffect(() => {
     const checkLogin = async () => {
@@ -94,17 +91,17 @@ function App() {
   // Handle logout by calling the logout API and clearing the state.
   // This will also clear the authentication cookie.
   const handleLogout = async () => {
-  try {
-    const res = await fetch('/api/logout', {
-      method: 'POST',
-      credentials: 'include' // This sends the cookie!
-    });
-    if (!res.ok) throw new Error('Logout failed');
-    updateState('isLoggedIn', false);
-  } catch (err) {
-    console.error('Logout error:', err);
-  }
-};
+    try {
+      const res = await fetch('/api/logout', {
+        method: 'POST',
+        credentials: 'include' // This sends the cookie!
+      });
+      if (!res.ok) throw new Error('Logout failed');
+      updateState('isLoggedIn', false);
+    } catch (err) {
+      console.error('Logout error:', err);
+    }
+  };
 
   // Show login form if not authenticated.
   // MainTitle is always shown for branding/context.
@@ -118,7 +115,6 @@ function App() {
 
   // Show error message if an error occurred anywhere in the app.
   // This is a global error boundary for the main UI.
-  // Author: Samuel Niang
   // @returns {JSX.Element|null}
   if (error) {
     return (
@@ -133,7 +129,6 @@ function App() {
    * Renders detector-related components if a file is selected.
    * Includes parameter controls, detector images, comments, and skimmer.
    * Only shown after a file is chosen.
-   * Author: Samuel Niang
    * @returns {JSX.Element|null} The detector-related UI or null if no file selected
    */
   const renderDetectorComponents = () => {
@@ -172,7 +167,6 @@ function App() {
    * Renders the controls for selecting year, month, timestamp, and detector.
    * Also includes auto-refresh functionality.
    * These controls are always visible when logged in.
-   * Author: Samuel Niang
    * @returns {JSX.Element} The selector controls UI
    */
   const renderSelectorComponents = () => {
@@ -180,6 +174,7 @@ function App() {
       <div id="selects-block">
         {/* AutoRefresh: Handles periodic refresh of file list */}
         <AutoRefresh
+          selectedFile={selectedFile}
           year={year}
           month={month}
           day={day}

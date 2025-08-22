@@ -55,23 +55,23 @@ const DownloadAllButton = ({ selectedFile }) => {
      * Fetches the list of available detectors for the selected file.
      * @returns {Promise<string[]>} Array of detector names.
      */
-    const getDetectorList = async() => {
-            try {
-                // Fetch parameter data from backend API
-                const res = await fetch(`/api/json/${selectedFile}`);
-                if (!res.ok) {
-                    // Throw error if response is not ok
-                    throw new Error('Network response was not ok');
-                }
-                // Parse JSON data and return detector keys
-                const data = await res.json();
-                return Object.keys(data);
-            } catch (error) {
-                // Set error state if fetch fails
-                setError(error);
-                return [];
+    const getDetectorList = async () => {
+        try {
+            // Fetch parameter data from backend API
+            const res = await fetch(`/api/json/${selectedFile}`);
+            if (!res.ok) {
+                // Throw error if response is not ok
+                throw new Error('Network response was not ok');
             }
-        };
+            // Parse JSON data and return detector keys
+            const data = await res.json();
+            return Object.keys(data);
+        } catch (error) {
+            // Set error state if fetch fails
+            setError(error);
+            return [];
+        }
+    };
 
     /**
      * Downloads signal files for all available detectors.

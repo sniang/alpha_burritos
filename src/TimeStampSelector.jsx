@@ -75,7 +75,6 @@ function TimeStampSelector({
   // Handle dropdown selection change
   const handleSelectChange = (event) => {
     setSelectedFile(event.target.value); // Update selected file
-    console.log('Selected file:', event.target.value);
   };
   return (
     <label>

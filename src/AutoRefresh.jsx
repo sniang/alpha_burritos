@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 
 /**
  * AutoRefresh component provides an auto-refresh toggle for periodically fetching JSON files
@@ -9,6 +9,7 @@ import React, { useState, useEffect } from "react";
  * @author Samuel Niang
  * @component
  * @param {Object} props - Component props.
+ * @param {string} props.selectedFile - The currently selected JSON file.
  * @param {Function} props.setJsonFiles - Callback to update the list of JSON files.
  * @param {Function} props.setSelectedFile - Callback to update the currently selected file.
  * @param {Function} props.setError - Callback to handle and display errors.
@@ -21,6 +22,7 @@ import React, { useState, useEffect } from "react";
 
 let Nfiles = -1;
 function AutoRefresh({
+    selectedFile,
     setJsonFiles,
     setSelectedFile,
     setError,
@@ -54,7 +56,21 @@ function AutoRefresh({
                     .sort()
                     .reverse();
                 setJsonFiles(filteredData); // Update available files
-                setSelectedFile(filteredData[0]); // Set default selected file
+                let fileToSelect = filteredData[0];
+                const searchParams = new URLSearchParams(window.location.search);
+                const json_id = searchParams.get("id");
+                if (json_id && json_id !== selectedFile) {
+                    try {
+                        const res = await fetch(`/api/json/${json_id}`);
+                        if (!res.ok) throw new Error('Failed to fetch JSON');
+                        fileToSelect = json_id;
+                        setAutoRefresh(false);
+                    } catch (error) {
+                        alert(`Failed to fetch JSON from URL: ${json_id}`);
+                    }
+                }
+                setSelectedFile(fileToSelect); // Set default selected file
+                window.history.replaceState({}, "", window.location.pathname);
             }
         } catch (error) {
             // Pass error to parent
@@ -71,17 +87,10 @@ function AutoRefresh({
         if (!autoRefresh) return;
         const interval = setInterval(fetchFiles, 2000);
         return () => clearInterval(interval);
-        // eslint-disable-next-line
     }, [autoRefresh, year, month, day]);
-
-    /**
-     * Handler for file selection change (not used in this component, but present for future use).
-     * @param {Event} event - The change event.
-     */
-    const handleSelectChange = (event) => {
-        setSelectedFile(event.target.value);
-        console.log('Selected file:', event.target.value);
-    };
+    useEffect(() => {
+        fetchFiles();
+    }, []);
 
     /**
      * Handler for checkbox change to toggle auto-refresh.

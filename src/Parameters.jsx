@@ -57,7 +57,7 @@ const Parameters = ({ selectedFile, detectorList, setDetectorList, setSelectedDe
                 const data = await res.json();
                 setParameters(data);
                 setDetectorList(Object.keys(data));
-                if (Object.keys(data) && Object.keys(data)[0] && data[Object.keys(data)[0]] && data[Object.keys(data)[0]].config){
+                if (Object.keys(data) && Object.keys(data)[0] && data[Object.keys(data)[0]] && data[Object.keys(data)[0]].config) {
                     setParticleConfig(data[Object.keys(data)[0]].config);
                 }
                 // Ensure selected detector is valid
@@ -110,6 +110,37 @@ const Parameters = ({ selectedFile, detectorList, setDetectorList, setSelectedDe
     const displayButtons = () => {
         return (
             <div style={{ display: "flex", gap: "10px" }}>
+                <button
+                    className="green"
+                    onClick={() => {
+                        const url = new URL(window.location.href);
+                        url.searchParams.set("id", selectedFile);
+                        const text = url.toString();
+
+                        if (navigator.clipboard && navigator.clipboard.writeText) {
+                            navigator.clipboard.writeText(text)
+                                .then(() => alert("Share link copied to clipboard"))
+                                .catch(() => alert("Error copying link"));
+                        } else {
+                            // Fallback for older browsers
+                            const textarea = document.createElement("textarea");
+                            textarea.value = text;
+                            textarea.style.position = "fixed";
+                            textarea.style.left = "-9999px";
+                            document.body.appendChild(textarea);
+                            textarea.select();
+                            try {
+                                document.execCommand("copy");
+                                alert("Share link copied to clipboard");
+                            } catch (err) {
+                                alert("Error copying link");
+                            }
+                            document.body.removeChild(textarea);
+                        }
+                    }}
+                >
+                    Share link
+                </button>
                 <button
                     className="button"
                     onClick={() => setReverseTable(!reverseTable)}>
