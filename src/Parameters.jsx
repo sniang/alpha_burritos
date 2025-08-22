@@ -118,7 +118,7 @@ const Parameters = ({ selectedFile, detectorList, setDetectorList, setSelectedDe
                         if (navigator.clipboard && navigator.clipboard.writeText) {
                             navigator.clipboard.writeText(text)
                                 .then(() => alert("Share link copied to clipboard"))
-                                .catch(() =>  alert("Error copying link"));
+                                .catch(() => alert("Error copying link"));
                         } else {
                             // Fallback for older browsers
                             const textarea = document.createElement("textarea");

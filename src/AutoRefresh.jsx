@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 
 /**
  * AutoRefresh component provides an auto-refresh toggle for periodically fetching JSON files
@@ -85,19 +85,12 @@ function AutoRefresh({
      */
     useEffect(() => {
         if (!autoRefresh) return;
-        const interval = setInterval(fetchFiles, 100);
+        const interval = setInterval(fetchFiles, 2000);
         return () => clearInterval(interval);
-        // eslint-disable-next-line
     }, [autoRefresh, year, month, day]);
-
-    /**
-     * Handler for file selection change (not used in this component, but present for future use).
-     * @param {Event} event - The change event.
-     */
-    const handleSelectChange = (event) => {
-        setSelectedFile(event.target.value);
-        console.log('Selected file:', event.target.value);
-    };
+    useEffect(() => {
+        fetchFiles();
+    }, []);
 
     /**
      * Handler for checkbox change to toggle auto-refresh.
