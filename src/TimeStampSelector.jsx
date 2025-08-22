@@ -109,23 +109,4 @@ function parseTimestamp(filename) {
   return m ? `${m[1]} ${m[2].replace(/-/g, ':')}` : null;
 }
 
-/**
- * Parses a filename to extract date components.
- * Assumes filename format: data-YYYY-MM-DD_HH-MM-SS.json
- * Returns an object with year, month, day, hour, minute, second or null if not matched.
- *
- * @param {string} filename - The JSON filename to parse.
- * @returns {Object|null} - The parsed date components or null if format is invalid.
- */
-function getDateFromFileName(filename) {
-  const m = filename.match(/data-(\d{4}-\d{2}-\d{2})_(\d{2}-\d{2}-\d{2})\.json/);
-  return m ? {
-    year: parseInt(m[1].split('-')[0]),
-    month: parseInt(m[1].split('-')[1]),
-    day: parseInt(m[1].split('-')[2]),
-    hour: parseInt(m[2].split('-')[0]),
-    minute: parseInt(m[2].split('-')[1]),
-    second: parseInt(m[2].split('-')[2])
-  } : null;
-}
-export { parseTimestamp, getDateFromFileName };
+export { parseTimestamp };

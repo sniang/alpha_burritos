@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import './CSS/App.css'
-import TimeStampSelector, { getDateFromFileName } from './TimeStampSelector.jsx'
+import TimeStampSelector from './TimeStampSelector.jsx'
 import Parameters from './Parameters.jsx'
 import DetectorImageAll from './DetectorImageAll.jsx'
 import DetectorSelector from './DetectorSelector.jsx'
