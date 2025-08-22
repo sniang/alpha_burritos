@@ -46,8 +46,7 @@ function TimeStampSelector({
   setError,
   year,
   month,
-  day,
-  fileFromUrl=null
+  day
 }) {
   // Fetch JSON files from backend API on mount
   useEffect(() => {
@@ -65,25 +64,18 @@ function TimeStampSelector({
           .sort()
           .reverse();
         setJsonFiles(filteredData); // Update available files
-        if (fileFromUrl && filteredData.includes(fileFromUrl)) {
-          setSelectedFile(fileFromUrl); // Pre-select file from URL if valid
-        } else if (!selectedFile && filteredData.length > 0) {
-          setSelectedFile(filteredData[0]); // Set default selected file
-        }
-        if (fileFromUrl && !filteredData.includes(fileFromUrl)) {
-          alert(`File not found: ${fileFromUrl}`);
-        }
+        setSelectedFile(filteredData[0]); // Set default selected file
       } catch (error) {
         setError(error); // Set error if fetch fails
       }
     };
     fetchFiles();
-  }, [year, month, day, fileFromUrl]);
+  }, [year, month, day]);
 
   // Handle dropdown selection change
   const handleSelectChange = (event) => {
     setSelectedFile(event.target.value); // Update selected file
-    console.log('Selected file:', event.target.value);
+    window.history.replaceState(null, '', `?id=${event.target.value}`); // Update URL with selected file ID
   };
   return (
     <label>

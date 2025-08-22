@@ -30,7 +30,6 @@ import ChooseConfiguration from './ChooseConfiguration.jsx'
  * - day: Selected day for filtering data
  * - detectorList: List of detectors available in the selected file
  * - isLoggedIn: Boolean indicating authentication status
- * - fileFromUrl: File extracted from URL parameters
  * - fileVersion: Version counter for selectedFile (for image refresh)
  *
  * @returns {JSX.Element} The main application UI
@@ -47,12 +46,11 @@ function App() {
     day: new Date().getDate(), // Default to current day
     detectorList: [],        // List of detectors in the selected file
     isLoggedIn: false,       // Authentication status
-    fileFromUrl: null,      // File extracted from URL parameters
     fileVersion: 0,          // Version counter for selectedFile (for image refresh)
   });
 
   // Destructure state for easier access in render
-  const { jsonFiles, selectedFile, selectedDetector, error, year, month, day, detectorList, isLoggedIn, fileVersion, fileFromUrl } = state;
+  const { jsonFiles, selectedFile, selectedDetector, error, year, month, day, detectorList, isLoggedIn, fileVersion } = state;
 
   /**
    * Helper to update a single property in the state object.
@@ -89,26 +87,6 @@ function App() {
     };
     checkLogin();
   }, []);
-
-  // On mount, check URL parameters for a file ID to pre-select.
-  const searchParams = new URLSearchParams(window.location.search);
-  const json_id = searchParams.get("id");
-  useEffect(() => {
-    if (json_id) {
-      // updateState("selectedFile", json_id);
-      // console.log("Set selectedFile from URL:", json_id);
-      getDateFromFileName(json_id);
-      console.log("Extracted date from filename:", getDateFromFileName(json_id));
-      setState(prevState => ({
-        ...prevState,
-        ...getDateFromFileName(json_id)
-      }));
-      setState(prevState => ({
-        ...prevState,
-        fileFromUrl: json_id
-      }));
-    }
-  }, [json_id]);
 
   // Handle logout by calling the logout API and clearing the state.
   // This will also clear the authentication cookie.
@@ -175,12 +153,12 @@ function App() {
         {/* Show all detector images for the selected file */}
         <DetectorImageAll selectedFile={selectedFile} fileVersion={fileVersion} />
         {/* Skimmer: Allows browsing through files and detectors */}
-        <Skimmer
+        {/* <Skimmer
           jsonFiles={jsonFiles}
           selectedDetector={selectedDetector}
           setSelectedDetector={(value) => updateState('selectedDetector', value)}
           detectorList={detectorList}
-        />
+        /> */}
       </>
     );
   };
@@ -196,6 +174,7 @@ function App() {
       <div id="selects-block">
         {/* AutoRefresh: Handles periodic refresh of file list */}
         <AutoRefresh
+          selectedFile={selectedFile}
           year={year}
           month={month}
           day={day}
@@ -223,7 +202,6 @@ function App() {
           setSelectedFile={(value) => updateState('selectedFile', value)}
           error={error}
           setError={(value) => updateState('error', value)}
-          fileFromUrl={fileFromUrl}
         />
         {/* DetectorSelector: Lets user pick a detector from the list */}
         <DetectorSelector
