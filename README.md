@@ -180,6 +180,15 @@ The React app expects the following backend API (see [`server.js`](server.js)):
   - `GET /api/configuration` — Get the current configuration (from `ANALYSIS_DIR/configuration.json`).
   - `POST /api/configuration` — Update the configuration (expects JSON body).
 
+- **Get the latest dump timestamp:**
+  - `GET /api/latest` 
+  - Get the latest dump timestamp
+  - Example: `/api/latest`
+  - Response:
+    ```json
+    { "latest":"2025-08-25_11-04-04" }
+    ```
+
 - **Re-analyse a JSON file:**  
   - `GET /api/reanalyse/:filename` — Triggers a re-analysis for the specified JSON file.
 

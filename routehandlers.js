@@ -227,6 +227,21 @@ export const getConfiguration = async (req, res) => {
   }
 }
 
+// Route handler to get the latest dump timestamp
+export const getLatest = async (req, res) => {
+  try {
+    // Read the latest dump timestamp
+    const latestPath = path.join(ANALYSIS_DIR, 'latest.json');
+    const data = await fs.readFile(latestPath, 'utf8');
+    const latestData = JSON.parse(data);
+    res.json(latestData);
+  } catch (error) {
+    console.error(getCurrentTimestamp());
+    console.error('Error in getLatest:', error.message);
+    res.status(500).json({ error: 'Unable to read latest dump timestamp' });
+  }
+};
+
 // Route handler to post/update configuration
 export const postConfiguration = async (req, res) => {
   try {

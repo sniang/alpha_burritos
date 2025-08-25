@@ -21,6 +21,7 @@ import {
     postComments,
     getConfiguration,
     postConfiguration,
+    getLatest,
     reAnalyse,
     MAIN_DIR,
 } from './routehandlers.js';
@@ -90,6 +91,9 @@ app.get('/api/configuration', (req, res) => getConfiguration(req, res));
 
 // Post the configuration for the analysis
 app.post('/api/configuration', (req, res) => postConfiguration(req, res));
+
+// Get the latest dump timestamp
+app.get('/api/latest', (req, res) => getLatest(req, res));
 
 // Re-analyse a specific JSON file
 app.get('/api/reanalyse/:filename', (req, res) => reAnalyse(req, res));
