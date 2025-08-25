@@ -29,6 +29,9 @@ const ChooseConfiguration = ({ selectedFile, forceRefreshSelectedFile }) => {
   const [showDetails, setShowDetails] = useState(false);
   // State for displaying messages (e.g., success messages)
   const [message, setMessage] = useState(null);
+  const [timestampMessage, setTimestampMessage] = useState(null);
+  // Timestamp message
+  const [diffInSeconds, setDiffInSeconds] = useState(null);
 
   // Fetch configuration data from backend on mount and every 500ms
   useEffect(() => {
@@ -61,6 +64,33 @@ const ChooseConfiguration = ({ selectedFile, forceRefreshSelectedFile }) => {
     fetchData();
     // Poll for configuration updates every 500ms
     const interval = setInterval(fetchData, 500);
+    return () => clearInterval(interval);
+  }, []);
+
+  // fetch latest dump timestamp
+  useEffect(() => {
+    const fetchLatest = async () => {
+      try {
+        const response = await fetch('/api/latest');
+        if (!response.ok) throw new Error('Error fetching latest dump timestamp');
+        const result = await response.json();
+        // Handle the latest dump timestamp as needed
+        const currentTimestamp = Date.now();
+        // Split date and time
+        const [datePart, timePart] = result.latest.split("_");
+        const formattedTime = timePart.replace(/-/g, ":");
+        // Build ISO string
+        const isoString = `${datePart}T${formattedTime}`;
+        const date = new Date(isoString);
+        const diffInSeconds = Math.floor((currentTimestamp - date.getTime()) / 1000);
+        setDiffInSeconds(diffInSeconds);
+        setTimestampMessage(result.latest.replace('_', ' '));
+      } catch (err) {
+        setError(err.message);
+      }
+    };
+    // Poll for latest dump timestamp every 200ms
+    const interval = setInterval(fetchLatest, 200);
     return () => clearInterval(interval);
   }, []);
 
@@ -224,6 +254,9 @@ const ChooseConfiguration = ({ selectedFile, forceRefreshSelectedFile }) => {
       {error && <p>{error}</p>}
       {/* Display success message if any */}
       {message && <p>{message}</p>}
+      {/* Display timestamp message if any */}
+      {timestampMessage && diffInSeconds && diffInSeconds > 10 && <p>{`Latest acquisition: ${timestampMessage}`}</p>}
+      {timestampMessage && diffInSeconds && diffInSeconds <= 10 && <p style={{ color: 'blue', fontWeight: 'bold' }}>{`New acquisition: ${timestampMessage}`}</p>}
     </div>
   );
 }
