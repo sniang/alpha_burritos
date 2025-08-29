@@ -32,6 +32,8 @@ const ChooseConfiguration = ({ selectedFile, forceRefreshSelectedFile }) => {
   const [timestampMessage, setTimestampMessage] = useState(null);
   // Timestamp message
   const [diffInSeconds, setDiffInSeconds] = useState(null);
+  // latest type dump
+  const [latestParticle, setLatestParticle] = useState(null);
 
   // Fetch configuration data from backend on mount and every 500ms
   useEffect(() => {
@@ -82,14 +84,21 @@ const ChooseConfiguration = ({ selectedFile, forceRefreshSelectedFile }) => {
         // Build ISO string
         const isoString = `${datePart}T${formattedTime}`;
         const date = new Date(isoString);
-        const diffInSeconds = Math.floor((currentTimestamp - date.getTime()) / 1000);
-        setDiffInSeconds(diffInSeconds);
+        const diffInSec = Math.floor((currentTimestamp - date.getTime()) / 1000);
+        if (diffInSec != diffInSeconds){
+          setDiffInSeconds(diffInSec);
+          if (result.particle){
+            setLatestParticle(result.particle);
+          }
+        }
         setTimestampMessage(result.latest.replace('_', ' '));
       } catch (err) {
         setError(err.message);
+        setDiffInSeconds(null);
+        setLatestParticle(null);
       }
     };
-    // Poll for latest dump timestamp every 200ms
+    // Poll for latest dump timestamp every 200 ms
     const interval = setInterval(fetchLatest, 200);
     return () => clearInterval(interval);
   }, []);
@@ -255,8 +264,8 @@ const ChooseConfiguration = ({ selectedFile, forceRefreshSelectedFile }) => {
       {/* Display success message if any */}
       {message && <p>{message}</p>}
       {/* Display timestamp message if any */}
-      {timestampMessage && diffInSeconds && diffInSeconds > 10 && <p>{`Latest acquisition: ${timestampMessage}`}</p>}
-      {timestampMessage && diffInSeconds && diffInSeconds <= 10 && <p style={{ color: 'blue', fontWeight: 'bold' }}>{`New acquisition: ${timestampMessage}`}</p>}
+      {latestParticle && timestampMessage && diffInSeconds && diffInSeconds > 10 && <p>{`Latest acquisition: ${timestampMessage} -  From ${latestParticle}'s trigger`}</p>}
+      {latestParticle && timestampMessage && diffInSeconds && diffInSeconds <= 10 && <p style={{ color: 'blue', fontWeight: 'bold' }}>{`New acquisition: ${timestampMessage} -  From ${latestParticle}'s trigger`}</p>}
     </div>
   );
 }

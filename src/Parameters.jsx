@@ -174,7 +174,7 @@ const Parameters = ({ selectedFile, detectorList, setDetectorList, setSelectedDe
             // Table: parameters as rows, detectors as columns
             return (
                 <div id="parametersBlock" className="blocks">
-                    <h4>{particleConfig && `${particleConfig} - `}{parseTimestamp(selectedFile)}</h4>
+                    <h4>{particleConfig && `${capitalizeFirstLetter(particleConfig)} - `}{parseTimestamp(selectedFile)}</h4>
                     {displayTable && (<textarea
                         value={makeTable()}
                         readOnly
@@ -217,7 +217,7 @@ const Parameters = ({ selectedFile, detectorList, setDetectorList, setSelectedDe
         // Table: detectors as rows, parameters as columns
         return (
             <div id="parametersBlock" className="blocks">
-                <h4>{particleConfig && `${particleConfig} - `}{parseTimestamp(selectedFile)}</h4>
+                <h4>{particleConfig && `${capitalizeFirstLetter(particleConfig)} - `}{parseTimestamp(selectedFile)}</h4>
                 {displayTable && (<textarea
                     value={makeTable()}
                     readOnly
@@ -262,4 +262,9 @@ const Parameters = ({ selectedFile, detectorList, setDetectorList, setSelectedDe
 
 export default Parameters;
 
+// Capitalizes the first letter of a string
+export function capitalizeFirstLetter(str) {
+  if (!str) return "";
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}
 
