@@ -72,8 +72,6 @@ const ChooseConfiguration = ({ selectedFile, forceRefreshSelectedFile }) => {
   // fetch latest dump timestamp
   useEffect(() => {
     const fetchLatest = async () => {
-      setDiffInSeconds(null);
-      setLatestParticle(null);
       try {
         const response = await fetch('/api/latest');
         if (!response.ok) throw new Error('Error fetching latest dump timestamp');
