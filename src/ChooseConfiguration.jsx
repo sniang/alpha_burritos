@@ -72,6 +72,9 @@ const ChooseConfiguration = ({ selectedFile, forceRefreshSelectedFile }) => {
   // fetch latest dump timestamp
   useEffect(() => {
     const fetchLatest = async () => {
+      setDiffInSeconds(null);
+      setLatestParticle(null);
+      setTimestampMessage(null);
       try {
         const response = await fetch('/api/latest');
         if (!response.ok) throw new Error('Error fetching latest dump timestamp');
@@ -85,9 +88,9 @@ const ChooseConfiguration = ({ selectedFile, forceRefreshSelectedFile }) => {
         const isoString = `${datePart}T${formattedTime}`;
         const date = new Date(isoString);
         const diffInSec = Math.floor((currentTimestamp - date.getTime()) / 1000);
-        if (diffInSec != diffInSeconds){
+        if (diffInSec != diffInSeconds) {
           setDiffInSeconds(diffInSec);
-          if (result.particle){
+          if (result.particle) {
             setLatestParticle(result.particle);
           }
         }
@@ -96,6 +99,7 @@ const ChooseConfiguration = ({ selectedFile, forceRefreshSelectedFile }) => {
         setError(err.message);
         setDiffInSeconds(null);
         setLatestParticle(null);
+        setTimestampMessage(null);
       }
     };
     // Poll for latest dump timestamp every 200 ms
