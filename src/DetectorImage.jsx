@@ -21,7 +21,7 @@ import "./CSS/DetectorImage.css";
  */
 const DetectorImage = ({ selectedFile, selectedDetector, fileVersion }) => {
     // Use fileVersion as cache buster and key
-    const imgSrc = `/api/img/${selectedDetector}/${selectedFile.replace('.json', '.png')}?v=${fileVersion}`;
+    const imgSrc = `/api/img/${selectedDetector}/${selectedFile.replace('.json', '.png').replace('data', selectedDetector)}?v=${fileVersion}`;
 
     return (
         <div id="detectorImageButtonContainer" className="blocks">

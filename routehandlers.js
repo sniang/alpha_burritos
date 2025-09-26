@@ -104,7 +104,8 @@ export const getJsonContent = async (req, res) => {
 // Route handler to serve image files
 export const getImage = async (req, res, subdir = 'Together') => {
   try {
-    const { imageName, detector } = req.params;
+    let { imageName, detector } = req.params;
+    imageName = imageName.replace(subdir, 'data');
     const jsonFilename = imageName.replace('.png', '.json');
     validateFilename(jsonFilename);
 

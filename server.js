@@ -69,10 +69,10 @@ app.get('/api/:year/:month/:day/json', getJsonFiles);
 app.get('/api/json/:jsonFilename', getJsonContent);
 
 // Retrieve multiplot image 
-app.get('/api/img_all/:imageName', (req, res) => getImage(req, res));
+app.get('/api/Together/:imageName', (req, res) => getImage(req, res));
 
 // Retrieve the image containing a single plot for all signals
-app.get('/api/img_same/:imageName', (req, res) => getImage(req, res, 'Same'));
+app.get('/api/Same/:imageName', (req, res) => getImage(req, res, 'Same'));
 
 // Retrieve detector-specific image 
 app.get('/api/img/:detector/:imageName', (req, res) => getImage(req, res, req.params.detector));
