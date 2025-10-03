@@ -208,15 +208,15 @@ export const postComments = async (req, res) => {
 export const getConfiguration = async (req, res) => {
   try {
     // Read configuration file
-    let configPath = path.join(ANALYSIS_DIR, 'configuration.json');
+    let configPath = path.join(ANALYSIS_DIR, 'configurations', 'configuration.json');
     let data = await fs.readFile(configPath, 'utf8');
     let configData = JSON.parse(data);
     // Read positron configuration
-    configPath = path.join(ANALYSIS_DIR, 'default_config_positrons.json');
+    configPath = path.join(ANALYSIS_DIR, 'configurations', 'default_config_positrons.json');
     data = await fs.readFile(configPath, 'utf8');
     const configPos = JSON.parse(data);
     // Read antiproton configuration
-    configPath = path.join(ANALYSIS_DIR, 'default_config_antiprotons.json');
+    configPath = path.join(ANALYSIS_DIR, 'configurations', 'default_config_antiprotons.json');
     data = await fs.readFile(configPath, 'utf8');
     const configPbar = JSON.parse(data);
     // Send the configuration data
@@ -232,7 +232,7 @@ export const getConfiguration = async (req, res) => {
 export const getLatest = async (req, res) => {
   try {
     // Read the latest dump timestamp
-    const latestPath = path.join(ANALYSIS_DIR, 'latest.json');
+    const latestPath = path.join(ANALYSIS_DIR, 'configurations', 'latest.json');
     const data = await fs.readFile(latestPath, 'utf8');
     const latestData = JSON.parse(data);
     res.json(latestData);
@@ -246,7 +246,7 @@ export const getLatest = async (req, res) => {
 // Route handler to post/update configuration
 export const postConfiguration = async (req, res) => {
   try {
-    const configPath = path.join(ANALYSIS_DIR, 'configuration.json');
+    const configPath = path.join(ANALYSIS_DIR, 'configurations', 'configuration.json');
     const newConfig = req.body;
     await fs.writeFile(configPath, JSON.stringify(newConfig, null, 2), 'utf8');
     res.json({ success: true, message: 'Configuration updated successfully' });
