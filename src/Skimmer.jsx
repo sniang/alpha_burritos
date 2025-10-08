@@ -23,7 +23,7 @@ const formatValue = (value) => {
  * @param {string} selectedDetector - The currently selected detector
  * @returns {string} Formatted text content for display
  */
-const getText = (jsonFilesSorted, data, endingIndex, startingIndex, selectedDetector) => {
+const getText = (jsonFilesSorted, data, endingIndex, startingIndex, selectedDetector, particles) => {
     if (!data || data.length === 0) {
         return "No data available.";
     }
@@ -44,15 +44,21 @@ const getText = (jsonFilesSorted, data, endingIndex, startingIndex, selectedDete
 
     // Build data rows with timestamp and parameter values
     jsonFilesSortedSlice.forEach((file, index) => {
-        const row = [parseTimestamp(file)];
+        if (sortedData[index]) {
+            const key1 = Object.keys(sortedData[index])[0];
+            console.log(sortedData[index][key1].config, particles);
+            if (sortedData[index][key1].config === particles) {
+            const row = [parseTimestamp(file)];
 
-        parameterKeys.forEach(({ key }) => {
-            const detectorData = sortedData[index]?.[selectedDetector];
-            row.push(detectorData && detectorData[key] !== undefined ?
-                formatValue(detectorData[key]) : "N/A");
-        });
+            parameterKeys.forEach(({ key }) => {
+                const detectorData = sortedData[index]?.[selectedDetector];
+                row.push(detectorData && detectorData[key] !== undefined ?
+                    formatValue(detectorData[key]) : "N/A");
+            });
+            rows.push(row.join("\t\t"));
+            }
+        }
 
-        rows.push(row.join("\t\t"));
     });
 
     return rows.join("\n");
@@ -89,6 +95,7 @@ const Skimmer = ({ jsonFiles, selectedDetector, setSelectedDetector, detectorLis
     const [startingIndex, setStartingIndex] = useState(0);
     const [data, setData] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
+    const [particles, setParticles] = useState("antiprotons");
 
     // Sort JSON files alphabetically for consistent display
     const jsonFilesSorted = useMemo(() =>
@@ -120,7 +127,7 @@ const Skimmer = ({ jsonFiles, selectedDetector, setSelectedDetector, detectorLis
         } finally {
             setIsLoading(false);
         }
-    }, [jsonFilesSorted, endingIndex, startingIndex]);
+    }, [jsonFilesSorted, endingIndex, startingIndex, particles]);
 
     // Fetch data when component mounts or dependencies change
     useEffect(() => {
@@ -136,14 +143,25 @@ const Skimmer = ({ jsonFiles, selectedDetector, setSelectedDetector, detectorLis
 
     // Generate the text content to display in the textarea
     const textContent = useMemo(() =>
-        getText(jsonFilesSorted, data, endingIndex, startingIndex, selectedDetector)
-        , [jsonFilesSorted, data, endingIndex, startingIndex, selectedDetector]);
+        getText(jsonFilesSorted, data, endingIndex, startingIndex, selectedDetector, particles)
+        , [jsonFilesSorted, data, endingIndex, startingIndex, selectedDetector, particles]);
 
     return (
         <div className="skimmer-container blocks">
             <h2>Skimmer</h2>
             {/* Control panel for detector and range selection */}
             <div className="skimmer-controls">
+                {/* Particle type */}
+                <label>Particle:
+                    <select
+                        value={particles}
+                        onChange={(e) => setParticles(e.target.value)}
+                    >
+                        <option value="positrons">Positrons</option>
+                        <option value="antiprotons">Antiprotons</option>
+                    </select>
+                </label>
+                {/* Detector selector */}
                 <DetectorSelector
                     selectedDetector={selectedDetector}
                     setSelectedDetector={setSelectedDetector}
