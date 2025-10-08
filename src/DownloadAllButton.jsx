@@ -16,14 +16,20 @@ const DownloadAllButton = ({ selectedFile }) => {
     const [error, setError] = useState(null);
 
     /**
-     * Handles downloading a single signal file from the server.
+     * Handles downloading the signal file from the server.
      * @param {string} jsonFilename - The name of the JSON file to download.
-     * @param {string} detector - The detector name for the signal file.
+     * @param {string} detector - The selected detector name.
+     * @param {boolean} csv - Whether to download the file in CSV format.
      */
-    const downloadSignalFile = async (jsonFilename, detector) => {
+    const downloadSignalFile = async (jsonFilename, detector, csv = false) => {
         try {
             // Fetch the file from the backend API
-            const response = await fetch(`/api/signal/${detector}/${jsonFilename}`);
+            let response;
+            if (csv) {
+                response = await fetch(`/api/signal/csv/${detector}/${jsonFilename}`);
+            } else {
+                response = await fetch(`/api/signal/${detector}/${jsonFilename}`);
+            }
             console.log(`/api/signal/${detector}/${jsonFilename}`)
             if (!response.ok) {
                 // If the response is not OK, throw an error
@@ -38,7 +44,11 @@ const DownloadAllButton = ({ selectedFile }) => {
             const a = document.createElement('a');
             a.href = url;
             // Set the download filename using the detector and original filename
-            a.download = detector + "_" + jsonFilename.replace('.json', '.txt');
+            if (csv) {
+                a.download = jsonFilename.replace('.json', '.csv').replace('data', detector);
+            } else {
+                a.download = jsonFilename.replace('.json', '.txt').replace('data', detector);
+            }
             document.body.appendChild(a);
             a.click();
             a.remove();
@@ -77,13 +87,13 @@ const DownloadAllButton = ({ selectedFile }) => {
      * Downloads signal files for all available detectors.
      * @param {string} jsonFilename - The name of the JSON file to download signals for.
      */
-    const downloadAllSignalFiles = async (jsonFilename) => {
+    const downloadAllSignalFiles = async (jsonFilename, csv=false) => {
         try {
             // Get all available detectors
             const detectors = await getDetectorList();
             // Download signal file for each detector
             for (const detector of detectors) {
-                await downloadSignalFile(jsonFilename, detector);
+                await downloadSignalFile(jsonFilename, detector, csv);
             }
         } catch (error) {
             setError(error);
@@ -94,7 +104,10 @@ const DownloadAllButton = ({ selectedFile }) => {
         <>
             {/* Download button triggers the downloadAllSignalFiles function */}
             <button onClick={() => downloadAllSignalFiles(selectedFile)}>
-                Download the signals
+                Download the signals (.txt)
+            </button>
+            <button onClick={() => downloadAllSignalFiles(selectedFile, true)}>
+                Download the signals (.csv)
             </button>
             {/* Display error message if an error occurred */}
             {error && <span> Error: {error.message}</span>}

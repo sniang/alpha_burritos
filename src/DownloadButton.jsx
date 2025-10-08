@@ -13,7 +13,7 @@ import React, { useState } from "react";
  * @param {string} props.selectedDetector - The name of the selected detector.
  * @returns {JSX.Element} A button that triggers the download of the signal file and displays errors if any.
  */
-const DownloadButton = ({ selectedFile, selectedDetector }) => {
+const DownloadButton = ({ selectedFile, selectedDetector}) => {
     // State to store any error that occurs during download
     const [error, setError] = useState(null);
 
@@ -21,11 +21,17 @@ const DownloadButton = ({ selectedFile, selectedDetector }) => {
      * Handles downloading the signal file from the server.
      * @param {string} jsonFilename - The name of the JSON file to download.
      * @param {string} detector - The selected detector name.
+     * @param {boolean} csv - Whether to download the file in CSV format.
      */
-    const downloadSignalFile = async (jsonFilename, detector) => {
+    const downloadSignalFile = async (jsonFilename, detector, csv = false) => {
         try {
             // Fetch the file from the backend API
-            const response = await fetch(`/api/signal/${detector}/${jsonFilename}`);
+            let response;
+            if (csv) {
+                response = await fetch(`/api/signal/csv/${detector}/${jsonFilename}`);
+            } else {
+                response = await fetch(`/api/signal/${detector}/${jsonFilename}`);
+            }
             console.log(`/api/signal/${detector}/${jsonFilename}`)
             if (!response.ok) {
                 // If the response is not OK, throw an error
@@ -40,7 +46,11 @@ const DownloadButton = ({ selectedFile, selectedDetector }) => {
             const a = document.createElement('a');
             a.href = url;
             // Set the download filename using the detector and original filename
-            a.download = detector + "_" + jsonFilename.replace('.json', '.txt');
+            if (csv) {
+                a.download = jsonFilename.replace('.json', '.csv').replace('data', detector);
+            } else {
+                a.download = jsonFilename.replace('.json', '.txt').replace('data', detector);
+            }
             document.body.appendChild(a);
             a.click();
             a.remove();
@@ -54,14 +64,17 @@ const DownloadButton = ({ selectedFile, selectedDetector }) => {
     };
 
     return (
-        <>
+        <div style={{ display: 'flex', gap: '10px' }}>
             {/* Download button triggers the downloadSignalFile function */}
             <button onClick={() => downloadSignalFile(selectedFile, selectedDetector)}>
-                Download the signal
+                Download signal (.txt)
+            </button>
+            <button onClick={() => downloadSignalFile(selectedFile, selectedDetector, true)}>
+                Download signal (.csv)
             </button>
             {/* Display error message if an error occurred */}
             {error && <span> Error: {error.message}</span>}
-        </>
+        </div>
     );
 };
 

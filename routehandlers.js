@@ -59,10 +59,11 @@ export const getSignal = async (req, res, csv = false) => {
       const content = await fs.readFile(filePath, 'utf8');
       const lines = content
         .split(/\r?\n/)
-        .filter(line => line.trim() !== '')
-        .map(line => line.trim().replace(/\s+/g, ','));
+        .filter(line => line.trim() !== '' && !line.trim().startsWith('#')) // ignore comments and empty lines
+        .map(line => line.trim().replace(/\s+/g, ',')); // replace spaces with commas
 
-      const csvData = lines.join('\n');
+      // Add CSV header
+      const csvData = ['Time (ns),Signal (mV)', ...lines].join('\n');
       const csvName = baseName.replace('.txt', '.csv');
 
       res.setHeader('Content-Type', 'text/csv');
