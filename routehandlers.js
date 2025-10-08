@@ -36,7 +36,7 @@ export const getJsonFiles = async (req, res) => {
 };
 
 // Route handler to get signal file for a specific JSON file and detector
-export const getSignal = async (req, res) => {
+export const getSignal = async (req, res, csv = false) => {
   try {
     const { jsonFilename, detector } = req.params;
     validateFilename(jsonFilename);
@@ -51,10 +51,28 @@ export const getSignal = async (req, res) => {
       detector,
       baseName
     );
-
+    // Check that file exists
     await fs.access(filePath, fs.constants.F_OK);
-    res.setHeader('Content-Disposition', `attachment; filename="${baseName}"`);
-    res.sendFile(filePath);
+
+    if (csv) {
+      // Read file and convert to CSV
+      const content = await fs.readFile(filePath, 'utf8');
+      const lines = content
+        .split(/\r?\n/)
+        .filter(line => line.trim() !== '')
+        .map(line => line.trim().replace(/\s+/g, ','));
+
+      const csvData = lines.join('\n');
+      const csvName = baseName.replace('.txt', '.csv');
+
+      res.setHeader('Content-Type', 'text/csv');
+      res.setHeader('Content-Disposition', `attachment; filename="${csvName}"`);
+      res.send(csvData);
+    } else {
+      // Serve the original TXT file
+      res.setHeader('Content-Disposition', `attachment; filename="${baseName}"`);
+      res.sendFile(filePath);
+    }
   } catch (error) {
     console.error(getCurrentTimestamp());
     console.error('Error in getSignal:', error.message);

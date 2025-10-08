@@ -80,6 +80,9 @@ app.get('/api/img/:detector/:imageName', (req, res) => getImage(req, res, req.pa
 // Retrieve signal data as a text file for a detector and JSON file
 app.get('/api/signal/:detector/:jsonFilename', (req, res) => getSignal(req, res));
 
+// Retrieve signal data as a text file for a detector and JSON file
+app.get('/api/signal/csv/:detector/:jsonFilename', (req, res) => getSignal(req, res, true));
+
 // Retrieve comments for a specific JSON file
 app.get('/api/comments/:jsonFilename', (req, res) => getComments(req, res));
 
