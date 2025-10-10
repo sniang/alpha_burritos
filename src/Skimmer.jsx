@@ -163,7 +163,7 @@ const Skimmer = ({ jsonFiles, selectedDetector, setSelectedDetector, detectorLis
             {isLoading && <div className="loading-indicator">Loading data...</div>}
             {!isLoading && data && !isTableTextArea && <Table />}
             {!isLoading && data && isTableTextArea && <TableTextArea />}
-            <div>
+            <div style={{display: "flex", gap: "10px"}}>
                 {!isLoading && data && <DownloadCSVButton />}
                 {!isLoading && data && isTableTextArea && <button onClick={() => setIsTableTextArea(false)}>Back to Table</button>}
             </div>
