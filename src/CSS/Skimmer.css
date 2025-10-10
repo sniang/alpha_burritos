@@ -38,3 +38,18 @@ div.skimmer-container {
     gap: 10px;
     /* Space between child elements */
 }
+
+.skimmer-grid {
+    display: grid;
+    grid-template-columns: repeat(8, minmax(100px, 1fr));
+    /* Space between grid items */
+    padding: 10px;
+    border: 1px solid #ccc;
+    /* Light gray border */
+    border-radius: 5px;
+    /* Rounded corners */
+    background-color: #f9f9f9;
+    /* Light background color */
+    font-size: small;
+    text-align: center;
+}
