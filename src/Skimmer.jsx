@@ -25,7 +25,7 @@ const Skimmer = ({ jsonFiles, selectedDetector, setSelectedDetector, detectorLis
     // Sort JSON files alphabetically for consistent display
     const jsonFilesSorted = useMemo(() =>
         jsonFiles ? [...jsonFiles].sort((a, b) => b.localeCompare(a)) : []
-    , [jsonFiles]);
+        , [jsonFiles]);
 
     // Fetch data when component mounts or dependencies change
     useEffect(() => {
@@ -151,7 +151,7 @@ const Skimmer = ({ jsonFiles, selectedDetector, setSelectedDetector, detectorLis
                 onClick={downloadCSV}
                 className="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
             >
-                Download CSV
+                Download the summary (.csv)
             </button>
         );
     };
@@ -163,9 +163,10 @@ const Skimmer = ({ jsonFiles, selectedDetector, setSelectedDetector, detectorLis
             {isLoading && <div className="loading-indicator">Loading data...</div>}
             {!isLoading && data && !isTableTextArea && <Table />}
             {!isLoading && data && isTableTextArea && <TableTextArea />}
-            {!isLoading && data && <DownloadCSVButton />}
-            {!isLoading && data && isTableTextArea &&
-                <button onClick={() => setIsTableTextArea(false)}>Back to Table</button>}
+            <div>
+                {!isLoading && data && <DownloadCSVButton />}
+                {!isLoading && data && isTableTextArea && <button onClick={() => setIsTableTextArea(false)}>Back to Table</button>}
+            </div>
         </div>
     );
 };
