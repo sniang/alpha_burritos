@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { parseTimestamp } from "./TimeStampSelector";
 import "./CSS/Parameters.css";
 import Button from '@mui/material/Button';
+import ShareIcon from '@mui/icons-material/Share';
 
 
 
@@ -143,6 +144,7 @@ const Parameters = ({ selectedFile, detectorList, setDetectorList, setSelectedDe
                             document.body.removeChild(textarea);
                         }
                     }}
+                    startIcon={<ShareIcon />}
                 >
                     Share link
                 </Button>

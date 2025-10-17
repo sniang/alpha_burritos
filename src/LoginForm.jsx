@@ -1,6 +1,8 @@
 // Author: Samuel Niang
 
 import { useState } from 'react';
+import LoginIcon from '@mui/icons-material/Login';
+import Button from "@mui/material/Button";
 
 /**
  * LoginForm component for user authentication.
@@ -54,7 +56,9 @@ export default function LoginForm({ onLogin }) {
                 placeholder="Password"
             />
             {/* Submit button */}
-            <button type="submit">Log in</button>
+            <Button type="submit" startIcon={<LoginIcon />} variant="contained" color="success">
+                Log in
+            </Button>
             {/* Message display area */}
             {message && <span className="message">{message}</span>}
         </form>

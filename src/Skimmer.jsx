@@ -3,6 +3,9 @@ import "./CSS/Skimmer.css";
 import { parseTimestamp } from "./TimeStampSelector";
 import DetectorSelector from "./DetectorSelector";
 import { parameterKeys } from "./Parameters";
+import SaveIcon from '@mui/icons-material/Save';
+import Button from '@mui/material/Button';
+
 
 /**
  * @component
@@ -147,12 +150,16 @@ const Skimmer = ({ jsonFiles, selectedDetector, setSelectedDetector, detectorLis
             URL.revokeObjectURL(url);
         };
         return (
-            <button
+            <Button
+                startIcon={<SaveIcon />}
+                color="success"
+                variant="contained"
+                size="small"
                 onClick={downloadCSV}
                 className="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
             >
                 Download the summary (.csv)
-            </button>
+            </Button>
         );
     };
 
