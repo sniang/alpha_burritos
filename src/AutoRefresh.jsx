@@ -41,7 +41,6 @@ function AutoRefresh({
      * Updates the parent state with the sorted file list and selects the latest file.
      */
     const fetchFiles = async () => {
-        console.log("Fetching files...");
         try {
             // Fetch files from backend using year and month
             const res = await fetch(`/api/${year}/${month}/${day}/json`);

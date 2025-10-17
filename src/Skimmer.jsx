@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import "./CSS/Skimmer.css";
 import { parseTimestamp } from "./TimeStampSelector";
 import DetectorSelector from "./DetectorSelector";
@@ -98,16 +98,16 @@ const Skimmer = ({ jsonFiles, selectedDetector, setSelectedDetector, detectorLis
         <div className="skimmer-grid" onClick={() => setIsTableTextArea(true)}>
             <span>Timestamps</span>
             {parameterKeys.map(({ label }) => <span key={label}>{label}</span>)}
-            {data.filter(line => line[Object.keys(line)[0]].config === particles).map(line => {
+            {data.filter(line => line[Object.keys(line)[0]].config === particles).map((line, index) => {
                 const key1 = Object.keys(line)[0];
                 const timestamp = parseTimestamp(line[key1]?.signal.replace('.txt', '.json')) || "N/A";
                 return (
-                    <>
+                    <React.Fragment key={`${key1}-${index}`}>
                         <span>{timestamp}</span>
                         {parameterKeys.map(({ key }) =>
                             <span key={key}>{formatValue(line?.[selectedDetector]?.[key])}</span>
                         )}
-                    </>
+                    </React.Fragment>
                 );
             })}
         </div>
