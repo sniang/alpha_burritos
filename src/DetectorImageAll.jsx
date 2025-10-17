@@ -1,6 +1,9 @@
-import React, { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import "./CSS/DetectorImage.css";
 import DownloadAllButton from "./DownloadAllButton";
+import Button from '@mui/material/Button';
+import DrawIcon from '@mui/icons-material/Draw';
+
 
 /**
  * Displays an image for the selected file, allowing toggling between combined and subplot views.
@@ -35,9 +38,9 @@ const DetectorImageAll = ({ selectedFile, fileVersion = 0 }) => {
         alt={`Preview for ${imgSrc}`}
       />
       <div style={{ display: "flex", gap: "10px" }}>
-        <button className="green" onClick={handleToggleSignals}>
+        <Button color="success" variant="contained" size="small" onClick={handleToggleSignals} startIcon={<DrawIcon />}>
           {allSignals ? "Subplots" : "Combined plot"}
-        </button>
+        </Button>
         <DownloadAllButton selectedFile={selectedFile} />
       </div>
     </div>

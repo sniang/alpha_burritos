@@ -1,4 +1,6 @@
-import React, { useState } from "react";
+import { useState } from "react";
+import Button from '@mui/material/Button';
+
 
 /**
  * DownloadButton component allows users to download a signal file from the server
@@ -11,11 +13,14 @@ import React, { useState } from "react";
  * @param {Object} props - Component props.
  * @param {string} props.selectedFile - The filename of the selected signal (JSON format).
  * @param {string} props.selectedDetector - The name of the selected detector.
- * @returns {JSX.Element} A button that triggers the download of the signal file and displays errors if any.
+ * @returns {JSX.Element} A Button that triggers the download of the signal file and displays errors if any.
  */
 const DownloadButton = ({ selectedFile, selectedDetector}) => {
     // State to store any error that occurs during download
     const [error, setError] = useState(null);
+
+    const options = ['Download signal (.txt)', 'Download signal (.csv)'];
+
 
     /**
      * Handles downloading the signal file from the server.
@@ -65,13 +70,13 @@ const DownloadButton = ({ selectedFile, selectedDetector}) => {
 
     return (
         <div style={{ display: 'flex', gap: '10px' }}>
-            {/* Download button triggers the downloadSignalFile function */}
-            <button onClick={() => downloadSignalFile(selectedFile, selectedDetector)}>
+            {/* Download Button triggers the downloadSignalFile function */}
+            <Button onClick={() => downloadSignalFile(selectedFile, selectedDetector)}>
                 Download signal (.txt)
-            </button>
-            <button onClick={() => downloadSignalFile(selectedFile, selectedDetector, true)}>
+            </Button>
+            <Button onClick={() => downloadSignalFile(selectedFile, selectedDetector, true)}>
                 Download signal (.csv)
-            </button>
+            </Button>
             {/* Display error message if an error occurred */}
             {error && <span> Error: {error.message}</span>}
         </div>

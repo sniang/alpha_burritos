@@ -1,5 +1,9 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import './CSS/ChooseConfiguration.css';
+import Button from '@mui/material/Button';
+import ButtonGroup from '@mui/material/ButtonGroup';
+import PsychologyIcon from '@mui/icons-material/Psychology';
+import AutoStoriesIcon from '@mui/icons-material/AutoStories';
 
 /**
  * ChooseConfiguration component provides UI controls for selecting the analysis configuration
@@ -183,51 +187,50 @@ const ChooseConfiguration = ({ selectedFile, forceRefreshSelectedFile }) => {
   return (
     <div id="ChooseConfig" className="blocks">
       <h3>Offline analysis configuration</h3>
-      <div className="buttonBlock">
-        {/* Button to select positrons configuration */}
-        <button
-          className="green"
+      <ButtonGroup variant="contained"  color="success">
+        <Button
           style={{ opacity: data.config !== 'positrons' ? 0.5 : 1 }}
           onClick={() => handleConfigChange('positrons')}
         >
           Positrons
-        </button>
+        </Button>
         {/* Button to select antiprotons configuration */}
-        <button
-          className="green"
+        <Button
           style={{ opacity: data.config !== 'antiprotons' ? 0.5 : 1 }}
           onClick={() => handleConfigChange('antiprotons')}
         >
           Antiprotons
-        </button>
+        </Button>
         {/* Button to toggle fit option */}
-        <button
-          className="green"
+        <Button
           style={{ opacity: data.fit ? 1 : 0.5 }}
           onClick={() => { handleConfigChange(data.config, !data.fit); }}
         >
           {data.fit ? "Fit enabled" : "Fit disabled"}
-        </button>
+        </Button>
         {/* Button to trigger re-analysis */}
-        <button onClick={handleReAnalyse}>
+        <Button
+          onClick={handleReAnalyse}
+          startIcon={<PsychologyIcon />}
+        >
           Re-analyse
-        </button>
+        </Button>
         {/* Button to show/hide configuration details */}
-        <button
-          onClick={() => { setShowDetails(!showDetails); }}
+        <Button onClick={() => { setShowDetails(!showDetails); }}
         >
           {showDetails ? "Hide details" : "Show details"}
-        </button>
+        </Button>
         <a
           href="https://alphacpc05.cern.ch/elog/ALPHA/36053"
           target="_blank"
           rel="noopener noreferrer"
         >
-          <button>
+          <Button startIcon={<AutoStoriesIcon />} >
             Go to the guide
-          </button>
+          </Button>
         </a>
-      </div>
+      </ButtonGroup>
+
       {/* Display configuration details if toggled */}
       {showDetails && (
         <div style={{ display: 'flex', flexDirection: "column", alignItems: "center" }}>

@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { parseTimestamp } from "./TimeStampSelector";
 import "./CSS/Parameters.css";
+import Button from '@mui/material/Button';
+
+
 
 // Parameter keys and display labels
 export const parameterKeys = [
@@ -110,8 +113,10 @@ const Parameters = ({ selectedFile, detectorList, setDetectorList, setSelectedDe
     const displayButtons = () => {
         return (
             <div style={{ display: "flex", gap: "10px" }}>
-                <button
-                    className="green"
+                <Button
+                    size="small"
+                    variant="contained"
+                    color="success"
                     onClick={() => {
                         const url = new URL(window.location.href);
                         url.searchParams.set("id", selectedFile);
@@ -140,17 +145,21 @@ const Parameters = ({ selectedFile, detectorList, setDetectorList, setSelectedDe
                     }}
                 >
                     Share link
-                </button>
-                <button
-                    className="button"
+                </Button>
+                <Button
+                    size="small"
+                    variant="contained"
+                    color="success"
                     onClick={() => setReverseTable(!reverseTable)}>
                     Reverse Table
-                </button>
-                {displayTable && <button
-                    className="button"
+                </Button>
+                {displayTable && <Button
+                    size="small"
+                    variant="contained"
+                    color="error"
                     onClick={() => setDisplayTable(!displayTable)}>
                     Back
-                </button>}
+                </Button>}
             </div>);
     };
 
@@ -264,7 +273,7 @@ export default Parameters;
 
 // Capitalizes the first letter of a string
 export function capitalizeFirstLetter(str) {
-  if (!str) return "";
-  return str.charAt(0).toUpperCase() + str.slice(1);
+    if (!str) return "";
+    return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
