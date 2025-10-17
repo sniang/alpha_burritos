@@ -82,15 +82,16 @@ function TimeStampSelector({
   };
   return (
     <FormControl size="small" color="success" >
-      <InputLabel color="success">Timestamp</InputLabel>
+      <InputLabel sx={{ fontSize: 13 }} color="success">Timestamp</InputLabel>
       <Select
+        sx={{ fontSize: 13 }}
         value={selectedFile}
         label="Timestamp"
         onChange={handleSelectChange}
       >
-        <MenuItem value="" disabled>Acquisition timestamp</MenuItem>
+        <MenuItem sx={{ fontSize: 13 }} value="" disabled>Acquisition timestamp</MenuItem>
         {!error && jsonFiles.map((file, index) => (
-          <MenuItem key={index} value={file}>{parseTimestamp(file)}</MenuItem>
+          <MenuItem sx={{ fontSize: 13 }} key={index} value={file}>{parseTimestamp(file)}</MenuItem>
         ))}
       </Select>
     </FormControl>

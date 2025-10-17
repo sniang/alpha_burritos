@@ -39,20 +39,20 @@ const DateSelector = ({ year, setYear, month, setMonth, day, setDay }) => {
         <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
             {/* Year selector */}
             <FormControl size="small" color="success" sx={{ minWidth: 120 }}>
-                <InputLabel>Year</InputLabel>
-                <Select value={year} onChange={handleYearChange} label="Year">
+                <InputLabel sx={{ fontSize: 13 }}>Year</InputLabel>
+                <Select sx={{ fontSize: 13 }} value={year} onChange={handleYearChange} label="Year">
                     {Array.from({ length: currentYear - startYear + 1 }, (_, i) => currentYear - i).map((y) => (
-                        <MenuItem key={y} value={y}>{y}</MenuItem>
+                        <MenuItem sx={{ fontSize: 13 }} key={y} value={y}>{y}</MenuItem>
                     ))}
                 </Select>
             </FormControl>
 
             {/* Month selector */}
             <FormControl size="small" color="success" sx={{ minWidth: 120 }}>
-                <InputLabel>Month</InputLabel>
-                <Select value={month} onChange={handleMonthChange} label="Month">
+                <InputLabel sx={{ fontSize: 13 }}>Month</InputLabel>
+                <Select sx={{ fontSize: 13 }} value={month} onChange={handleMonthChange} label="Month">
                     {getAllMonthsOfYear(year).map((date) => (
-                        <MenuItem key={`${year}-${date}`} value={date}>
+                        <MenuItem sx={{ fontSize: 13 }} key={`${year}-${date}`} value={date}>
                             {date}
                         </MenuItem>
                     ))}
@@ -61,10 +61,10 @@ const DateSelector = ({ year, setYear, month, setMonth, day, setDay }) => {
 
             {/* Day selector */}
             <FormControl size="small" color="success" sx={{ minWidth: 120 }}>
-                <InputLabel>Day</InputLabel>
-                <Select value={day} onChange={(e) => setDay(Number(e.target.value))} label="Day">
+                <InputLabel sx={{ fontSize: 13 }}>Day</InputLabel>
+                <Select sx={{ fontSize: 13 }} value={day} onChange={(e) => setDay(Number(e.target.value))} label="Day">
                     {getAllDaysOfMonth(year, month).map((d) => (
-                        <MenuItem key={d.getDate()} value={d.getDate()}>
+                        <MenuItem sx={{ fontSize: 13 }} key={d.getDate()} value={d.getDate()}>
                             {d.getDate()}
                         </MenuItem>
                     ))}

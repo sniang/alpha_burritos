@@ -89,6 +89,7 @@ select {
   /* Internal spacing */
   gap: 5px;
   /* Space between items */
+  min-width: 850px;
 }
 
 /* Block containing detector elements - flexible layout with even spacing */
@@ -138,14 +139,4 @@ button.green {
 
 button.red {
     background-color: #C0392B;
-}
-
-/* Responsive layout adjustments for mobile/tablet screens */
-@media screen and (max-width: 950px) {
-  #selects-block {
-    flex-direction: column;
-    /* Stack items vertically on smaller screens */
-    width: 100%;
-    /* Take full width */
-  }
 }

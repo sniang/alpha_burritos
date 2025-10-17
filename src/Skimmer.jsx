@@ -64,10 +64,10 @@ const Skimmer = ({ jsonFiles, selectedDetector, setSelectedDetector, detectorLis
     const Selectors = () => (
         <div className="skimmer-controls">
             <FormControl size="small" color="success" sx={{ minWidth: 150 }}>
-                <InputLabel>Particle</InputLabel>
-                <Select value={particles} onChange={e => setParticles(e.target.value)} label="Particle">
-                    <MenuItem value="positrons">Positrons</MenuItem>
-                    <MenuItem value="antiprotons">Antiprotons</MenuItem>
+                <InputLabel sx={{ fontSize: 13 }}>Particle</InputLabel>
+                <Select sx={{ fontSize: 13 }} value={particles} onChange={e => setParticles(e.target.value)} label="Particle">
+                    <MenuItem sx={{ fontSize: 13 }} value="positrons">Positrons</MenuItem>
+                    <MenuItem sx={{ fontSize: 13 }} value="antiprotons">Antiprotons</MenuItem>
                 </Select>
             </FormControl>
             <DetectorSelector
@@ -77,20 +77,20 @@ const Skimmer = ({ jsonFiles, selectedDetector, setSelectedDetector, detectorLis
             />
 
             <FormControl size="small" color="success" sx={{ minWidth: 150 }}>
-                <InputLabel>Acquisition timestamp</InputLabel>
-                <Select value={endingIndex} onChange={e => setEndingIndex(Number(e.target.value))} label="Acquisition timestamp">
+                <InputLabel sx={{ fontSize: 13 }}>Acquisition timestamp</InputLabel>
+                <Select sx={{ fontSize: 13 }} value={endingIndex} onChange={e => setEndingIndex(Number(e.target.value))} label="Acquisition timestamp">
                     {jsonFilesSorted.map((file, i) =>
-                        <MenuItem key={file} value={i}>{parseTimestamp(file)}</MenuItem>
+                        <MenuItem sx={{ fontSize: 13 }} key={file} value={i}>{parseTimestamp(file)}</MenuItem>
                     )}
                 </Select>
             </FormControl>
 
             <FormControl size="small" color="success" sx={{ minWidth: 150 }}>
-                <InputLabel>Acquisition timestamp</InputLabel>
-                <Select value={startingIndex} onChange={e => setStartingIndex(Number(e.target.value))} label="Acquisition timestamp">
-                    <MenuItem value="" disabled>Acquisition timestamp</MenuItem>
+                <InputLabel sx={{ fontSize: 13 }}>Acquisition timestamp</InputLabel>
+                <Select sx={{ fontSize: 13 }} value={startingIndex} onChange={e => setStartingIndex(Number(e.target.value))} label="Acquisition timestamp">
+                    <MenuItem sx={{ fontSize: 13 }} value="" disabled>Acquisition timestamp</MenuItem>
                     {jsonFilesSorted.map((file, i) =>
-                        <MenuItem key={file} value={i}>{parseTimestamp(file)}</MenuItem>
+                        <MenuItem sx={{ fontSize: 13 }} key={file} value={i}>{parseTimestamp(file)}</MenuItem>
                     )}
                 </Select>
             </FormControl>
@@ -168,7 +168,7 @@ const Skimmer = ({ jsonFiles, selectedDetector, setSelectedDetector, detectorLis
     };
 
     return (
-        <div className="skimmer-container blocks">
+        <div className="skimmer-container blocks" style={{minWidth: "850px"}}>
             <h2>Skimmer</h2>
             <Selectors />
             {isLoading && <div className="loading-indicator">Loading data...</div>}

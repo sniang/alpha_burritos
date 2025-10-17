@@ -21,14 +21,15 @@ const DetectorSelector = ({ selectedDetector, setSelectedDetector, detectorList 
 
     return (
         <FormControl size="small" color="success" sx={{ minWidth: 150 }}>
-            <InputLabel>Detector</InputLabel>
+            <InputLabel sx={{ fontSize: 13 }}>Detector</InputLabel>
             <Select
+                sx={{ fontSize: 13 }}
                 value={selectedDetector}
                 label="Detector"
                 onChange={handleChange}
             >
                 {detectorList && detectorList.map((detector) => (
-                    <MenuItem key={detector} value={detector}>
+                    <MenuItem sx={{ fontSize: 13 }} key={detector} value={detector}>
                         {detector}
                     </MenuItem>
                 ))}
