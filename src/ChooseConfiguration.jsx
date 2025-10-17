@@ -4,6 +4,10 @@ import Button from '@mui/material/Button';
 import ButtonGroup from '@mui/material/ButtonGroup';
 import PsychologyIcon from '@mui/icons-material/Psychology';
 import AutoStoriesIcon from '@mui/icons-material/AutoStories';
+import InfoIcon from '@mui/icons-material/Info';
+import MonitorHeartIcon from '@mui/icons-material/MonitorHeart';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 
 /**
  * ChooseConfiguration component provides UI controls for selecting the analysis configuration
@@ -187,8 +191,9 @@ const ChooseConfiguration = ({ selectedFile, forceRefreshSelectedFile }) => {
   return (
     <div id="ChooseConfig" className="blocks">
       <h3>Offline analysis configuration</h3>
-      <ButtonGroup variant="contained"  color="success">
+      <ButtonGroup size="small" variant="contained"  color="success">
         <Button
+          startIcon={<AddCircleOutlineIcon />}
           style={{ opacity: data.config !== 'positrons' ? 0.5 : 1 }}
           onClick={() => handleConfigChange('positrons')}
         >
@@ -196,6 +201,7 @@ const ChooseConfiguration = ({ selectedFile, forceRefreshSelectedFile }) => {
         </Button>
         {/* Button to select antiprotons configuration */}
         <Button
+          startIcon={<RemoveCircleOutlineIcon />}
           style={{ opacity: data.config !== 'antiprotons' ? 0.5 : 1 }}
           onClick={() => handleConfigChange('antiprotons')}
         >
@@ -203,6 +209,7 @@ const ChooseConfiguration = ({ selectedFile, forceRefreshSelectedFile }) => {
         </Button>
         {/* Button to toggle fit option */}
         <Button
+          startIcon={<MonitorHeartIcon />}
           style={{ opacity: data.fit ? 1 : 0.5 }}
           onClick={() => { handleConfigChange(data.config, !data.fit); }}
         >
@@ -216,7 +223,7 @@ const ChooseConfiguration = ({ selectedFile, forceRefreshSelectedFile }) => {
           Re-analyse
         </Button>
         {/* Button to show/hide configuration details */}
-        <Button onClick={() => { setShowDetails(!showDetails); }}
+        <Button startIcon={<InfoIcon />} onClick={() => { setShowDetails(!showDetails); }}
         >
           {showDetails ? "Hide details" : "Show details"}
         </Button>

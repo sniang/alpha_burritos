@@ -3,8 +3,8 @@ import { parseTimestamp } from "./TimeStampSelector";
 import "./CSS/Parameters.css";
 import Button from '@mui/material/Button';
 import ShareIcon from '@mui/icons-material/Share';
-
-
+import PivotTableChartIcon from '@mui/icons-material/PivotTableChart';
+import CancelIcon from '@mui/icons-material/Cancel';
 
 // Parameter keys and display labels
 export const parameterKeys = [
@@ -149,6 +149,7 @@ const Parameters = ({ selectedFile, detectorList, setDetectorList, setSelectedDe
                     Share link
                 </Button>
                 <Button
+                    startIcon={<PivotTableChartIcon />}
                     size="small"
                     variant="contained"
                     color="success"
@@ -156,6 +157,7 @@ const Parameters = ({ selectedFile, detectorList, setDetectorList, setSelectedDe
                     Reverse Table
                 </Button>
                 {displayTable && <Button
+                    startIcon={<CancelIcon />}
                     size="small"
                     variant="contained"
                     color="error"

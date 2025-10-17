@@ -5,7 +5,7 @@ import DetectorSelector from "./DetectorSelector";
 import { parameterKeys } from "./Parameters";
 import SaveIcon from '@mui/icons-material/Save';
 import Button from '@mui/material/Button';
-
+import CancelIcon from '@mui/icons-material/Cancel';
 
 /**
  * @component
@@ -172,7 +172,7 @@ const Skimmer = ({ jsonFiles, selectedDetector, setSelectedDetector, detectorLis
             {!isLoading && data && isTableTextArea && <TableTextArea />}
             <div style={{display: "flex", gap: "10px"}}>
                 {!isLoading && data && <DownloadCSVButton />}
-                {!isLoading && data && isTableTextArea && <button onClick={() => setIsTableTextArea(false)}>Back to Table</button>}
+                {!isLoading && data && isTableTextArea && <Button startIcon={<CancelIcon />} color="error"  size="small" variant="contained" onClick={() => setIsTableTextArea(false)}>Back</Button>}
             </div>
         </div>
     );

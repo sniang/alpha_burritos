@@ -10,6 +10,7 @@ import { useState, useEffect } from "react";
 import './CSS/Comment.css';
 import { Button } from "@mui/material";
 import EditNoteIcon from '@mui/icons-material/EditNote';
+import CancelIcon from '@mui/icons-material/Cancel';
 
 const Comment = ({ selectedFile }) => {
     // State for existing comment, new comment input, edit mode, and error handling
@@ -97,7 +98,7 @@ const Comment = ({ selectedFile }) => {
             }
             <div id="comment-buttons-block">
                 {/* Cancel button only appears in edit mode */}
-                {update && <Button size="small" color="error" variant="contained" onClick={() => setUpdate(!update)}>Cancel</Button>}
+                {update && <Button startIcon={<CancelIcon />} size="small" color="error" variant="contained" onClick={() => setUpdate(!update)}>Cancel</Button>}
                 {/* Button text changes based on edit mode */}
                 <Button startIcon={<EditNoteIcon />} size="small" color="success" variant="contained" onClick={updateComment}>{!update ? "Update comments" : "Save comments"}</Button>
             </div>
