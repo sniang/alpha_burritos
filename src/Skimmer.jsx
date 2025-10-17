@@ -6,6 +6,8 @@ import { parameterKeys } from "./Parameters";
 import SaveIcon from '@mui/icons-material/Save';
 import Button from '@mui/material/Button';
 import CancelIcon from '@mui/icons-material/Cancel';
+import { Box, FormControl, InputLabel, Select, MenuItem } from "@mui/material";
+
 
 /**
  * @component
@@ -61,35 +63,37 @@ const Skimmer = ({ jsonFiles, selectedDetector, setSelectedDetector, detectorLis
     // Control panel for detector and range selection
     const Selectors = () => (
         <div className="skimmer-controls">
-            <label>Particle:
-                <select value={particles} onChange={e => setParticles(e.target.value)}>
-                    <option value="positrons">Positrons</option>
-                    <option value="antiprotons">Antiprotons</option>
-                </select>
-            </label>
+            <FormControl size="small" color="success" sx={{ minWidth: 150 }}>
+                <InputLabel>Particle</InputLabel>
+                <Select value={particles} onChange={e => setParticles(e.target.value)} label="Particle">
+                    <MenuItem value="positrons">Positrons</MenuItem>
+                    <MenuItem value="antiprotons">Antiprotons</MenuItem>
+                </Select>
+            </FormControl>
             <DetectorSelector
                 selectedDetector={selectedDetector}
                 setSelectedDetector={setSelectedDetector}
                 detectorList={detectorList}
             />
-            <label>
-                Starting:
-                <select value={endingIndex} onChange={e => setEndingIndex(Number(e.target.value))}>
-                    <option value="" disabled>Acquisition timestamp</option>
+
+            <FormControl size="small" color="success" sx={{ minWidth: 150 }}>
+                <InputLabel>Acquisition timestamp</InputLabel>
+                <Select value={endingIndex} onChange={e => setEndingIndex(Number(e.target.value))} label="Acquisition timestamp">
                     {jsonFilesSorted.map((file, i) =>
-                        <option key={file} value={i}>{parseTimestamp(file)}</option>
+                        <MenuItem key={file} value={i}>{parseTimestamp(file)}</MenuItem>
                     )}
-                </select>
-            </label>
-            <label>
-                Ending:
-                <select value={startingIndex} onChange={e => setStartingIndex(Number(e.target.value))}>
-                    <option value="" disabled>Acquisition timestamp</option>
+                </Select>
+            </FormControl>
+
+            <FormControl size="small" color="success" sx={{ minWidth: 150 }}>
+                <InputLabel>Acquisition timestamp</InputLabel>
+                <Select value={startingIndex} onChange={e => setStartingIndex(Number(e.target.value))} label="Acquisition timestamp">
+                    <MenuItem value="" disabled>Acquisition timestamp</MenuItem>
                     {jsonFilesSorted.map((file, i) =>
-                        <option key={file} value={i}>{parseTimestamp(file)}</option>
+                        <MenuItem key={file} value={i}>{parseTimestamp(file)}</MenuItem>
                     )}
-                </select>
-            </label>
+                </Select>
+            </FormControl>
         </div>
     );
 
@@ -170,9 +174,9 @@ const Skimmer = ({ jsonFiles, selectedDetector, setSelectedDetector, detectorLis
             {isLoading && <div className="loading-indicator">Loading data...</div>}
             {!isLoading && data && !isTableTextArea && <Table />}
             {!isLoading && data && isTableTextArea && <TableTextArea />}
-            <div style={{display: "flex", gap: "10px"}}>
+            <div style={{ display: "flex", gap: "10px" }}>
                 {!isLoading && data && <DownloadCSVButton />}
-                {!isLoading && data && isTableTextArea && <Button startIcon={<CancelIcon />} color="error"  size="small" variant="contained" onClick={() => setIsTableTextArea(false)}>Back</Button>}
+                {!isLoading && data && isTableTextArea && <Button startIcon={<CancelIcon />} color="error" size="small" variant="contained" onClick={() => setIsTableTextArea(false)}>Back</Button>}
             </div>
         </div>
     );

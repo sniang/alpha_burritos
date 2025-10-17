@@ -3,6 +3,8 @@
  * @author Samuel Niang
  * @description A React component that provides a dropdown menu for selecting different types of detectors
  */
+import { FormControl, InputLabel, Select, MenuItem } from "@mui/material";
+
 
 /**
  * DetectorSelector component allows users to choose between different detector options
@@ -18,16 +20,20 @@ const DetectorSelector = ({ selectedDetector, setSelectedDetector, detectorList 
     };
 
     return (
-        <label>
-            Detector:
-            <select value={selectedDetector} onChange={handleChange}>
+        <FormControl size="small" color="success" sx={{ minWidth: 150 }}>
+            <InputLabel>Detector</InputLabel>
+            <Select
+                value={selectedDetector}
+                label="Detector"
+                onChange={handleChange}
+            >
                 {detectorList && detectorList.map((detector) => (
-                    <option key={detector} value={detector}>
+                    <MenuItem key={detector} value={detector}>
                         {detector}
-                    </option>
+                    </MenuItem>
                 ))}
-            </select>
-        </label>
+            </Select>
+        </FormControl>
     );
 };
 

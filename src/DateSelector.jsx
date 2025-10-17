@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { Box, FormControl, InputLabel, Select, MenuItem } from "@mui/material";
 
 /**
  * A component that renders year, month, and day selector dropdowns.
@@ -34,47 +34,47 @@ const DateSelector = ({ year, setYear, month, setMonth, day, setDay }) => {
         setMonth(Number(e.target.value));
     };
 
+
     return (
-        // Container with flex layout and styling
-        <>
+        <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
             {/* Year selector */}
-            <label>
-                Year:
-                <select value={year} onChange={handleYearChange}>
-                    {/* Generate year options from startYear to currentYear */}
-                    {Array.from({ length: currentYear - startYear + 1 }, (_, i) => currentYear + i).map((y) => (
-                        <option key={y} value={y}>{y}</option>
+            <FormControl size="small" color="success" sx={{ minWidth: 120 }}>
+                <InputLabel>Year</InputLabel>
+                <Select value={year} onChange={handleYearChange} label="Year">
+                    {Array.from({ length: currentYear - startYear + 1 }, (_, i) => currentYear - i).map((y) => (
+                        <MenuItem key={y} value={y}>{y}</MenuItem>
                     ))}
-                </select>
-            </label>
+                </Select>
+            </FormControl>
+
             {/* Month selector */}
-            <label>
-                Month:
-                <select value={month} onChange={handleMonthChange}>
-                    {/* Generate months 1-12 as options */}
+            <FormControl size="small" color="success" sx={{ minWidth: 120 }}>
+                <InputLabel>Month</InputLabel>
+                <Select value={month} onChange={handleMonthChange} label="Month">
                     {getAllMonthsOfYear(year).map((date) => (
-                        <option key={`${year}-${date}`} value={date}>
+                        <MenuItem key={`${year}-${date}`} value={date}>
                             {date}
-                        </option>
+                        </MenuItem>
                     ))}
-                </select>
-            </label>
+                </Select>
+            </FormControl>
+
             {/* Day selector */}
-            <label>
-                Day:
-                <select value={day} onChange={(e) => setDay(Number(e.target.value))}>
-                    {/* Generate days 1-today as options */}
-                    {
-                        getAllDaysOfMonth(year, month).map((day) => (
-                            <option key={day.getDate()} value={day.getDate()}>
-                                {day.getDate()}
-                            </option>)
-                        )}
-                </select>
-            </label>
-        </>
+            <FormControl size="small" color="success" sx={{ minWidth: 120 }}>
+                <InputLabel>Day</InputLabel>
+                <Select value={day} onChange={(e) => setDay(Number(e.target.value))} label="Day">
+                    {getAllDaysOfMonth(year, month).map((d) => (
+                        <MenuItem key={d.getDate()} value={d.getDate()}>
+                            {d.getDate()}
+                        </MenuItem>
+                    ))}
+                </Select>
+            </FormControl>
+        </Box>
     );
 };
+
+
 
 export default DateSelector;
 
