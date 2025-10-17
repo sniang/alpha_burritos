@@ -1,4 +1,7 @@
 import { useState, useEffect } from "react";
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Checkbox from '@mui/material/Checkbox';
+
 
 /**
  * AutoRefresh component provides an auto-refresh toggle for periodically fetching JSON files
@@ -38,6 +41,7 @@ function AutoRefresh({
      * Updates the parent state with the sorted file list and selects the latest file.
      */
     const fetchFiles = async () => {
+        console.log("Fetching files...");
         try {
             // Fetch files from backend using year and month
             const res = await fetch(`/api/${year}/${month}/${day}/json`);
@@ -102,16 +106,7 @@ function AutoRefresh({
 
     // Render the auto-refresh checkbox UI
     return (
-        <div>
-            <label>
-                <input
-                    type="checkbox"
-                    checked={autoRefresh}
-                    onChange={handleCheckboxChange}
-                />
-                Auto-refresh
-            </label>
-        </div>
+        <FormControlLabel control={<Checkbox checked={autoRefresh} color="success" onChange={handleCheckboxChange} />} label="Auto-refresh" />
     );
 }
 
