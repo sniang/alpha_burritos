@@ -114,7 +114,7 @@ const Skimmer = ({ jsonFiles, selectedDetector, setSelectedDetector, detectorLis
                         <Switch
                             checked={isSwitchOn}
                             onChange={e => setIsSwitchOn(e.target.checked)}
-                            color="primary"
+                            color="success"
                         />
                     }
                     label="Last N acquisitions"
@@ -127,6 +127,8 @@ const Skimmer = ({ jsonFiles, selectedDetector, setSelectedDetector, detectorLis
                     value={nValue}
                     onChange={e => handleNValueChange(Number(e.target.value))}
                     disabled={!isSwitchOn}
+                    color="success"
+                    sx={{ width: '80px' }}
                 />
             </Box>
         </>
@@ -153,6 +155,7 @@ const Skimmer = ({ jsonFiles, selectedDetector, setSelectedDetector, detectorLis
                         </React.Fragment>
                     );
                 })}
+                {/* Mean row */}
                 <span style={{ fontWeight: 'bold' }}>Mean</span>
                 {parameterKeys.map(({ key }) =>
                     <span key={key} style={{ fontWeight: 'bold' }}>{formatValue(localData.reduce((acc, line) => acc + line?.[selectedDetector]?.[key], 0) / localData.length)}</span>
@@ -180,7 +183,8 @@ const Skimmer = ({ jsonFiles, selectedDetector, setSelectedDetector, detectorLis
             parameterKeys.map(({ key }) =>
                 formatValue(localData.reduce((acc, line) => acc + line?.[selectedDetector]?.[key], 0) / localData.length)
             ).join("\t\t");
-        tableText += '\n' + '-'.repeat(2.5*meanRow.length);
+        // Mean row
+        tableText += '\n' + '-'.repeat(2.5 * meanRow.length);
         tableText += meanRow;
         return <textarea className="skimmer-textarea" readOnly value={tableText} />;
     };
