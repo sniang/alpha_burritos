@@ -39,7 +39,7 @@ const Skimmer = ({ jsonFiles, selectedDetector, setSelectedDetector, detectorLis
         if (!jsonFilesSorted.length) return;
         setIsLoading(true); setData([]);
         const startIdx = isSwitchOn ? 0 : startingIndex;
-        const endingIdx = isSwitchOn ? jsonFilesSorted.length  : endingIndex;
+        const endingIdx = isSwitchOn ? jsonFilesSorted.length : endingIndex;
         (async () => {
             try {
                 const fileSlice = jsonFilesSorted.slice(startIdx, endingIdx + 1);
@@ -136,31 +136,38 @@ const Skimmer = ({ jsonFiles, selectedDetector, setSelectedDetector, detectorLis
     // Table display
     const Table = () => {
         let localData = data.filter(line => line[Object.keys(line)[0]].config === particles);
-        if (isSwitchOn){ localData = localData.slice(Math.max(localData.length - nValue, 0), localData.length); }
+        if (isSwitchOn) { localData = localData.slice(Math.max(localData.length - nValue, 0), localData.length); }
         return (
-        <div className="skimmer-grid" onClick={() => setIsTableTextArea(true)}>
-            <span>Timestamps</span>
-            {parameterKeys.map(({ label }) => <span key={label}>{label}</span>)}
-            {localData.map((line, index) => {
-                const key1 = Object.keys(line)[0];
-                const timestamp = parseTimestamp(line[key1]?.signal.replace('.txt', '.json')) || "N/A";
-                return (
-                    <React.Fragment key={`${key1}-${index}`}>
-                        <span>{timestamp}</span>
-                        {parameterKeys.map(({ key }) =>
-                            <span key={key}>{formatValue(line?.[selectedDetector]?.[key])}</span>
-                        )}
-                    </React.Fragment>
-                );
-            })}
-        </div>
-    )};
+            <div className="skimmer-grid" onClick={() => setIsTableTextArea(true)}>
+                <span>Timestamps</span>
+                {parameterKeys.map(({ label }) => <span key={label}>{label}</span>)}
+                {localData.map((line, index) => {
+                    const key1 = Object.keys(line)[0];
+                    const timestamp = parseTimestamp(line[key1]?.signal.replace('.txt', '.json')) || "N/A";
+                    return (
+                        <React.Fragment key={`${key1}-${index}`}>
+                            <span>{timestamp}</span>
+                            {parameterKeys.map(({ key }) =>
+                                <span key={key}>{formatValue(line?.[selectedDetector]?.[key])}</span>
+                            )}
+                        </React.Fragment>
+                    );
+                })}
+                <span style={{ fontWeight: 'bold' }}>Mean</span>
+                {parameterKeys.map(({ key }) =>
+                    <span key={key} style={{ fontWeight: 'bold' }}>{formatValue(localData.reduce((acc, line) => acc + line?.[selectedDetector]?.[key], 0) / localData.length)}</span>
+                )}
+            </div>
+
+        )
+    };
+
 
     // Textarea table display
     const TableTextArea = () => {
         const headers = ["Timestamps\t\t", ...parameterKeys.map(({ label }) => label)];
         let localData = data.filter(line => line[Object.keys(line)[0]].config === particles);
-        if (isSwitchOn){ localData = localData.slice(Math.max(localData.length - nValue, 0), localData.length); }
+        if (isSwitchOn) { localData = localData.slice(Math.max(localData.length - nValue, 0), localData.length); }
         const rows = localData
             .map(line => {
                 const key1 = Object.keys(line)[0];
@@ -168,7 +175,13 @@ const Skimmer = ({ jsonFiles, selectedDetector, setSelectedDetector, detectorLis
                 const values = parameterKeys.map(({ key }) => formatValue(line?.[selectedDetector]?.[key]));
                 return [timestamp, ...values].join("\t\t");
             });
-        const tableText = [headers.join("\t"), ...rows].join("\n");
+        let tableText = [headers.join("\t"), ...rows].join("\n");
+        const meanRow = "\nMean\t\t\t\t" +
+            parameterKeys.map(({ key }) =>
+                formatValue(localData.reduce((acc, line) => acc + line?.[selectedDetector]?.[key], 0) / localData.length)
+            ).join("\t\t");
+        tableText += '\n' + '-'.repeat(2.5*meanRow.length);
+        tableText += meanRow;
         return <textarea className="skimmer-textarea" readOnly value={tableText} />;
     };
 
@@ -178,7 +191,7 @@ const Skimmer = ({ jsonFiles, selectedDetector, setSelectedDetector, detectorLis
         if (!data) return null;
         const headers = ["Timestamps", ...parameterKeys.map(({ label }) => label)];
         let localData = data.filter(line => line[Object.keys(line)[0]].config === particles);
-        if (isSwitchOn){ localData = localData.slice(Math.max(localData.length - nValue, 0), localData.length); }
+        if (isSwitchOn) { localData = localData.slice(Math.max(localData.length - nValue, 0), localData.length); }
         const rows = localData
             .map(line => {
                 const key1 = Object.keys(line)[0];
