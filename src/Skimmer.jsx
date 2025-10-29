@@ -6,7 +6,7 @@ import { parameterKeys } from "./Parameters";
 import SaveIcon from '@mui/icons-material/Save';
 import Button from '@mui/material/Button';
 import CancelIcon from '@mui/icons-material/Cancel';
-import { Box, FormControl, InputLabel, Select, MenuItem } from "@mui/material";
+import { Switch, FormControl, InputLabel, Select, MenuItem, TextField, FormControlLabel, Box } from "@mui/material";
 
 
 /**
@@ -26,6 +26,8 @@ const Skimmer = ({ jsonFiles, selectedDetector, setSelectedDetector, detectorLis
     const [isLoading, setIsLoading] = useState(false);
     const [particles, setParticles] = useState("antiprotons");
     const [isTableTextArea, setIsTableTextArea] = useState(false);
+    const [isSwitchOn, setIsSwitchOn] = useState(false);
+    const [nValue, setNValue] = useState(3);
 
     // Sort JSON files alphabetically for consistent display
     const jsonFilesSorted = useMemo(() =>
@@ -36,9 +38,11 @@ const Skimmer = ({ jsonFiles, selectedDetector, setSelectedDetector, detectorLis
     useEffect(() => {
         if (!jsonFilesSorted.length) return;
         setIsLoading(true); setData([]);
+        const startIdx = isSwitchOn ? 0 : startingIndex;
+        const endingIdx = isSwitchOn ? jsonFilesSorted.length  : endingIndex;
         (async () => {
             try {
-                const fileSlice = jsonFilesSorted.slice(startingIndex, endingIndex + 1);
+                const fileSlice = jsonFilesSorted.slice(startIdx, endingIdx + 1);
                 const localData = await Promise.all(fileSlice.map(async (file) => {
                     const res = await fetch(`/api/json/${file}`);
                     if (!res.ok) throw new Error(`Failed to fetch ${file}`);
@@ -52,17 +56,24 @@ const Skimmer = ({ jsonFiles, selectedDetector, setSelectedDetector, detectorLis
             } catch (error) { console.error("Error fetching data:", error); }
             finally { setIsLoading(false); }
         })();
-    }, [jsonFiles, startingIndex, endingIndex]);
+    }, [jsonFiles, startingIndex, endingIndex, isSwitchOn]);
+
+    // Handle changes to the N value input
+    const handleNValueChange = (value) => {
+        if (value < 1) setNValue(1);
+        else if (value > jsonFilesSorted.length) setNValue(jsonFilesSorted.length);
+        else setNValue(value);
+    };
 
     // Early return if no files are available
     if (!jsonFiles || !jsonFiles.length)
         return <div className="skimmer-container">No JSON files available.</div>;
 
-    const formatValue = v => (v === undefined || v === null) ? "N/A" : Number(v).toPrecision(5);
+    const formatValue = v => (v === undefined || v === null) ? "N/A" : Number(v).toPrecision(3);
 
     // Control panel for detector and range selection
     const Selectors = () => (
-        <div className="skimmer-controls">
+        <><div className="skimmer-controls">
             <FormControl size="small" color="success" sx={{ minWidth: 150 }}>
                 <InputLabel sx={{ fontSize: 13 }}>Particle</InputLabel>
                 <Select sx={{ fontSize: 13 }} value={particles} onChange={e => setParticles(e.target.value)} label="Particle">
@@ -94,15 +105,43 @@ const Skimmer = ({ jsonFiles, selectedDetector, setSelectedDetector, detectorLis
                     )}
                 </Select>
             </FormControl>
+
+
         </div>
+            <Box display="flex" alignItems="center" gap={2}>
+                <FormControlLabel
+                    control={
+                        <Switch
+                            checked={isSwitchOn}
+                            onChange={e => setIsSwitchOn(e.target.checked)}
+                            color="primary"
+                        />
+                    }
+                    label="Last N acquisitions"
+                />
+                <TextField
+                    label="N"
+                    type="number"
+                    variant="outlined"
+                    size="small"
+                    value={nValue}
+                    onChange={e => handleNValueChange(Number(e.target.value))}
+                    disabled={!isSwitchOn}
+                />
+            </Box>
+        </>
+
     );
 
     // Table display
-    const Table = () => (
+    const Table = () => {
+        let localData = data.filter(line => line[Object.keys(line)[0]].config === particles);
+        if (isSwitchOn){ localData = localData.slice(Math.max(localData.length - nValue, 0), localData.length); }
+        return (
         <div className="skimmer-grid" onClick={() => setIsTableTextArea(true)}>
             <span>Timestamps</span>
             {parameterKeys.map(({ label }) => <span key={label}>{label}</span>)}
-            {data.filter(line => line[Object.keys(line)[0]].config === particles).map((line, index) => {
+            {localData.map((line, index) => {
                 const key1 = Object.keys(line)[0];
                 const timestamp = parseTimestamp(line[key1]?.signal.replace('.txt', '.json')) || "N/A";
                 return (
@@ -115,13 +154,14 @@ const Skimmer = ({ jsonFiles, selectedDetector, setSelectedDetector, detectorLis
                 );
             })}
         </div>
-    );
+    )};
 
     // Textarea table display
     const TableTextArea = () => {
         const headers = ["Timestamps\t\t", ...parameterKeys.map(({ label }) => label)];
-        const rows = data
-            .filter(line => line[Object.keys(line)[0]].config === particles)
+        let localData = data.filter(line => line[Object.keys(line)[0]].config === particles);
+        if (isSwitchOn){ localData = localData.slice(Math.max(localData.length - nValue, 0), localData.length); }
+        const rows = localData
             .map(line => {
                 const key1 = Object.keys(line)[0];
                 const timestamp = parseTimestamp(line[key1]?.signal.replace('.txt', '.json')) || "N/A";
@@ -137,8 +177,9 @@ const Skimmer = ({ jsonFiles, selectedDetector, setSelectedDetector, detectorLis
         const filename = `burrito_${particles}_data.csv`;
         if (!data) return null;
         const headers = ["Timestamps", ...parameterKeys.map(({ label }) => label)];
-        const rows = data
-            .filter(line => line[Object.keys(line)[0]].config === particles)
+        let localData = data.filter(line => line[Object.keys(line)[0]].config === particles);
+        if (isSwitchOn){ localData = localData.slice(Math.max(localData.length - nValue, 0), localData.length); }
+        const rows = localData
             .map(line => {
                 const key1 = Object.keys(line)[0];
                 const timestamp = parseTimestamp(line[key1]?.signal.replace('.txt', '.json')) || "N/A";
@@ -168,7 +209,7 @@ const Skimmer = ({ jsonFiles, selectedDetector, setSelectedDetector, detectorLis
     };
 
     return (
-        <div className="skimmer-container blocks" style={{minWidth: "850px"}}>
+        <div className="skimmer-container blocks" style={{ minWidth: "850px" }}>
             <h2>Skimmer</h2>
             <Selectors />
             {isLoading && <div className="loading-indicator">Loading data...</div>}
