@@ -23,6 +23,7 @@ const Skimmer = ({ jsonFiles, selectedDetector, setSelectedDetector, detectorLis
     const [endingIndex, setEndingIndex] = useState(0);
     const [startingIndex, setStartingIndex] = useState(0);
     const [data, setData] = useState([]);
+    const [filteredData, setFilteredData] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [particles, setParticles] = useState("antiprotons");
     const [isTableTextArea, setIsTableTextArea] = useState(false);
@@ -58,11 +59,19 @@ const Skimmer = ({ jsonFiles, selectedDetector, setSelectedDetector, detectorLis
         })();
     }, [jsonFiles, startingIndex, endingIndex, isSwitchOn]);
 
+    // Handle changes to the particle selection
+    useEffect(() => {
+        const newFilteredData = data.filter(line => line[Object.keys(line)[0]].config === particles);
+        setFilteredData(newFilteredData);
+    }, [particles, data]);
+    
     // Handle changes to the N value input
     const handleNValueChange = (value) => {
-        if (value < 1) setNValue(1);
-        else if (value > jsonFilesSorted.length) setNValue(jsonFilesSorted.length);
-        else setNValue(value);
+        let N = 1;
+        if (value < 1) N = 1;
+        else if (value > filteredData.length) N = filteredData.length;
+        else N = value;
+        setNValue(N);
     };
 
     // Early return if no files are available
@@ -128,7 +137,7 @@ const Skimmer = ({ jsonFiles, selectedDetector, setSelectedDetector, detectorLis
                     onChange={e => handleNValueChange(Number(e.target.value))}
                     disabled={!isSwitchOn}
                     color="success"
-                    sx={{ width: '80px' }}
+                    sx={{ width: '100px' }}
                 />
             </Box>
         </>
@@ -137,7 +146,7 @@ const Skimmer = ({ jsonFiles, selectedDetector, setSelectedDetector, detectorLis
 
     // Table display
     const Table = () => {
-        let localData = data.filter(line => line[Object.keys(line)[0]].config === particles);
+        let localData = filteredData
         if (isSwitchOn) { localData = localData.slice(Math.max(localData.length - nValue, 0), localData.length); }
         return (
             <div className="skimmer-grid" onClick={() => setIsTableTextArea(true)}>
@@ -169,7 +178,7 @@ const Skimmer = ({ jsonFiles, selectedDetector, setSelectedDetector, detectorLis
     // Textarea table display
     const TableTextArea = () => {
         const headers = ["Timestamps\t\t", ...parameterKeys.map(({ label }) => label)];
-        let localData = data.filter(line => line[Object.keys(line)[0]].config === particles);
+        let localData = filteredData;
         if (isSwitchOn) { localData = localData.slice(Math.max(localData.length - nValue, 0), localData.length); }
         const rows = localData
             .map(line => {
@@ -194,7 +203,7 @@ const Skimmer = ({ jsonFiles, selectedDetector, setSelectedDetector, detectorLis
         const filename = `burrito_${particles}_data.csv`;
         if (!data) return null;
         const headers = ["Timestamps", ...parameterKeys.map(({ label }) => label)];
-        let localData = data.filter(line => line[Object.keys(line)[0]].config === particles);
+        let localData = filteredData;
         if (isSwitchOn) { localData = localData.slice(Math.max(localData.length - nValue, 0), localData.length); }
         const rows = localData
             .map(line => {
