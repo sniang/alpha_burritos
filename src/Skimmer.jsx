@@ -57,7 +57,7 @@ const Skimmer = ({ jsonFiles, selectedDetector, setSelectedDetector, detectorLis
             } catch (error) { console.error("Error fetching data:", error); }
             finally { setIsLoading(false); }
         })();
-    }, [jsonFiles, startingIndex, endingIndex, isSwitchOn]);
+    }, [jsonFilesSorted, startingIndex, endingIndex, isSwitchOn]);
 
     // Handle changes to the particle selection
     useEffect(() => {
