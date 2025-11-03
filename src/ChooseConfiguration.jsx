@@ -93,7 +93,7 @@ const ChooseConfiguration = ({ selectedFile, forceRefreshSelectedFile }) => {
         const isoString = `${datePart}T${formattedTime}`;
         const date = new Date(isoString);
         const diffInSec = Math.floor((currentTimestamp - date.getTime()) / 1000);
-        if (diffInSec != diffInSeconds) {
+        if (diffInSec !== diffInSeconds) {
           setDiffInSeconds(diffInSec);
           if (result.particle) {
             setLatestParticle(result.particle);
