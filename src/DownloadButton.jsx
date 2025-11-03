@@ -11,7 +11,7 @@ import CloudDownloadIcon from "@mui/icons-material/CloudDownload";
  * based on the selected file and detector. Handles download logic, error reporting,
  * and file naming conventions.
  *
- * @author Samuel
+ * @author Samuel Niang
  *
  * @component
  * @param {Object} props - Component props.
