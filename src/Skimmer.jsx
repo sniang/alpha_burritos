@@ -193,7 +193,7 @@ const Skimmer = ({ jsonFiles, selectedDetector, setSelectedDetector, detectorLis
                 formatValue(localData.reduce((acc, line) => acc + line?.[selectedDetector]?.[key], 0) / localData.length)
             ).join("\t\t");
         // Mean row
-        tableText += '\n' + '-'.repeat(2.5 * meanRow.length);
+        tableText += '\n' + '-'.repeat(Math.floor(2.5 * meanRow.length));
         tableText += meanRow;
         return <textarea className="skimmer-textarea" readOnly value={tableText} />;
     };
