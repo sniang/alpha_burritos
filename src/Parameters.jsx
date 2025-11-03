@@ -17,6 +17,9 @@ export const parameterKeys = [
     { key: "time arrival", label: "Arrival [ns]" },
 ];
 
+// Format value for display in table
+const formatValue = v => (v === undefined || v === null) ? "N/A" : Number(v).toPrecision(3);
+
 /**
  * Displays parameter data for a selected file and list of detectors.
  *
@@ -42,15 +45,6 @@ const Parameters = ({ selectedFile, detectorList, setDetectorList, setSelectedDe
     const [reverseTable, setReverseTable] = useState(true);
     const [displayTable, setDisplayTable] = useState(false);
     const [particleConfig, setParticleConfig] = useState(null);
-
-    /**
-     * Formats a number to five significant digits.
-     * @param {number} num
-     * @returns {string}
-     */
-    function formatToFiveSignificantDigits(num) {
-        return Number(num).toPrecision(5);
-    }
 
     // Fetch parameters when selectedFile changes
     useEffect(() => {
@@ -97,14 +91,14 @@ const Parameters = ({ selectedFile, detectorList, setDetectorList, setSelectedDe
         if (reverseTable) {
             const header = ["Parameters", ...keys].join("\t");
             const rows = parameterKeys.map(({ key, label }) => {
-                const values = keys.map((loc) => formatToFiveSignificantDigits(parameters[loc][key]));
+                const values = keys.map((loc) => formatValue(parameters[loc][key]));
                 return [label, ...values].join("\t");
             });
             return [header, ...rows].join("\n");
         } else {
             const header = ["Location", ...parameterKeys.map(({ label }) => label)].join("\t");
             const rows = keys.map((loc) => {
-                const values = parameterKeys.map(({ key }) => formatToFiveSignificantDigits(parameters[loc][key]));
+                const values = parameterKeys.map(({ key }) => formatValue(parameters[loc][key]));
                 return [loc, ...values].join("\t\t");
             });
             return [header, ...rows].join("\n");
@@ -216,7 +210,7 @@ const Parameters = ({ selectedFile, detectorList, setDetectorList, setSelectedDe
                                 <div>{label}</div>
                                 {validDetectorList.map((loc) => (
                                     <div key={`${loc}-${key}`}>
-                                        {formatToFiveSignificantDigits(parameters[loc][key])}
+                                        {formatValue(parameters[loc][key])}
                                     </div>
                                 ))}
                             </React.Fragment>
@@ -258,7 +252,7 @@ const Parameters = ({ selectedFile, detectorList, setDetectorList, setSelectedDe
                             <div>{loc}</div>
                             {parameterKeys.map(({ key }) => (
                                 <div key={`${loc}-${key}`}>
-                                    {formatToFiveSignificantDigits(parameters[loc][key])}
+                                    {formatValue(parameters[loc][key])}
                                 </div>
                             ))}
                         </React.Fragment>

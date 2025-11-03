@@ -78,6 +78,7 @@ const Skimmer = ({ jsonFiles, selectedDetector, setSelectedDetector, detectorLis
     if (!jsonFiles || !jsonFiles.length)
         return <div className="skimmer-container">No JSON files available.</div>;
 
+    // Format value for display in table
     const formatValue = v => (v === undefined || v === null) ? "N/A" : Number(v).toPrecision(3);
 
     // Control panel for detector and range selection
