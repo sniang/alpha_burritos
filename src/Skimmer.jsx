@@ -67,7 +67,7 @@ const Skimmer = ({ jsonFiles, selectedDetector, setSelectedDetector, detectorLis
 
     // Handle changes to the N value input
     const handleNValueChange = (value) => {
-        let N = 1;
+        let N;
         if (value < 1) N = 1;
         else if (value > filteredData.length) N = filteredData.length;
         else N = value;
