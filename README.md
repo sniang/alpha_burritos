@@ -35,7 +35,7 @@ The application communicates with a custom RESTful API to fetch and display crit
 src/
   App.jsx                # Main React component
   MainTitle.jsx          # App title and logo
-  YearMonthSelector.jsx  # Dropdowns for year/month selection
+  DateSelector.jsx       # Dropdowns for year/month/day selection
   TimeStampSelector.jsx  # Dropdown for timestamp/file selection
   Parameters.jsx         # Displays detector parameters from JSON
   DetectorImageAll.jsx   # Shows combined detector image
@@ -203,6 +203,7 @@ The React app expects the following backend API (see [`server.js`](server.js)):
 - **Authentication:**  
   - `POST /api/login` — Authenticate user (expects `{ login, password }` in body).  
   - `GET /api/profile` — Returns user info if authenticated.
+  - `POST /api/logout` — Logout user and clear authentication cookie.
 
 ### Additional Endpoints
 

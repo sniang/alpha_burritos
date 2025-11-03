@@ -64,7 +64,7 @@ const Skimmer = ({ jsonFiles, selectedDetector, setSelectedDetector, detectorLis
         const newFilteredData = data.filter(line => line[Object.keys(line)[0]].config === particles);
         setFilteredData(newFilteredData);
     }, [particles, data]);
-    
+
     // Handle changes to the N value input
     const handleNValueChange = (value) => {
         let N = 1;
