@@ -10,7 +10,7 @@ import CloudDownloadIcon from "@mui/icons-material/CloudDownload";
  * DownloadAllButton component allows users to download all signal files for a selected JSON file.
  * It fetches the list of available detectors and downloads signal files for each detector.
  *
- * @author Samuel
+ * @author Samuel Niang
  *
  * @component
  * @param {Object} props - Component props.
