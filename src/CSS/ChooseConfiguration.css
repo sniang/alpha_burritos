@@ -10,14 +10,5 @@
     width: 100%;
     /* Take full width of parent */
     flex-wrap: wrap;
-}
-
-#ChooseConfig .buttonBlock {
-    display: flex;
-    flex-direction: row;
-    gap: 5px;
-    flex-wrap: wrap;
-    justify-content: center;
-    align-items: center;
-    /* Space between buttons */
+    min-width: 850px;
 }

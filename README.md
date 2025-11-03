@@ -35,7 +35,7 @@ The application communicates with a custom RESTful API to fetch and display crit
 src/
   App.jsx                # Main React component
   MainTitle.jsx          # App title and logo
-  YearMonthSelector.jsx  # Dropdowns for year/month selection
+  DateSelector.jsx       # Dropdowns for year/month/day selection
   TimeStampSelector.jsx  # Dropdown for timestamp/file selection
   Parameters.jsx         # Displays detector parameters from JSON
   DetectorImageAll.jsx   # Shows combined detector image
@@ -126,16 +126,16 @@ The React app expects the following backend API (see [`server.js`](server.js)):
     ```
 
 - **Get Combined Image (single plot, all signals):**  
-  `GET /api/img_same/:imageName`  
-  - Returns the PNG image with all signals overlaid in a single plot ("Combined plot"). The image is from the `Same` subdirectory.  
-  - Example: `/api/img_same/data-2025-06-02_08-25-03.png`  
+  `GET /api/Together/:imageName`  
+  - Returns the PNG image with all signals overlaid in a single plot (from the `Together` subdirectory).  
+  - Example: `/api/Together/data-2025-06-02_08-25-03.png`  
   - Response:  
     Binary PNG image.
 
 - **Get Subplots Image (default):**  
-  `GET /api/img_all/:imageName`  
-  - Returns the PNG image containing subplots (one signal per subplot) for all signals. This is the default image shown. The image is from the `Together` subdirectory.  
-  - Example: `/api/img_all/data-2025-06-02_08-25-03.png`  
+  `GET /api/Same/:imageName`  
+  - Returns the PNG image containing subplots (one signal per subplot) for all signals (from the `Same` subdirectory).  
+  - Example: `/api/Same/data-2025-06-02_08-25-03.png`  
   - Response:  
     Binary PNG image.
 
@@ -152,6 +152,13 @@ The React app expects the following backend API (see [`server.js`](server.js)):
   - Example: `/api/signal/PDS/data-2025-06-02_08-25-03.json`  
   - Response:  
     Text file
+
+- **Get Detector-Specific Signal (CSV):**  
+  `GET /api/signal/csv/:detector/:jsonFilename`  
+  - Returns the signal as a CSV file for a specific detector and JSON file.  
+  - Example: `/api/signal/csv/PDS/data-2025-06-02_08-25-03.json`  
+  - Response:  
+    CSV file
 
 - **Get Comments:**  
   `GET /api/comments/:jsonFilename`  
@@ -180,21 +187,23 @@ The React app expects the following backend API (see [`server.js`](server.js)):
   - `GET /api/configuration` — Get the current configuration (from `ANALYSIS_DIR/configuration.json`).
   - `POST /api/configuration` — Update the configuration (expects JSON body).
 
-- **Get the latest dump timestamp:**
-  - `GET /api/latest` 
-  - Get the latest dump timestamp
-  - Example: `/api/latest`
-  - Response:
+- **Get the Latest Dump Timestamp:**  
+  `GET /api/latest`  
+  - Returns the latest dump timestamp.  
+  - Example: `/api/latest`  
+  - Response:  
     ```json
-    { "latest":"2025-08-25_11-04-04" }
+    { "latest": "2025-08-25_11-04-04" }
     ```
 
-- **Re-analyse a JSON file:**  
-  - `GET /api/reanalyse/:filename` — Triggers a re-analysis for the specified JSON file.
+- **Re-analyse a JSON File:**  
+  `GET /api/reanalyse/:filename`  
+  - Triggers a re-analysis for the specified JSON file.
 
 - **Authentication:**  
-  - `POST /api/login` — Authenticate user (expects `{ login, password }` in body).
+  - `POST /api/login` — Authenticate user (expects `{ login, password }` in body).  
   - `GET /api/profile` — Returns user info if authenticated.
+  - `POST /api/logout` — Logout user and clear authentication cookie.
 
 ### Additional Endpoints
 

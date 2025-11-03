@@ -1,5 +1,13 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import './CSS/ChooseConfiguration.css';
+import Button from '@mui/material/Button';
+import ButtonGroup from '@mui/material/ButtonGroup';
+import PsychologyIcon from '@mui/icons-material/Psychology';
+import AutoStoriesIcon from '@mui/icons-material/AutoStories';
+import InfoIcon from '@mui/icons-material/Info';
+import MonitorHeartIcon from '@mui/icons-material/MonitorHeart';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 
 /**
  * ChooseConfiguration component provides UI controls for selecting the analysis configuration
@@ -32,6 +40,8 @@ const ChooseConfiguration = ({ selectedFile, forceRefreshSelectedFile }) => {
   const [timestampMessage, setTimestampMessage] = useState(null);
   // Timestamp message
   const [diffInSeconds, setDiffInSeconds] = useState(null);
+  // latest type dump
+  const [latestParticle, setLatestParticle] = useState(null);
 
   // Fetch configuration data from backend on mount and every 500ms
   useEffect(() => {
@@ -82,14 +92,22 @@ const ChooseConfiguration = ({ selectedFile, forceRefreshSelectedFile }) => {
         // Build ISO string
         const isoString = `${datePart}T${formattedTime}`;
         const date = new Date(isoString);
-        const diffInSeconds = Math.floor((currentTimestamp - date.getTime()) / 1000);
-        setDiffInSeconds(diffInSeconds);
+        const diffInSec = Math.floor((currentTimestamp - date.getTime()) / 1000);
+        if (diffInSec !== diffInSeconds) {
+          setDiffInSeconds(diffInSec);
+          if (result.particle) {
+            setLatestParticle(result.particle);
+          }
+        }
         setTimestampMessage(result.latest.replace('_', ' '));
       } catch (err) {
         setError(err.message);
+        setDiffInSeconds(null);
+        setLatestParticle(null);
+        setTimestampMessage(null);
       }
     };
-    // Poll for latest dump timestamp every 200ms
+    // Poll for latest dump timestamp every 200 ms
     const interval = setInterval(fetchLatest, 200);
     return () => clearInterval(interval);
   }, []);
@@ -172,52 +190,54 @@ const ChooseConfiguration = ({ selectedFile, forceRefreshSelectedFile }) => {
 
   return (
     <div id="ChooseConfig" className="blocks">
-      <h3>Choose configuration</h3>
-      <div className="buttonBlock">
-        {/* Button to select positrons configuration */}
-        <button
-          className="green"
+      <h3>Offline analysis configuration</h3>
+      <ButtonGroup size="small" variant="contained"  color="success">
+        <Button
+          startIcon={<AddCircleOutlineIcon />}
           style={{ opacity: data.config !== 'positrons' ? 0.5 : 1 }}
           onClick={() => handleConfigChange('positrons')}
         >
           Positrons
-        </button>
+        </Button>
         {/* Button to select antiprotons configuration */}
-        <button
-          className="green"
+        <Button
+          startIcon={<RemoveCircleOutlineIcon />}
           style={{ opacity: data.config !== 'antiprotons' ? 0.5 : 1 }}
           onClick={() => handleConfigChange('antiprotons')}
         >
           Antiprotons
-        </button>
+        </Button>
         {/* Button to toggle fit option */}
-        <button
-          className="green"
+        <Button
+          startIcon={<MonitorHeartIcon />}
           style={{ opacity: data.fit ? 1 : 0.5 }}
           onClick={() => { handleConfigChange(data.config, !data.fit); }}
         >
           {data.fit ? "Fit enabled" : "Fit disabled"}
-        </button>
+        </Button>
         {/* Button to trigger re-analysis */}
-        <button onClick={handleReAnalyse}>
+        <Button
+          onClick={handleReAnalyse}
+          startIcon={<PsychologyIcon />}
+        >
           Re-analyse
-        </button>
+        </Button>
         {/* Button to show/hide configuration details */}
-        <button
-          onClick={() => { setShowDetails(!showDetails); }}
+        <Button startIcon={<InfoIcon />} onClick={() => { setShowDetails(!showDetails); }}
         >
           {showDetails ? "Hide details" : "Show details"}
-        </button>
+        </Button>
         <a
           href="https://alphacpc05.cern.ch/elog/ALPHA/36053"
           target="_blank"
           rel="noopener noreferrer"
         >
-          <button>
+          <Button startIcon={<AutoStoriesIcon />} >
             Go to the guide
-          </button>
+          </Button>
         </a>
-      </div>
+      </ButtonGroup>
+
       {/* Display configuration details if toggled */}
       {showDetails && (
         <div style={{ display: 'flex', flexDirection: "column", alignItems: "center" }}>
@@ -255,8 +275,8 @@ const ChooseConfiguration = ({ selectedFile, forceRefreshSelectedFile }) => {
       {/* Display success message if any */}
       {message && <p>{message}</p>}
       {/* Display timestamp message if any */}
-      {timestampMessage && diffInSeconds && diffInSeconds > 10 && <p>{`Latest acquisition: ${timestampMessage}`}</p>}
-      {timestampMessage && diffInSeconds && diffInSeconds <= 10 && <p style={{ color: 'blue', fontWeight: 'bold' }}>{`New acquisition: ${timestampMessage}`}</p>}
+      {timestampMessage && diffInSeconds > 0 && diffInSeconds > 10 && <p>{`Latest acquisition: ${timestampMessage} -  From ${latestParticle}'s trigger`}</p>}
+      {timestampMessage && diffInSeconds > 0 && diffInSeconds <= 10 && <p style={{ color: 'blue', fontWeight: 'bold' }}>{`New acquisition: ${timestampMessage} -  From ${latestParticle}'s trigger`}</p>}
     </div>
   );
 }

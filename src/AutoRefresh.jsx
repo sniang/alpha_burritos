@@ -1,4 +1,7 @@
 import { useState, useEffect } from "react";
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Checkbox from '@mui/material/Checkbox';
+
 
 /**
  * AutoRefresh component provides an auto-refresh toggle for periodically fetching JSON files
@@ -102,16 +105,7 @@ function AutoRefresh({
 
     // Render the auto-refresh checkbox UI
     return (
-        <div>
-            <label>
-                <input
-                    type="checkbox"
-                    checked={autoRefresh}
-                    onChange={handleCheckboxChange}
-                />
-                Auto-refresh
-            </label>
-        </div>
+        <FormControlLabel control={<Checkbox checked={autoRefresh} color="success" onChange={handleCheckboxChange} />} label="Auto-refresh" />
     );
 }
 

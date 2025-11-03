@@ -36,7 +36,7 @@ export const getJsonFiles = async (req, res) => {
 };
 
 // Route handler to get signal file for a specific JSON file and detector
-export const getSignal = async (req, res) => {
+export const getSignal = async (req, res, csv = false) => {
   try {
     const { jsonFilename, detector } = req.params;
     validateFilename(jsonFilename);
@@ -51,10 +51,29 @@ export const getSignal = async (req, res) => {
       detector,
       baseName
     );
-
+    // Check that file exists
     await fs.access(filePath, fs.constants.F_OK);
-    res.setHeader('Content-Disposition', `attachment; filename="${baseName}"`);
-    res.sendFile(filePath);
+
+    if (csv) {
+      // Read file and convert to CSV
+      const content = await fs.readFile(filePath, 'utf8');
+      const lines = content
+        .split(/\r?\n/)
+        .filter(line => line.trim() !== '' && !line.trim().startsWith('#')) // ignore comments and empty lines
+        .map(line => line.trim().replace(/\s+/g, ',')); // replace spaces with commas
+
+      // Add CSV header
+      const csvData = ['Time (ns),Signal (mV)', ...lines].join('\n');
+      const csvName = baseName.replace('.txt', '.csv');
+
+      res.setHeader('Content-Type', 'text/csv');
+      res.setHeader('Content-Disposition', `attachment; filename="${csvName}"`);
+      res.send(csvData);
+    } else {
+      // Serve the original TXT file
+      res.setHeader('Content-Disposition', `attachment; filename="${baseName}"`);
+      res.sendFile(filePath);
+    }
   } catch (error) {
     console.error(getCurrentTimestamp());
     console.error('Error in getSignal:', error.message);
@@ -104,7 +123,8 @@ export const getJsonContent = async (req, res) => {
 // Route handler to serve image files
 export const getImage = async (req, res, subdir = 'Together') => {
   try {
-    const { imageName, detector } = req.params;
+    let { imageName, detector } = req.params;
+    imageName = imageName.replace(subdir, 'data');
     const jsonFilename = imageName.replace('.png', '.json');
     validateFilename(jsonFilename);
 
@@ -207,15 +227,15 @@ export const postComments = async (req, res) => {
 export const getConfiguration = async (req, res) => {
   try {
     // Read configuration file
-    let configPath = path.join(ANALYSIS_DIR, 'configuration.json');
+    let configPath = path.join(ANALYSIS_DIR, 'configurations', 'configuration.json');
     let data = await fs.readFile(configPath, 'utf8');
     let configData = JSON.parse(data);
     // Read positron configuration
-    configPath = path.join(ANALYSIS_DIR, 'default_config_positrons.json');
+    configPath = path.join(ANALYSIS_DIR, 'configurations', 'default_config_positrons.json');
     data = await fs.readFile(configPath, 'utf8');
     const configPos = JSON.parse(data);
     // Read antiproton configuration
-    configPath = path.join(ANALYSIS_DIR, 'default_config_antiprotons.json');
+    configPath = path.join(ANALYSIS_DIR, 'configurations', 'default_config_antiprotons.json');
     data = await fs.readFile(configPath, 'utf8');
     const configPbar = JSON.parse(data);
     // Send the configuration data
@@ -231,7 +251,7 @@ export const getConfiguration = async (req, res) => {
 export const getLatest = async (req, res) => {
   try {
     // Read the latest dump timestamp
-    const latestPath = path.join(ANALYSIS_DIR, 'latest.json');
+    const latestPath = path.join(ANALYSIS_DIR, 'configurations', 'latest.json');
     const data = await fs.readFile(latestPath, 'utf8');
     const latestData = JSON.parse(data);
     res.json(latestData);
@@ -245,7 +265,7 @@ export const getLatest = async (req, res) => {
 // Route handler to post/update configuration
 export const postConfiguration = async (req, res) => {
   try {
-    const configPath = path.join(ANALYSIS_DIR, 'configuration.json');
+    const configPath = path.join(ANALYSIS_DIR, 'configurations', 'configuration.json');
     const newConfig = req.body;
     await fs.writeFile(configPath, JSON.stringify(newConfig, null, 2), 'utf8');
     res.json({ success: true, message: 'Configuration updated successfully' });

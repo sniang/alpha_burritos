@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { parseTimestamp } from "./TimeStampSelector";
 import "./CSS/Parameters.css";
+import Button from '@mui/material/Button';
+import ShareIcon from '@mui/icons-material/Share';
+import PivotTableChartIcon from '@mui/icons-material/PivotTableChart';
+import CancelIcon from '@mui/icons-material/Cancel';
 
 // Parameter keys and display labels
 export const parameterKeys = [
@@ -12,6 +16,9 @@ export const parameterKeys = [
     { key: "dt", label: "Interval [ns]" },
     { key: "time arrival", label: "Arrival [ns]" },
 ];
+
+// Format value for display in table
+const formatValue = v => (v === undefined || v === null) ? "N/A" : Number(v).toPrecision(3);
 
 /**
  * Displays parameter data for a selected file and list of detectors.
@@ -38,15 +45,6 @@ const Parameters = ({ selectedFile, detectorList, setDetectorList, setSelectedDe
     const [reverseTable, setReverseTable] = useState(true);
     const [displayTable, setDisplayTable] = useState(false);
     const [particleConfig, setParticleConfig] = useState(null);
-
-    /**
-     * Formats a number to five significant digits.
-     * @param {number} num
-     * @returns {string}
-     */
-    function formatToFiveSignificantDigits(num) {
-        return Number(num).toPrecision(5);
-    }
 
     // Fetch parameters when selectedFile changes
     useEffect(() => {
@@ -93,14 +91,14 @@ const Parameters = ({ selectedFile, detectorList, setDetectorList, setSelectedDe
         if (reverseTable) {
             const header = ["Parameters", ...keys].join("\t");
             const rows = parameterKeys.map(({ key, label }) => {
-                const values = keys.map((loc) => formatToFiveSignificantDigits(parameters[loc][key]));
+                const values = keys.map((loc) => formatValue(parameters[loc][key]));
                 return [label, ...values].join("\t");
             });
             return [header, ...rows].join("\n");
         } else {
             const header = ["Location", ...parameterKeys.map(({ label }) => label)].join("\t");
             const rows = keys.map((loc) => {
-                const values = parameterKeys.map(({ key }) => formatToFiveSignificantDigits(parameters[loc][key]));
+                const values = parameterKeys.map(({ key }) => formatValue(parameters[loc][key]));
                 return [loc, ...values].join("\t\t");
             });
             return [header, ...rows].join("\n");
@@ -110,8 +108,10 @@ const Parameters = ({ selectedFile, detectorList, setDetectorList, setSelectedDe
     const displayButtons = () => {
         return (
             <div style={{ display: "flex", gap: "10px" }}>
-                <button
-                    className="green"
+                <Button
+                    size="small"
+                    variant="contained"
+                    color="success"
                     onClick={() => {
                         const url = new URL(window.location.href);
                         url.searchParams.set("id", selectedFile);
@@ -138,19 +138,26 @@ const Parameters = ({ selectedFile, detectorList, setDetectorList, setSelectedDe
                             document.body.removeChild(textarea);
                         }
                     }}
+                    startIcon={<ShareIcon />}
                 >
                     Share link
-                </button>
-                <button
-                    className="button"
+                </Button>
+                <Button
+                    startIcon={<PivotTableChartIcon />}
+                    size="small"
+                    variant="contained"
+                    color="success"
                     onClick={() => setReverseTable(!reverseTable)}>
                     Reverse Table
-                </button>
-                {displayTable && <button
-                    className="button"
+                </Button>
+                {displayTable && <Button
+                    startIcon={<CancelIcon />}
+                    size="small"
+                    variant="contained"
+                    color="error"
                     onClick={() => setDisplayTable(!displayTable)}>
                     Back
-                </button>}
+                </Button>}
             </div>);
     };
 
@@ -174,7 +181,7 @@ const Parameters = ({ selectedFile, detectorList, setDetectorList, setSelectedDe
             // Table: parameters as rows, detectors as columns
             return (
                 <div id="parametersBlock" className="blocks">
-                    <h4>{particleConfig && `${particleConfig} - `}{parseTimestamp(selectedFile)}</h4>
+                    <h4>{particleConfig && `${capitalizeFirstLetter(particleConfig)} - `}{parseTimestamp(selectedFile)}</h4>
                     {displayTable && (<textarea
                         value={makeTable()}
                         readOnly
@@ -203,7 +210,7 @@ const Parameters = ({ selectedFile, detectorList, setDetectorList, setSelectedDe
                                 <div>{label}</div>
                                 {validDetectorList.map((loc) => (
                                     <div key={`${loc}-${key}`}>
-                                        {formatToFiveSignificantDigits(parameters[loc][key])}
+                                        {formatValue(parameters[loc][key])}
                                     </div>
                                 ))}
                             </React.Fragment>
@@ -217,7 +224,7 @@ const Parameters = ({ selectedFile, detectorList, setDetectorList, setSelectedDe
         // Table: detectors as rows, parameters as columns
         return (
             <div id="parametersBlock" className="blocks">
-                <h4>{particleConfig && `${particleConfig} - `}{parseTimestamp(selectedFile)}</h4>
+                <h4>{particleConfig && `${capitalizeFirstLetter(particleConfig)} - `}{parseTimestamp(selectedFile)}</h4>
                 {displayTable && (<textarea
                     value={makeTable()}
                     readOnly
@@ -245,7 +252,7 @@ const Parameters = ({ selectedFile, detectorList, setDetectorList, setSelectedDe
                             <div>{loc}</div>
                             {parameterKeys.map(({ key }) => (
                                 <div key={`${loc}-${key}`}>
-                                    {formatToFiveSignificantDigits(parameters[loc][key])}
+                                    {formatValue(parameters[loc][key])}
                                 </div>
                             ))}
                         </React.Fragment>
@@ -262,4 +269,9 @@ const Parameters = ({ selectedFile, detectorList, setDetectorList, setSelectedDe
 
 export default Parameters;
 
+// Capitalizes the first letter of a string
+export function capitalizeFirstLetter(str) {
+    if (!str) return "";
+    return str.charAt(0).toUpperCase() + str.slice(1);
+}
 

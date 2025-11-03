@@ -1,6 +1,10 @@
 // Author: Samuel Niang
 
 import { useState } from 'react';
+import LoginIcon from '@mui/icons-material/Login';
+import Button from "@mui/material/Button";
+import TextField from '@mui/material/TextField';
+
 
 /**
  * LoginForm component for user authentication.
@@ -41,20 +45,14 @@ export default function LoginForm({ onLogin }) {
     return (
         <form onSubmit={handleSubmit} className="blocks" style={{ width: '300px', margin: '0 auto' }}>
             {/* Login input field */}
-            <input
-                value={login}
-                onChange={e => setLogin(e.target.value)}
-                placeholder="Login"
-            />
+            <TextField color="success" id="outlined-basic" label="Login" variant="outlined" value={login} onChange={e => setLogin(e.target.value)} />
+
             {/* Password input field */}
-            <input
-                type="password"
-                value={password}
-                onChange={e => setPassword(e.target.value)}
-                placeholder="Password"
-            />
+            <TextField color="success" id="outlined-password" label="Password" variant="outlined" type="password" value={password} onChange={e => setPassword(e.target.value)} />
             {/* Submit button */}
-            <button type="submit">Log in</button>
+            <Button type="submit" startIcon={<LoginIcon />} variant="contained" color="success">
+                Log in
+            </Button>
             {/* Message display area */}
             {message && <span className="message">{message}</span>}
         </form>

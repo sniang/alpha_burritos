@@ -65,30 +65,6 @@ select {
   /* Text size */
 }
 
-/* Button styling - uses brand color (#e33933) */
-button {
-  padding: 10px 20px;
-  /* Vertical and horizontal padding */
-  border: none;
-  /* Remove default border */
-  border-radius: 5px;
-  /* Rounded corners */
-  background-color: #e33933;
-  /* Brand red color */
-  color: white;
-  /* White text */
-  font-size: 14px;
-  /* Text size */
-  cursor: pointer;
-  /* Pointer cursor on hover */
-}
-
-/* Button hover effect - darken color on hover */
-button:hover {
-  transform: scale(1.05);
-  /* Slightly enlarge button */
-}
-
 /* Block containing select elements - wrapped in a bordered container */
 #selects-block {
   display: flex;
@@ -113,6 +89,7 @@ button:hover {
   /* Internal spacing */
   gap: 5px;
   /* Space between items */
+  min-width: 850px;
 }
 
 /* Block containing detector elements - flexible layout with even spacing */
@@ -157,15 +134,9 @@ button:hover {
 
 
 button.green {
-    background-color: #008C45;
+    background-color:#008C45 ;
 }
 
-/* Responsive layout adjustments for mobile/tablet screens */
-@media screen and (max-width: 950px) {
-  #selects-block {
-    flex-direction: column;
-    /* Stack items vertically on smaller screens */
-    width: 100%;
-    /* Take full width */
-  }
+button.red {
+    background-color: #C0392B;
 }

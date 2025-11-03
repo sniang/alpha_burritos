@@ -6,8 +6,11 @@
  * @param {Object} props - Component props
  * @param {string} props.selectedFile - The path of the currently selected file
  */
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import './CSS/Comment.css';
+import { Button } from "@mui/material";
+import EditNoteIcon from '@mui/icons-material/EditNote';
+import CancelIcon from '@mui/icons-material/Cancel';
 
 const Comment = ({ selectedFile }) => {
     // State for existing comment, new comment input, edit mode, and error handling
@@ -95,9 +98,9 @@ const Comment = ({ selectedFile }) => {
             }
             <div id="comment-buttons-block">
                 {/* Cancel button only appears in edit mode */}
-                {update && <button onClick={() => setUpdate(!update)}>Cancel</button>}
+                {update && <Button startIcon={<CancelIcon />} size="small" color="error" variant="contained" onClick={() => setUpdate(!update)}>Cancel</Button>}
                 {/* Button text changes based on edit mode */}
-                <button onClick={updateComment}>{!update ? "Update comments" : "Save comments"}</button>
+                <Button startIcon={<EditNoteIcon />} size="small" color="success" variant="contained" onClick={updateComment}>{!update ? "Update comments" : "Save comments"}</Button>
             </div>
 
             {/* Error message display when applicable */}

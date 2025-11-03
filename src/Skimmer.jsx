@@ -1,206 +1,251 @@
-import React, { useState, useEffect, useMemo, useCallback } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import "./CSS/Skimmer.css";
 import { parseTimestamp } from "./TimeStampSelector";
 import DetectorSelector from "./DetectorSelector";
 import { parameterKeys } from "./Parameters";
+import SaveIcon from '@mui/icons-material/Save';
+import Button from '@mui/material/Button';
+import CancelIcon from '@mui/icons-material/Cancel';
+import { Switch, FormControl, InputLabel, Select, MenuItem, TextField, FormControlLabel, Box } from "@mui/material";
+
 
 /**
- * Formats a numeric value to a consistent precision.
- * @param {number|null|undefined} value - The value to format
- * @returns {string} Formatted value or "N/A" if value is null/undefined
- */
-const formatValue = (value) => {
-    if (value === undefined || value === null) return "N/A";
-    return Number(value).toPrecision(5);
-};
-
-/**
- * Generates formatted text content from the processed JSON data.
- * @param {Array<string>} jsonFilesSorted - Sorted array of JSON filenames
- * @param {Array<Object>} data - Array of data objects fetched from JSON files
- * @param {number} endingIndex - Ending index in the files array
- * @param {number} startingIndex - Starting index in the files array
- * @param {string} selectedDetector - The currently selected detector
- * @returns {string} Formatted text content for display
- */
-const getText = (jsonFilesSorted, data, endingIndex, startingIndex, selectedDetector) => {
-    if (!data || data.length === 0) {
-        return "No data available.";
-    }
-    const sortedData = [...data].reverse();
-
-    // Create header row with parameter labels
-    const headerRow = ["Timestamp\t\t"];
-    parameterKeys.forEach(({ label }) => {
-        headerRow.push(label);
-    });
-
-    const rows = [headerRow.join("\t")];
-
-    // Get only the files within the selected range
-    const jsonFilesSortedSlice = jsonFilesSorted
-        .slice(startingIndex, endingIndex + 1)
-        .sort((a, b) => a.localeCompare(b));
-
-    // Build data rows with timestamp and parameter values
-    jsonFilesSortedSlice.forEach((file, index) => {
-        const row = [parseTimestamp(file)];
-
-        parameterKeys.forEach(({ key }) => {
-            const detectorData = sortedData[index]?.[selectedDetector];
-            row.push(detectorData && detectorData[key] !== undefined ?
-                formatValue(detectorData[key]) : "N/A");
-        });
-
-        rows.push(row.join("\t\t"));
-    });
-
-    return rows.join("\n");
-};
-
-/**
- * Skimmer component for browsing and viewing JSON data files within a selected range.
- * 
- * This component allows users to select a detector and a range of JSON files to view.
- * It fetches the selected files, processes them, and displays their content in a text area.
- * 
  * @component
  * @author Samuel Niang
- * 
  * @param {Object} props - Component props
  * @param {Array<string>} props.jsonFiles - List of available JSON file names
  * @param {string} props.selectedDetector - The currently selected detector
  * @param {Function} props.setSelectedDetector - Function to update the selected detector
  * @param {Array<string>} props.detectorList - List of available detectors
- * 
  * @returns {JSX.Element} The rendered Skimmer component
- * 
- * @example
- * <Skimmer 
- *   jsonFiles={availableFiles}
- *   selectedDetector={detector}
- *   setSelectedDetector={updateDetector}
- *   detectorList={detectors}
- * />
  */
 const Skimmer = ({ jsonFiles, selectedDetector, setSelectedDetector, detectorList }) => {
-    // State for managing the data and UI
     const [endingIndex, setEndingIndex] = useState(0);
     const [startingIndex, setStartingIndex] = useState(0);
     const [data, setData] = useState([]);
+    const [filteredData, setFilteredData] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
+    const [particles, setParticles] = useState("antiprotons");
+    const [isTableTextArea, setIsTableTextArea] = useState(false);
+    const [isSwitchOn, setIsSwitchOn] = useState(false);
+    const [nValue, setNValue] = useState(3);
 
     // Sort JSON files alphabetically for consistent display
     const jsonFilesSorted = useMemo(() =>
         jsonFiles ? [...jsonFiles].sort((a, b) => b.localeCompare(a)) : []
         , [jsonFiles]);
 
-    /**
-     * Fetches data for the selected range of JSON files
-     * Uses Promise.all to fetch multiple files concurrently
-     */
-    const fetchData = useCallback(async () => {
+    // Fetch data when component mounts or dependencies change
+    useEffect(() => {
         if (!jsonFilesSorted.length) return;
-
-        setIsLoading(true);
-        setData([]);
-
-        try {
-            const fileSlice = jsonFilesSorted.slice(startingIndex, endingIndex + 1);
-            const localData = await Promise.all(
-                fileSlice.map(async (file) => {
+        setIsLoading(true); setData([]);
+        const startIdx = isSwitchOn ? 0 : startingIndex;
+        const endingIdx = isSwitchOn ? jsonFilesSorted.length : endingIndex;
+        (async () => {
+            try {
+                const fileSlice = jsonFilesSorted.slice(startIdx, endingIdx + 1);
+                const localData = await Promise.all(fileSlice.map(async (file) => {
                     const res = await fetch(`/api/json/${file}`);
                     if (!res.ok) throw new Error(`Failed to fetch ${file}`);
                     return res.json();
-                })
-            );
-            setData(localData);
-        } catch (error) {
-            console.error("Error fetching data:", error);
-        } finally {
-            setIsLoading(false);
-        }
-    }, [jsonFilesSorted, endingIndex, startingIndex]);
+                }));
+                localData.sort((a, b) => {
+                    const keyA = Object.keys(a)[0], keyB = Object.keys(b)[0];
+                    return a[keyA].signal.localeCompare(b[keyB].signal);
+                });
+                setData(localData);
+            } catch (error) { console.error("Error fetching data:", error); }
+            finally { setIsLoading(false); }
+        })();
+    }, [jsonFilesSorted, startingIndex, endingIndex, isSwitchOn]);
 
-    // Fetch data when component mounts or dependencies change
+    // Handle changes to the particle selection
     useEffect(() => {
-        if (jsonFilesSorted.length > 0) {
-            fetchData();
-        }
-    }, [fetchData, jsonFilesSorted.length]);
+        const newFilteredData = data.filter(line => line[Object.keys(line)[0]].config === particles);
+        setFilteredData(newFilteredData);
+    }, [particles, data]);
+
+    // Handle changes to the N value input
+    const handleNValueChange = (value) => {
+        let N;
+        if (value < 1) N = 1;
+        else if (value > filteredData.length) N = filteredData.length;
+        else N = value;
+        setNValue(N);
+    };
 
     // Early return if no files are available
-    if (!jsonFiles || jsonFiles.length === 0) {
+    if (!jsonFiles || !jsonFiles.length)
         return <div className="skimmer-container">No JSON files available.</div>;
-    }
 
-    // Generate the text content to display in the textarea
-    const textContent = useMemo(() =>
-        getText(jsonFilesSorted, data, endingIndex, startingIndex, selectedDetector)
-        , [jsonFilesSorted, data, endingIndex, startingIndex, selectedDetector]);
+    // Format value for display in table
+    const formatValue = v => (v === undefined || v === null) ? "N/A" : Number(v).toPrecision(3);
+
+    // Control panel for detector and range selection
+    const Selectors = () => (
+        <><div className="skimmer-controls">
+            <FormControl size="small" color="success" sx={{ minWidth: 150 }}>
+                <InputLabel sx={{ fontSize: 13 }}>Particle</InputLabel>
+                <Select sx={{ fontSize: 13 }} value={particles} onChange={e => setParticles(e.target.value)} label="Particle">
+                    <MenuItem sx={{ fontSize: 13 }} value="positrons">Positrons</MenuItem>
+                    <MenuItem sx={{ fontSize: 13 }} value="antiprotons">Antiprotons</MenuItem>
+                </Select>
+            </FormControl>
+            <DetectorSelector
+                selectedDetector={selectedDetector}
+                setSelectedDetector={setSelectedDetector}
+                detectorList={detectorList}
+            />
+
+            <FormControl size="small" color="success" sx={{ minWidth: 150 }}>
+                <InputLabel sx={{ fontSize: 13 }}>Acquisition timestamp</InputLabel>
+                <Select sx={{ fontSize: 13 }} value={endingIndex} onChange={e => setEndingIndex(Number(e.target.value))} label="Acquisition timestamp">
+                    {jsonFilesSorted.map((file, i) =>
+                        <MenuItem sx={{ fontSize: 13 }} key={file} value={i}>{parseTimestamp(file)}</MenuItem>
+                    )}
+                </Select>
+            </FormControl>
+
+            <FormControl size="small" color="success" sx={{ minWidth: 150 }}>
+                <InputLabel sx={{ fontSize: 13 }}>Acquisition timestamp</InputLabel>
+                <Select sx={{ fontSize: 13 }} value={startingIndex} onChange={e => setStartingIndex(Number(e.target.value))} label="Acquisition timestamp">
+                    <MenuItem sx={{ fontSize: 13 }} value="" disabled>Acquisition timestamp</MenuItem>
+                    {jsonFilesSorted.map((file, i) =>
+                        <MenuItem sx={{ fontSize: 13 }} key={file} value={i}>{parseTimestamp(file)}</MenuItem>
+                    )}
+                </Select>
+            </FormControl>
+
+
+        </div>
+            <Box display="flex" alignItems="center" gap={2}>
+                <FormControlLabel
+                    control={
+                        <Switch
+                            checked={isSwitchOn}
+                            onChange={e => setIsSwitchOn(e.target.checked)}
+                            color="success"
+                        />
+                    }
+                    label="Last N acquisitions"
+                />
+                <TextField
+                    label="N"
+                    type="number"
+                    variant="outlined"
+                    size="small"
+                    value={nValue}
+                    onChange={e => handleNValueChange(Number(e.target.value))}
+                    disabled={!isSwitchOn}
+                    color="success"
+                    sx={{ width: '100px' }}
+                />
+            </Box>
+        </>
+
+    );
+
+    // Table display
+    const Table = () => {
+        let localData = filteredData
+        if (isSwitchOn) { localData = localData.slice(Math.max(localData.length - nValue, 0), localData.length); }
+        return (
+            <div className="skimmer-grid" onClick={() => setIsTableTextArea(true)}>
+                <span>Timestamps</span>
+                {parameterKeys.map(({ label }) => <span key={label}>{label}</span>)}
+                {localData.map((line, index) => {
+                    const key1 = Object.keys(line)[0];
+                    const timestamp = parseTimestamp(line[key1]?.signal.replace('.txt', '.json')) || "N/A";
+                    return (
+                        <React.Fragment key={`${key1}-${index}`}>
+                            <span>{timestamp}</span>
+                            {parameterKeys.map(({ key }) =>
+                                <span key={key}>{formatValue(line?.[selectedDetector]?.[key])}</span>
+                            )}
+                        </React.Fragment>
+                    );
+                })}
+                {/* Mean row */}
+                <span style={{ fontWeight: 'bold' }}>Mean</span>
+                {parameterKeys.map(({ key }) =>
+                    <span key={key} style={{ fontWeight: 'bold' }}>{formatValue(localData.reduce((acc, line) => acc + line?.[selectedDetector]?.[key], 0) / localData.length)}</span>
+                )}
+            </div>
+
+        )
+    };
+
+
+    // Textarea table display
+    const TableTextArea = () => {
+        const headers = ["Timestamps\t\t", ...parameterKeys.map(({ label }) => label)];
+        let localData = filteredData;
+        if (isSwitchOn) { localData = localData.slice(Math.max(localData.length - nValue, 0), localData.length); }
+        const rows = localData
+            .map(line => {
+                const key1 = Object.keys(line)[0];
+                const timestamp = parseTimestamp(line[key1]?.signal.replace('.txt', '.json')) || "N/A";
+                const values = parameterKeys.map(({ key }) => formatValue(line?.[selectedDetector]?.[key]));
+                return [timestamp, ...values].join("\t\t");
+            });
+        let tableText = [headers.join("\t"), ...rows].join("\n");
+        const meanRow = "\nMean\t\t\t\t" +
+            parameterKeys.map(({ key }) =>
+                formatValue(localData.reduce((acc, line) => acc + line?.[selectedDetector]?.[key], 0) / localData.length)
+            ).join("\t\t");
+        // Mean row
+        tableText += '\n' + '-'.repeat(Math.floor(2.5 * meanRow.length));
+        tableText += meanRow;
+        return <textarea className="skimmer-textarea" readOnly value={tableText} />;
+    };
+
+    // CSV download button
+    const DownloadCSVButton = () => {
+        const filename = `burrito_${particles}_data.csv`;
+        if (!data) return null;
+        const headers = ["Timestamps", ...parameterKeys.map(({ label }) => label)];
+        let localData = filteredData;
+        if (isSwitchOn) { localData = localData.slice(Math.max(localData.length - nValue, 0), localData.length); }
+        const rows = localData
+            .map(line => {
+                const key1 = Object.keys(line)[0];
+                const timestamp = parseTimestamp(line[key1]?.signal.replace('.txt', '.json')) || "N/A";
+                const values = parameterKeys.map(({ key }) => formatValue(line?.[selectedDetector]?.[key]));
+                return [timestamp, ...values];
+            });
+        const downloadCSV = () => {
+            const csvContent = [headers.join(","), ...rows.map(r => r.join(","))].join("\n");
+            const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.href = url; link.download = filename; link.click();
+            URL.revokeObjectURL(url);
+        };
+        return (
+            <Button
+                startIcon={<SaveIcon />}
+                color="success"
+                variant="contained"
+                size="small"
+                onClick={downloadCSV}
+                className="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+            >
+                Download the summary (.csv)
+            </Button>
+        );
+    };
 
     return (
-        <div className="skimmer-container blocks">
+        <div className="skimmer-container blocks" style={{ minWidth: "850px" }}>
             <h2>Skimmer</h2>
-            {/* Control panel for detector and range selection */}
-            <div className="skimmer-controls">
-                <DetectorSelector
-                    selectedDetector={selectedDetector}
-                    setSelectedDetector={setSelectedDetector}
-                    detectorList={detectorList}
-                />
-                {/* Starting timestamp selector */}
-                <label>
-                    Starting:
-                    <select
-                        value={endingIndex}
-                        onChange={(e) => setEndingIndex(Number(e.target.value))}
-                    >
-                        <option value="" disabled>Acquisition timestamp</option>
-                        {jsonFilesSorted.map((file, index) => (
-                            <option key={file} value={index}>{parseTimestamp(file)}</option>
-                        ))}
-                    </select>
-                </label>
-                {/* Ending timestamp selector */}
-                <label>
-                    Ending:
-                    <select
-                        value={startingIndex}
-                        onChange={(e) => setStartingIndex(Number(e.target.value))}
-                    >
-                        <option value="" disabled>Acquisition timestamp</option>
-                        {jsonFilesSorted.map((file, index) => (
-                            <option key={file} value={index}>{parseTimestamp(file)}</option>
-                        ))}
-                    </select>
-                </label>
+            <Selectors />
+            {isLoading && <div className="loading-indicator">Loading data...</div>}
+            {!isLoading && data && !isTableTextArea && <Table />}
+            {!isLoading && data && isTableTextArea && <TableTextArea />}
+            <div style={{ display: "flex", gap: "10px" }}>
+                {!isLoading && data && <DownloadCSVButton />}
+                {!isLoading && data && isTableTextArea && <Button startIcon={<CancelIcon />} color="error" size="small" variant="contained" onClick={() => setIsTableTextArea(false)}>Back</Button>}
             </div>
-            {/* Display loading indicator or data */}
-            {isLoading ? (
-                <div className="loading-indicator">Loading data...</div>
-            ) : (
-                <>
-                    <textarea
-                        value={textContent}
-                        readOnly
-                        className="skimmer-textarea"
-                    />
-                    <a
-                        href={`data:text/csv;charset=utf-8,${encodeURIComponent(
-                            textContent
-                                .replace(/\t+/g, '\t') // collapse multiple tabs to one
-                                .replace(/\t/g, ',')   // then replace tabs with commas
-                        )}`}
-                        download={`skimmer_data_${selectedDetector}.csv`}
-                        style={{ textDecoration: 'none', color: 'inherit' }}
-                    >
-                        <button>
-                            Download CSV
-                        </button>
-                    </a>
-                </>
-            )}
         </div>
     );
 };

@@ -1,4 +1,8 @@
-import React, { useState, useEffect } from "react";
+import { useEffect } from "react";
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
 
 /**
  * TimeStampSelector is a React component that renders a dropdown menu for selecting
@@ -77,19 +81,20 @@ function TimeStampSelector({
     setSelectedFile(event.target.value); // Update selected file
   };
   return (
-    <label>
-      Timestamp:
-      <select
+    <FormControl size="small" color="success" >
+      <InputLabel sx={{ fontSize: 13 }} color="success">Timestamp</InputLabel>
+      <Select
+        sx={{ fontSize: 13 }}
         value={selectedFile}
+        label="Timestamp"
         onChange={handleSelectChange}
       >
-        <option value="" disabled>Acquisition timestamp</option>
-
+        <MenuItem sx={{ fontSize: 13 }} value="" disabled>Acquisition timestamp</MenuItem>
         {!error && jsonFiles.map((file, index) => (
-          <option key={index} value={file}>{parseTimestamp(file)}</option>
+          <MenuItem sx={{ fontSize: 13 }} key={index} value={file}>{parseTimestamp(file)}</MenuItem>
         ))}
-      </select>
-    </label>
+      </Select>
+    </FormControl>
   );
 
 }

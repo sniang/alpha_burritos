@@ -12,6 +12,8 @@ import Comment from './Comment.jsx'
 import Skimmer from './Skimmer.jsx'
 import LoginForm from './LoginForm.jsx'
 import ChooseConfiguration from './ChooseConfiguration.jsx'
+import LogoutIcon from '@mui/icons-material/Logout';
+import Button from "@mui/material/Button";
 
 /**
  * Root component of the application that orchestrates detector visualization and data management.
@@ -218,7 +220,9 @@ function App() {
   return (
     <>
       <MainTitle />
-      <button onClick={handleLogout}>Log out</button>
+      <Button onClick={handleLogout} startIcon={<LogoutIcon />} variant="contained" color="error">
+        Log out
+      </Button>
       {renderSelectorComponents()}
       <ChooseConfiguration
         selectedFile={selectedFile}
