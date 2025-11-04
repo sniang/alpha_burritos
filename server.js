@@ -108,11 +108,13 @@ app.get('/api/reanalyse/:filename', (req, res) => reAnalyse(req, res));
 app.post('/api/login', async (req, res) => {
   const { login, password } = req.body;
   if (login !== USER_LOGIN) {
+    console.error('[ERROR] Invalid login attempt:', login);
     return res.status(401).json({ message: 'Invalid login' });
   }
 
   const isValid = await bcrypt.compare(password, USER_PASSWORD_HASH);
   if (!isValid) {
+    console.error('[ERROR] Invalid password attempt for user:', login);
     return res.status(401).json({ message: 'Incorrect password' });
   }
 
@@ -135,6 +137,7 @@ function verifyToken(req, res, next) {
     req.user = user;
     next();
   } catch {
+    console.error('[ERROR] Invalid token attempt');
     return res.status(401).json({ message: 'Invalid token' });
   }
 }
