@@ -189,8 +189,8 @@ const Parameters = ({ selectedFile, detectorList, setDetectorList, setSelectedDe
                     {!displayTable && <div
                         style={{
                             display: "grid",
-                            gridTemplateColumns: `120px repeat(${validDetectorList.length}, min-content)`,
-                            gap: "10px 5px",
+                            gridTemplateColumns: `100px repeat(${validDetectorList.length}, min-content)`,
+                            gap: "10px 4px",
                             fontSize: "0.9rem",
                             alignItems: "center",
                             marginBottom: "10px"
@@ -232,8 +232,8 @@ const Parameters = ({ selectedFile, detectorList, setDetectorList, setSelectedDe
                 {!displayTable && <div
                     style={{
                         display: "grid",
-                        gridTemplateColumns: `80px repeat(${parameterKeys.length}, min-content)`,
-                        gap: "10px 5px",
+                        gridTemplateColumns: `70px repeat(${parameterKeys.length}, min-content)`,
+                        gap: "10px 4px",
                         fontSize: "0.9rem",
                         alignItems: "center",
                         marginBottom: "10px"

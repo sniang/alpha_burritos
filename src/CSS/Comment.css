@@ -2,7 +2,7 @@
 #comment-block {
     align-self: stretch;
     flex: 1;
-    min-width: 250px;
+    min-width: 200px;
 }
 
 /* Textarea for entering comments */
