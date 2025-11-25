@@ -108,12 +108,12 @@ function App() {
   // Show login form if not authenticated.
   // MainTitle is always shown for branding/context.
   // @returns {JSX.Element|null}
-  // if (!isLoggedIn) {
-  //   return <>
-  //     <MainTitle />
-  //     <LoginForm onLogin={() => window.location.reload()} />
-  //   </>;
-  // }
+  if (!isLoggedIn) {
+    return <>
+      <MainTitle />
+      <LoginForm onLogin={() => window.location.reload()} />
+    </>;
+  }
 
   // Show error message if an error occurred anywhere in the app.
   // This is a global error boundary for the main UI.
