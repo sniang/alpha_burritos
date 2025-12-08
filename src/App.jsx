@@ -79,7 +79,7 @@ function App() {
       try {
         const res = await fetch('/api/test');
         if (!res.ok) throw new Error('Server not reachable');
-        console.log('[INFO]', 'Backend server is reachable', await res.json());
+        console.log('[INFO]', 'Backend server is reachable');
       } catch (error) {
         const errorMessage = `${error.message}
             The backend server is not reachable.
@@ -90,6 +90,7 @@ function App() {
     };
     checkServer();
   }, []);
+
   // On mount, check if the user is authenticated by calling the profile API.
   // If not authenticated, set isLoggedIn to false.
   // @returns {void}
