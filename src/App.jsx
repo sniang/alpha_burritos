@@ -124,12 +124,7 @@ function App() {
       <>
         <MainTitle />
         <p className="error">
-          {errorMessage.split('\n').map((line, idx) => (
-            <React.Fragment key={idx}>
-              {line}
-              <br />
-            </React.Fragment>
-          ))}
+          {errorMessage}
         </p>
       </>
     )
