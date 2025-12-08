@@ -124,7 +124,12 @@ function App() {
       <>
         <MainTitle />
         <p className="error">
-          {errorMessage}
+          {errorMessage.split('\n').map((line, index) => (
+            <span key={index}>
+              {line}
+              <br />
+            </span>
+          ))}
         </p>
       </>
     )
