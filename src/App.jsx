@@ -119,9 +119,9 @@ function App() {
   // Show error message if an error occurred anywhere in the app.
   // This is a global error boundary for the main UI.
   // @returns {JSX.Element|null}
-  if (error) {
+  if (state.error) {
     return (
-      <ErrorMessage error={error} />
+      <ErrorMessage error={state.error} />
     )
   }
 
@@ -180,6 +180,7 @@ function App() {
           day={day}
           setJsonFiles={(value) => updateState('jsonFiles', value)}
           setSelectedFile={(value) => updateState('selectedFile', value)}
+          error={state.error}
           setError={(value) => updateState('error', value)}
         />
         {/* DateSelector: Allows user to pick year, month and day */}
