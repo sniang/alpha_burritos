@@ -89,6 +89,7 @@ function App() {
         updateState('error', errorMessage);
       }
     };
+    console.log('[INFO]', 'Checking backend server connectivity...');
     checkServer();
   }, []);
 
