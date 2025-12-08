@@ -11,6 +11,7 @@ import AutoRefresh from './AutoRefresh.jsx'
 import Comment from './Comment.jsx'
 import Skimmer from './Skimmer.jsx'
 import LoginForm from './LoginForm.jsx'
+import ErrorMessage from './ErrorMessage.jsx'
 import ChooseConfiguration from './ChooseConfiguration.jsx'
 import LogoutIcon from '@mui/icons-material/Logout';
 import Button from "@mui/material/Button";
@@ -120,10 +121,7 @@ function App() {
   // @returns {JSX.Element|null}
   if (error) {
     return (
-      <>
-        <MainTitle />
-        <p className="error">Something went wrong: {error.message}</p>
-      </>
+      <ErrorMessage error={error} />
     )
   }
 
