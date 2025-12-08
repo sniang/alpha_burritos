@@ -225,6 +225,7 @@ function App() {
       <ChooseConfiguration
         selectedFile={selectedFile}
         forceRefreshSelectedFile={forceRefreshSelectedFile}
+        setError={(value) => updateState('error', value)}
       />
       {renderDetectorComponents()}
     </>

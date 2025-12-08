@@ -76,6 +76,7 @@ function TimeStampSelector({
         Easy temporary fix: launch the script `/Desktop/burrito_src/mount_eos_for_7_days.sh` from the terminal.
         ```;
         setError(error_message); // Set error if fetch fails
+        console.error("Error fetching JSON files:", error);
       }
     };
     fetchFiles();

@@ -22,9 +22,7 @@ import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
  * @returns {JSX.Element|null} The configuration selection UI, or null if configuration is not loaded.
  */
 
-const ChooseConfiguration = ({ selectedFile, forceRefreshSelectedFile }) => {
-  // State for error messages
-  const [error, setError] = useState(null);
+const ChooseConfiguration = ({ selectedFile, forceRefreshSelectedFile, setError }) => {
   // State for configuration data fetched from backend
   const [data, setData] = useState(null);
   // State for positron configuration data
@@ -67,6 +65,7 @@ const ChooseConfiguration = ({ selectedFile, forceRefreshSelectedFile }) => {
       } catch (err) {
         // Handle errors and reset data
         setError(err.message + " Error fetching configuration file.");
+        console.error("Error fetching configuration:", err);
         setData(null);
         setDataKeys([]);
       }
