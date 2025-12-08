@@ -68,7 +68,7 @@ const Parameters = ({ selectedFile, detectorList, setDetectorList, setSelectedDe
                 }
             } catch (error) {
                 setError(error);
-                console.error('[ERROR] Parameters failed to fetch parameters:', error);
+                console.error('[ERROR]', 'Parameters failed to fetch parameters:', error);
                 setDetectorList([]);
             }
         };

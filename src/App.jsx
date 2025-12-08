@@ -119,7 +119,7 @@ function App() {
   // This is a global error boundary for the main UI.
   // @returns {JSX.Element|null}
   if (error) {
-    const errorMessage = String(error.message || error).replace('[ERROR] ', '');
+    const errorMessage = String(error.message || error);
     return (
       <>
         <MainTitle />

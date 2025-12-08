@@ -66,9 +66,9 @@ const ChooseConfiguration = ({ selectedFile, forceRefreshSelectedFile }) => {
         setAntiprotonConfig(result.configPbar);
       } catch (err) {
         // Handle errors and reset data
-        const errorMessage = `[ERROR] ${err.message}
+        const errorMessage = `${err.message}
             ChooseConfiguration failed to fetch configuration`;
-        console.error(errorMessage);
+        console.error('[ERROR]', errorMessage);
         setError(errorMessage);
         setData(null);
         setDataKeys([]);
@@ -104,9 +104,9 @@ const ChooseConfiguration = ({ selectedFile, forceRefreshSelectedFile }) => {
         }
         setTimestampMessage(result.latest.replace('_', ' '));
       } catch (err) {
-        const errorMessage = `[ERROR] ${err.message}
+        const errorMessage = `${err.message}
             ChooseConfiguration failed to fetch latest dump timestamp`;
-        console.error(errorMessage);
+        console.error('[ERROR]', errorMessage);
         setError(errorMessage);
         setDiffInSeconds(null);
         setLatestParticle(null);
@@ -153,9 +153,9 @@ const ChooseConfiguration = ({ selectedFile, forceRefreshSelectedFile }) => {
     }
     catch (error) {
       // Handle errors during update
-      const errorMessage = `[ERROR] ${error.message}
+      const errorMessage = `${error.message}
             ChooseConfiguration failed to update configuration`;
-      console.error(errorMessage);
+      console.error('[ERROR]', errorMessage);
       setError(errorMessage);
     }
   }
@@ -183,8 +183,8 @@ const ChooseConfiguration = ({ selectedFile, forceRefreshSelectedFile }) => {
     }
     catch (error) {
       // Handle errors during re-analysis
-      const errorMessage = `[ERROR] ${error.message}`;
-      console.error(errorMessage);
+      const errorMessage = `${error.message}`;
+      console.error('[ERROR]', errorMessage);
       setError(errorMessage);
     }
     finally {

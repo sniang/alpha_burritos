@@ -48,7 +48,7 @@ const DownloadAllButton = ({ selectedFile }) => {
       window.URL.revokeObjectURL(url);
     } catch (error) {
       setError(error);
-      console.error('[ERROR] DownloadAllButton failed to download signal file:', error);
+      console.error('[ERROR]', 'DownloadAllButton failed to download signal file:', error);
     }
   };
 

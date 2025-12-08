@@ -77,12 +77,12 @@ function AutoRefresh({
             }
         } catch (error) {
             // Pass error to parent
-            const errorMessage = `[ERROR] ${error.message}
+            const errorMessage = `${error.message}
             AutoRefresh failed to fetch JSON files
             Probably cause: EOS is not correctly mounted there is no Kerberos ticket
             Temparary fix: run '~/Desktop/burrito_src/mount_eos_for_7_days.sh'`;
             setError(error);
-            console.error(errorMessage);
+            console.error('[ERROR]', errorMessage);
         }
     };
 

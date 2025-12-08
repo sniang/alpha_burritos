@@ -54,7 +54,7 @@ const Skimmer = ({ jsonFiles, selectedDetector, setSelectedDetector, detectorLis
                     return a[keyA].signal.localeCompare(b[keyB].signal);
                 });
                 setData(localData);
-            } catch (error) { console.error("Error fetching data:", error); }
+            } catch (error) { console.error('[ERROR]', "Error fetching data:", error); }
             finally { setIsLoading(false); }
         })();
     }, [jsonFilesSorted, startingIndex, endingIndex, isSwitchOn]);

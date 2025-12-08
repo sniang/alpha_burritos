@@ -70,11 +70,11 @@ function TimeStampSelector({
         setJsonFiles(filteredData); // Update available files
         setSelectedFile(filteredData[0]); // Set default selected file
       } catch (error) {
-        const errorMessage = `[ERROR] ${error.message}
+        const errorMessage = `${error.message}
             TimeStampSelector failed to fetch JSON files
             Probably cause: EOS is not correctly mounted there is no Kerberos ticket
             Temparary fix: run '~/Desktop/burrito_src/mount_eos_for_7_days.sh'`;
-        console.error(errorMessage);
+        console.error('[ERROR]', errorMessage);
         setError(errorMessage); // Set error if fetch fails
       }
     };
