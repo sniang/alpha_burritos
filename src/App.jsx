@@ -73,6 +73,23 @@ function App() {
     }));
   };
 
+  // On mount check if the server is reachable
+  useEffect(() => {
+    const checkServer = async () => {
+      try {
+        const res = await fetch('/api/test');
+        if (!res.ok) throw new Error('Server not reachable');
+        console.log('[INFO]', 'Backend server is reachable', await res.json());
+      } catch (error) {
+        const errorMessage = `${error.message}
+            The backend server is not reachable.
+            Please ensure the server is running and accessible.`;
+        console.error('[ERROR]', errorMessage);
+        updateState('error', errorMessage);
+      }
+    };
+    checkServer();
+  }, []);
   // On mount, check if the user is authenticated by calling the profile API.
   // If not authenticated, set isLoggedIn to false.
   // @returns {void}
