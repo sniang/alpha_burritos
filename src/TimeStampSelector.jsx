@@ -3,6 +3,7 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
+import e from "express";
 
 /**
  * TimeStampSelector is a React component that renders a dropdown menu for selecting
@@ -70,8 +71,10 @@ function TimeStampSelector({
         setJsonFiles(filteredData); // Update available files
         setSelectedFile(filteredData[0]); // Set default selected file
       } catch (error) {
-        setError(error); // Set error if fetch fails
-        console.error('[ERROR] TimeStampSelector failed to fetch JSON files:', error);
+        const errorMessage = `[ERROR] ${error.message}
+            TimeStampSelector failed to fetch JSON files`;
+        console.error(errorMessage);
+        setError(errorMessage); // Set error if fetch fails
       }
     };
     fetchFiles();

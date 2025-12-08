@@ -183,8 +183,7 @@ const ChooseConfiguration = ({ selectedFile, forceRefreshSelectedFile }) => {
     }
     catch (error) {
       // Handle errors during re-analysis
-      const errorMessage = `[ERROR] ${error.message}
-            ChooseConfiguration failed to fetch JSON files`;
+      const errorMessage = `[ERROR] ${error.message}`;
       console.error(errorMessage);
       setError(errorMessage);
     }
