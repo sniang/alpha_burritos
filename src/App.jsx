@@ -80,14 +80,18 @@ function App() {
         const res = await fetch('/api/test');
         if (!res.ok) throw new Error('Server not reachable');
       } catch (error) {
-        const errorMessage = `${error.message}
-            What to try?
-            Test status: pm2 status
-            Restart server: pm2 restart all;
-            Start the server: pm2 start server.js --name burritos; pm2 save; pm2 startup;
-            `;
-        console.error('[ERROR]', errorMessage);
-        updateState('error', errorMessage);
+        error.bashCode = `# Check server status
+pm2 status
+
+# Restart the server
+pm2 restart all
+
+# Start the server if not running (run all the following commands)
+pm2 start server.js --name burritos
+pm2 save
+pm2 startup`;
+        console.error('[ERROR]', error.message);
+        updateState('error', error);
       }
     };
     checkServer();
@@ -150,6 +154,8 @@ function App() {
               <br />
             </span>
           ))}
+          {error.bashCode && <strong>What you can try to fix this</strong>}
+          {error.bashCode && <pre className="bash-viewer">{error.bashCode}</pre>}
         </p>
       </>
     )

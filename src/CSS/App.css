@@ -132,6 +132,21 @@ select {
   justify-content: space-between;
 }
 
+/* bash viewer styling */
+.bash-viewer {
+  max-width: 700px;
+  border-radius: 12px;
+  border: 1px solid #333;
+  background: #111;
+  padding: 16px;
+  color: white;
+  font-family: monospace;
+  font-size: 14px;
+  overflow-y: auto;
+  max-height: 400px;
+  line-height: 1.5;
+  margin: 0;
+}
 
 button.green {
     background-color:#008C45 ;
