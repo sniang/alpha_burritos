@@ -81,8 +81,11 @@ function App() {
         if (!res.ok) throw new Error('Server not reachable');
       } catch (error) {
         const errorMessage = `${error.message}
-            The backend server is not reachable.
-            Please ensure the server is running and accessible.`;
+            What to try?
+            Test status: pm2 status
+            Restart server: pm2 restart all;
+            Start the server: pm2 start server.js --name burritos; pm2 save; pm2 startup;
+            `;
         console.error('[ERROR]', errorMessage);
         updateState('error', errorMessage);
       }
@@ -125,7 +128,7 @@ function App() {
   // Show login form if not authenticated.
   // MainTitle is always shown for branding/context.
   // @returns {JSX.Element|null}
-  if (!isLoggedIn) {
+  if (!isLoggedIn && !error) {
     return <>
       <MainTitle />
       <LoginForm onLogin={() => window.location.reload()} />
