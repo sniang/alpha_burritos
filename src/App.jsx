@@ -147,7 +147,7 @@ pm2 startup`;
     return (
       <>
         <MainTitle />
-        <p className="blocks">
+        <div className="blocks">
           {errorMessage.split('\n').map((line, index) => (
             <span key={index}>
               {line}
@@ -156,7 +156,7 @@ pm2 startup`;
           ))}
           {error.bashCode && <strong>What you can try to fix this</strong>}
           {error.bashCode && <pre className="bash-viewer">{error.bashCode}</pre>}
-        </p>
+        </div>
       </>
     )
   }
