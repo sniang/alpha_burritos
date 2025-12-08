@@ -79,8 +79,6 @@ function App() {
       try {
         const res = await fetch('/api/test');
         if (!res.ok) throw new Error('Server not reachable');
-        const data = await res.json();
-        console.log('[INFO]', 'Backend server is reachable', data.message);
       } catch (error) {
         const errorMessage = `${error.message}
             The backend server is not reachable.
@@ -89,7 +87,6 @@ function App() {
         updateState('error', errorMessage);
       }
     };
-    console.log('[INFO]', 'Checking backend server connectivity...');
     checkServer();
   }, []);
 
