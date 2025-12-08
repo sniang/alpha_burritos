@@ -123,7 +123,7 @@ function App() {
     return (
       <>
         <MainTitle />
-        <p className="error">
+        <p className="blocks">
           {errorMessage.split('\n').map((line, index) => (
             <span key={index}>
               {line}
