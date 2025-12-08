@@ -11,7 +11,6 @@ import AutoRefresh from './AutoRefresh.jsx'
 import Comment from './Comment.jsx'
 import Skimmer from './Skimmer.jsx'
 import LoginForm from './LoginForm.jsx'
-import ErrorMessage from './ErrorMessage.jsx'
 import ChooseConfiguration from './ChooseConfiguration.jsx'
 import LogoutIcon from '@mui/icons-material/Logout';
 import Button from "@mui/material/Button";
@@ -119,9 +118,12 @@ function App() {
   // Show error message if an error occurred anywhere in the app.
   // This is a global error boundary for the main UI.
   // @returns {JSX.Element|null}
-  if (state.error) {
+  if (error) {
     return (
-      <ErrorMessage error={state.error} />
+      <>
+        <MainTitle />
+        <p className="error">Something went wrong: {error.message}</p>
+      </>
     )
   }
 
@@ -180,7 +182,6 @@ function App() {
           day={day}
           setJsonFiles={(value) => updateState('jsonFiles', value)}
           setSelectedFile={(value) => updateState('selectedFile', value)}
-          error={state.error}
           setError={(value) => updateState('error', value)}
         />
         {/* DateSelector: Allows user to pick year, month and day */}
@@ -226,7 +227,6 @@ function App() {
       <ChooseConfiguration
         selectedFile={selectedFile}
         forceRefreshSelectedFile={forceRefreshSelectedFile}
-        setError={(value) => updateState('error', value)}
       />
       {renderDetectorComponents()}
     </>

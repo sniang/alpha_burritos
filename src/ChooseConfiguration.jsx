@@ -22,7 +22,9 @@ import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
  * @returns {JSX.Element|null} The configuration selection UI, or null if configuration is not loaded.
  */
 
-const ChooseConfiguration = ({ selectedFile, forceRefreshSelectedFile, error, setError }) => {
+const ChooseConfiguration = ({ selectedFile, forceRefreshSelectedFile }) => {
+  // State for error messages
+  const [error, setError] = useState(null);
   // State for configuration data fetched from backend
   const [data, setData] = useState(null);
   // State for positron configuration data
@@ -64,8 +66,7 @@ const ChooseConfiguration = ({ selectedFile, forceRefreshSelectedFile, error, se
         setAntiprotonConfig(result.configPbar);
       } catch (err) {
         // Handle errors and reset data
-        setError(err.message + " Error fetching configuration file.");
-        console.error("Error fetching configuration:", err);
+        setError(err.message);
         setData(null);
         setDataKeys([]);
       }
@@ -190,7 +191,7 @@ const ChooseConfiguration = ({ selectedFile, forceRefreshSelectedFile, error, se
   return (
     <div id="ChooseConfig" className="blocks">
       <h3>Offline analysis configuration</h3>
-      <ButtonGroup size="small" variant="contained" color="success">
+      <ButtonGroup size="small" variant="contained"  color="success">
         <Button
           startIcon={<AddCircleOutlineIcon />}
           style={{ opacity: data.config !== 'positrons' ? 0.5 : 1 }}

@@ -1,4 +1,3 @@
-import React, { useState } from "react";
 import DownloadButton from "./DownloadButton";
 import "./CSS/DetectorImage.css";
 
