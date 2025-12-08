@@ -70,7 +70,10 @@ function TimeStampSelector({
         setJsonFiles(filteredData); // Update available files
         setSelectedFile(filteredData[0]); // Set default selected file
       } catch (error) {
-        setError(error); // Set error if fetch fails
+        const errorMessage = `[ERROR] ${error.message}
+            TimeStampSelector failed to fetch JSON files`;
+        console.error(errorMessage);
+        setError(errorMessage); // Set error if fetch fails
       }
     };
     fetchFiles();
