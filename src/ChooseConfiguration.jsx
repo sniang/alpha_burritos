@@ -66,7 +66,7 @@ const ChooseConfiguration = ({ selectedFile, forceRefreshSelectedFile }) => {
         setAntiprotonConfig(result.configPbar);
       } catch (err) {
         // Handle errors and reset data
-        setError(err.message);
+        setError(err.message+"test");
         setData(null);
         setDataKeys([]);
       }

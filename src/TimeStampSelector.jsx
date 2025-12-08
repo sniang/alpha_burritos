@@ -75,7 +75,7 @@ function TimeStampSelector({
         You might have to recreate the kerberos ticket or contact support.
         Easy temporary fix: launch the script `/Desktop/burrito_src/mount_eos_for_7_days.sh` from the terminal.
         ```;
-        setError("test"); // Set error if fetch fails
+        setError(error_message); // Set error if fetch fails
       }
     };
     fetchFiles();
