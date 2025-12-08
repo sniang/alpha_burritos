@@ -123,7 +123,7 @@ function App() {
     return (
       <>
         <MainTitle />
-        <p className="error">{errorMessage.replace(/\n/g, '<br />')}</p>
+        <p className="error">{errorMessage.replace(/\n/g, '\n\n')}</p>
       </>
     )
   }
