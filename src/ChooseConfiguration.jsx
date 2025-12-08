@@ -66,8 +66,10 @@ const ChooseConfiguration = ({ selectedFile, forceRefreshSelectedFile }) => {
         setAntiprotonConfig(result.configPbar);
       } catch (err) {
         // Handle errors and reset data
-        setError(err.message);
-        console.error('[ERROR] ChooseConfiguration failed to fetch configuration:', err);
+        const errorMessage = `[ERROR] ${err.message}
+            ChooseConfiguration failed to fetch configuration`;
+        console.error(errorMessage);
+        setError(errorMessage);
         setData(null);
         setDataKeys([]);
       }
@@ -102,8 +104,10 @@ const ChooseConfiguration = ({ selectedFile, forceRefreshSelectedFile }) => {
         }
         setTimestampMessage(result.latest.replace('_', ' '));
       } catch (err) {
-        setError(err.message);
-        console.error('[ERROR] ChooseConfiguration failed to fetch latest dump timestamp:', err);
+        const errorMessage = `[ERROR] ${err.message}
+            ChooseConfiguration failed to fetch latest dump timestamp`;
+        console.error(errorMessage);
+        setError(errorMessage);
         setDiffInSeconds(null);
         setLatestParticle(null);
         setTimestampMessage(null);
@@ -149,8 +153,10 @@ const ChooseConfiguration = ({ selectedFile, forceRefreshSelectedFile }) => {
     }
     catch (error) {
       // Handle errors during update
-      setError('Error updating configuration: ' + error.message);
-      console.error('[ERROR] ChooseConfiguration failed to update configuration:', error);
+      const errorMessage = `[ERROR] ${error.message}
+            ChooseConfiguration failed to update configuration`;
+      console.error(errorMessage);
+      setError(errorMessage);
     }
   }
 
@@ -177,8 +183,10 @@ const ChooseConfiguration = ({ selectedFile, forceRefreshSelectedFile }) => {
     }
     catch (error) {
       // Handle errors during re-analysis
-      setError(error.message);
-      console.error('[ERROR] ChooseConfiguration failed to re-analyse file:', error);
+      const errorMessage = `[ERROR] ${error.message}
+            ChooseConfiguration failed to fetch JSON files`;
+      console.error(errorMessage);
+      setError(errorMessage);
     }
     finally {
       // Clear message after 3 seconds
