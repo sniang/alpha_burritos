@@ -66,7 +66,7 @@ const ChooseConfiguration = ({ selectedFile, forceRefreshSelectedFile }) => {
         setAntiprotonConfig(result.configPbar);
       } catch (err) {
         // Handle errors and reset data
-        setError(err.message+"test");
+        setError(err.message + " Error fetching configuration file.");
         setData(null);
         setDataKeys([]);
       }
@@ -191,7 +191,7 @@ const ChooseConfiguration = ({ selectedFile, forceRefreshSelectedFile }) => {
   return (
     <div id="ChooseConfig" className="blocks">
       <h3>Offline analysis configuration</h3>
-      <ButtonGroup size="small" variant="contained"  color="success">
+      <ButtonGroup size="small" variant="contained" color="success">
         <Button
           startIcon={<AddCircleOutlineIcon />}
           style={{ opacity: data.config !== 'positrons' ? 0.5 : 1 }}

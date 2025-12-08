@@ -76,8 +76,12 @@ function AutoRefresh({
                 window.history.replaceState({}, "", window.location.pathname);
             }
         } catch (error) {
-            // Pass error to parent
-            setError(error);
+            const error_message = error.message + ```
+        Error while fetching the data, it is probably an issue related to EOS. 
+        You might have to recreate the kerberos ticket or contact support.
+        Easy temporary fix: launch the script `/ Desktop / burrito_src / mount_eos_for_7_days.sh` from the terminal.
+        ```;
+            setError(error_message); // Set error if fetch fails
         }
     };
 
