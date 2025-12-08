@@ -122,7 +122,7 @@ function App() {
     return (
       <>
         <MainTitle />
-        <p className="error">Something went wrong: {error.message || error}</p>
+        <p className="error">{error.message || error}</p>
       </>
     )
   }
