@@ -77,8 +77,9 @@ function AutoRefresh({
             }
         } catch (error) {
             // Pass error to parent
+            const errorMessage = `[ERROR] AutoRefresh failed to fetch JSON files\n${error.message}`;
             setError(error);
-            console.error('[ERROR] AutoRefresh failed to fetch JSON files:', error);
+            console.error(errorMessage);
         }
     };
 
