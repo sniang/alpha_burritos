@@ -78,6 +78,7 @@ function AutoRefresh({
         } catch (error) {
             // Pass error to parent
             setError(error);
+            console.error('[ERROR] AutoRefresh failed to fetch JSON files:', error);
         }
     };
 

@@ -67,6 +67,7 @@ const ChooseConfiguration = ({ selectedFile, forceRefreshSelectedFile }) => {
       } catch (err) {
         // Handle errors and reset data
         setError(err.message);
+        console.error('[ERROR] ChooseConfiguration failed to fetch configuration:', err);
         setData(null);
         setDataKeys([]);
       }
@@ -102,6 +103,7 @@ const ChooseConfiguration = ({ selectedFile, forceRefreshSelectedFile }) => {
         setTimestampMessage(result.latest.replace('_', ' '));
       } catch (err) {
         setError(err.message);
+        console.error('[ERROR] ChooseConfiguration failed to fetch latest dump timestamp:', err);
         setDiffInSeconds(null);
         setLatestParticle(null);
         setTimestampMessage(null);
@@ -148,6 +150,7 @@ const ChooseConfiguration = ({ selectedFile, forceRefreshSelectedFile }) => {
     catch (error) {
       // Handle errors during update
       setError('Error updating configuration: ' + error.message);
+      console.error('[ERROR] ChooseConfiguration failed to update configuration:', error);
     }
   }
 
@@ -175,6 +178,7 @@ const ChooseConfiguration = ({ selectedFile, forceRefreshSelectedFile }) => {
     catch (error) {
       // Handle errors during re-analysis
       setError(error.message);
+      console.error('[ERROR] ChooseConfiguration failed to re-analyse file:', error);
     }
     finally {
       // Clear message after 3 seconds
