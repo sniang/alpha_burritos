@@ -14,18 +14,13 @@ function WorkerMonitor({monitor}) {
       } catch (e) {
         setStatus("error");
       }
-    }, 10000);
+    }, 1000); 
 
     return () => clearInterval(intervalId);
   }, []);
 
-  useEffect(() => {
-    if (status === "stopped" || status === "error") {
-      alert("Python worker " + monitor + " is " + status);
-    }
-  }, [status]);
 
-  return <div>Python {monitor}: {status}</div>;
+    return <div style={{color: (status === "running" ? "green" : "red")}}>Python {monitor}: {status}</div>;
 }
 
 export default WorkerMonitor;

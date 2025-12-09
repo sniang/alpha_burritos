@@ -258,6 +258,7 @@ pm2 startup`;
       <Button onClick={handleLogout} startIcon={<LogoutIcon />} variant="contained" color="error">
         Log out
       </Button>
+      <WorkerMonitor monitor="acquisition" />
       <WorkerMonitor monitor="analysis" />
       {renderSelectorComponents()}
       <ChooseConfiguration
