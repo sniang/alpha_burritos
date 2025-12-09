@@ -316,23 +316,31 @@ export const reAnalyse = async (req, res) => {
 };
 
 // Function to check if a Python worker process is running based on a PID file
-export const isPythonRunning = (pidfile) => {
-  const PID_FILE = path.join(ANALYSIS_DIR, pidfile+".pid");
-  if (!fs.existsSync(PID_FILE)) {
+export const isPythonRunning = async (pidfile) => {
+  const PID_FILE = path.join(ANALYSIS_DIR, pidfile + ".pid");
+
+  // Check if the PID file exists
+  try {
+    await fs.access(PID_FILE);
+  } catch {
     return false;
   }
+
+  // Read and parse the PID
   let pid;
   try {
-    pid = parseInt(fs.readFileSync(PID_FILE, "utf8").trim(), 10);
+    const content = await fs.readFile(PID_FILE, "utf8");
+    pid = parseInt(content.trim(), 10);
     if (Number.isNaN(pid)) return false;
   } catch (e) {
     return false;
   }
+
+  // Check if the process exists
   try {
-    // come in Unix: segnale 0 = solo check, non uccide il processo
-    process.kill(pid, 0);
+    process.kill(pid, 0); // does not kill the process, only checks
     return true;
   } catch (e) {
     return false;
   }
-}
+};
