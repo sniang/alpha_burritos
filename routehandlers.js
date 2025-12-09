@@ -314,3 +314,25 @@ export const reAnalyse = async (req, res) => {
     return res.status(400).json({ error: error.message });
   }
 };
+
+// Function to check if a Python worker process is running based on a PID file
+export const isPythonRunning = (pidfile) => {
+  const PID_FILE = path.join(ANALYSIS_DIR, pidfile+".pid");
+  if (!fs.existsSync(PID_FILE)) {
+    return false;
+  }
+  let pid;
+  try {
+    pid = parseInt(fs.readFileSync(PID_FILE, "utf8").trim(), 10);
+    if (Number.isNaN(pid)) return false;
+  } catch (e) {
+    return false;
+  }
+  try {
+    // come in Unix: segnale 0 = solo check, non uccide il processo
+    process.kill(pid, 0);
+    return true;
+  } catch (e) {
+    return false;
+  }
+}

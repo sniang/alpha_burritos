@@ -200,6 +200,19 @@ The React app expects the following backend API (see [`server.js`](server.js)):
   `GET /api/reanalyse/:filename`  
   - Triggers a re-analysis for the specified JSON file.
 
+  - **Check Python Worker Status:**  
+    `GET /api/status/:pidfile`  
+    - Checks if a Python worker process is running, based on the given pidfile name.  
+    - Example: `/api/status/worker.pid`  
+    - Response:  
+      ```json
+      { "worker": "running" }
+      ```
+      or
+      ```json
+      { "worker": "stopped" }
+      ```
+
 - **Authentication:**  
   - `POST /api/login` — Authenticate user (expects `{ login, password }` in body).  
   - `GET /api/profile` — Returns user info if authenticated.

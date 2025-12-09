@@ -24,6 +24,7 @@ import {
     getLatest,
     reAnalyse,
     MAIN_DIR,
+    isPythonRunning
 } from './routehandlers.js';
 
 // ====================
@@ -153,6 +154,14 @@ app.post('/api/logout', (req, res) => {
     sameSite: 'Strict'
   });
   res.json({ message: 'Logout successful' });
+});
+
+// Check if a Python worker process is running
+app.get("/api/status/:pidfile", (req, res) => {
+  const running = isPythonRunning(req.params.pidfile);
+  res.json({
+    worker: running ? "running" : "stopped",
+  });
 });
 
 
