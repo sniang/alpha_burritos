@@ -4,6 +4,7 @@ import Button from '@mui/material/Button';
 import ButtonGroup from '@mui/material/ButtonGroup';
 import PsychologyIcon from '@mui/icons-material/Psychology';
 import AutoStoriesIcon from '@mui/icons-material/AutoStories';
+import WorkerMonitor from './WorkerMonitor.jsx';
 import InfoIcon from '@mui/icons-material/Info';
 import MonitorHeartIcon from '@mui/icons-material/MonitorHeart';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
@@ -202,7 +203,7 @@ const ChooseConfiguration = ({ selectedFile, forceRefreshSelectedFile }) => {
   return (
     <div id="ChooseConfig" className="blocks">
       <h3>Offline analysis configuration</h3>
-      <ButtonGroup size="small" variant="contained"  color="success">
+      <ButtonGroup size="small" variant="contained" color="success">
         <Button
           startIcon={<AddCircleOutlineIcon />}
           style={{ opacity: data.config !== 'positrons' ? 0.5 : 1 }}
@@ -288,6 +289,8 @@ const ChooseConfiguration = ({ selectedFile, forceRefreshSelectedFile }) => {
       {/* Display timestamp message if any */}
       {timestampMessage && diffInSeconds > 0 && diffInSeconds > 10 && <p>{`Latest acquisition: ${timestampMessage} -  From ${latestParticle}'s trigger`}</p>}
       {timestampMessage && diffInSeconds > 0 && diffInSeconds <= 10 && <p style={{ color: 'blue', fontWeight: 'bold' }}>{`New acquisition: ${timestampMessage} -  From ${latestParticle}'s trigger`}</p>}
+      <WorkerMonitor monitor="acquisition" />
+      <WorkerMonitor monitor="analysis" />
     </div>
   );
 }

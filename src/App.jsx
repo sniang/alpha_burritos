@@ -12,7 +12,6 @@ import Comment from './Comment.jsx'
 import Skimmer from './Skimmer.jsx'
 import LoginForm from './LoginForm.jsx'
 import ChooseConfiguration from './ChooseConfiguration.jsx'
-import WorkerMonitor from './WorkerMonitor.jsx'
 import LogoutIcon from '@mui/icons-material/Logout';
 import Button from "@mui/material/Button";
 
@@ -258,8 +257,6 @@ pm2 startup`;
       <Button onClick={handleLogout} startIcon={<LogoutIcon />} variant="contained" color="error">
         Log out
       </Button>
-      <WorkerMonitor monitor="acquisition" />
-      <WorkerMonitor monitor="analysis" />
       {renderSelectorComponents()}
       <ChooseConfiguration
         selectedFile={selectedFile}

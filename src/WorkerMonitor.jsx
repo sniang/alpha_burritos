@@ -20,7 +20,7 @@ function WorkerMonitor({monitor}) {
   }, []);
 
 
-    return <div style={{color: (status === "running" ? "green" : "red")}}>Python {monitor}: {status}</div>;
+    return <p style={{color: (status === "running" ? "green" : "red")}}>Python {monitor}: {status}</p>;
 }
 
 export default WorkerMonitor;
