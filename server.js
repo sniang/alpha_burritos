@@ -157,11 +157,14 @@ app.post('/api/logout', (req, res) => {
 });
 
 // Check if a Python worker process is running
-app.get("/api/status/:pidfile", (req, res) => {
-  const running = isPythonRunning(req.params.pidfile);
-  res.json({
-    worker: running ? "running" : "stopped",
-  });
+app.get("/api/status/:pidfile", async (req, res) => {
+  try {
+    const running = await isPythonRunning(req.params.pidfile);
+    res.json({ worker: running ? "running" : "stopped" });
+  } catch (err) {
+    console.error("Error in /api/status:", err);
+    res.status(500).json({ error: "internal_error" });
+  }
 });
 
 
