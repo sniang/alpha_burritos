@@ -1,6 +1,8 @@
 
 import { useEffect, useState } from "react";
 import Chip from '@mui/material/Chip';
+import HeartBrokenSharpIcon from '@mui/icons-material/HeartBrokenSharp';
+import DeviceHubSharpIcon from '@mui/icons-material/DeviceHubSharp';
 
 function WorkerMonitor({monitor}) {
   const [status, setStatus] = useState("unknown");
@@ -20,9 +22,9 @@ function WorkerMonitor({monitor}) {
     return () => clearInterval(intervalId);
   }, []);
     if (status === "running") {
-    return <Chip color="success" label={`Python ${monitor}: ${status}`} />;
+    return <Chip color="success" icon={<DeviceHubSharpIcon />} label={`Python ${monitor}: ${status}`} />;
   } else {
-    return <Chip color="error" label={`Python ${monitor}: ${status}`} />;
+    return <Chip color="error" icon={<HeartBrokenSharpIcon />} label={`Python ${monitor}: ${status}`} />;
   }
 }
 
