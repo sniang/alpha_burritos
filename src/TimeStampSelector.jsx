@@ -84,7 +84,7 @@ function TimeStampSelector({
   const handleSelectChange = (event) => {
     setSelectedFile(event.target.value); // Update selected file
   };
-  if (selectedFile.size === 0) {
+  if (jsonFiles.length === 0) {
     return null;
   }
   return (
