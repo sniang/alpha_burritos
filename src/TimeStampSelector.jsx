@@ -84,6 +84,9 @@ function TimeStampSelector({
   const handleSelectChange = (event) => {
     setSelectedFile(event.target.value); // Update selected file
   };
+  if (selectedFile.size === 0) {
+    return null;
+  }
   return (
     <FormControl size="small" color="success" >
       <InputLabel sx={{ fontSize: 13 }} color="success">Timestamp</InputLabel>

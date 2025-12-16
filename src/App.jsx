@@ -87,6 +87,7 @@ pm2 status
 pm2 restart all
 
 # Start the server if not running (run all the following commands)
+cd ~/Desktop/alpha_burritos/
 pm2 start server.js --name burritos
 pm2 save
 pm2 startup`;
