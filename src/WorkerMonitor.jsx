@@ -1,5 +1,6 @@
 
 import { useEffect, useState } from "react";
+import Chip from '@mui/material/Chip';
 
 function WorkerMonitor({monitor}) {
   const [status, setStatus] = useState("unknown");
@@ -18,9 +19,11 @@ function WorkerMonitor({monitor}) {
 
     return () => clearInterval(intervalId);
   }, []);
-
-
-    return <span style={{color: (status === "running" ? "green" : "red")}}>Python {monitor}: {status}</span>;
+    if (status === "running") {
+    return <Chip color="success" label={`Python ${monitor}: ${status}`} />;
+  } else {
+    return <Chip color="error" label={`Python ${monitor}: ${status}`} />;
+  }
 }
 
 export default WorkerMonitor;
