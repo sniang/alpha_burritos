@@ -70,11 +70,12 @@ function TimeStampSelector({
         setJsonFiles(filteredData); // Update available files
         setSelectedFile(filteredData[0]); // Set default selected file
       } catch (error) {
-        error.message = `TimeStampSelector failed to fetch JSON files
-            Probably cause: EOS is not correctly mounted or there is no Kerberos ticket`;
-        error.bashCode = `# Temporary fix\n~/Desktop/burrito_src/mount_eos_for_7_days.sh`;
-        console.error('[ERROR]', error.message);
-        setError(error); // Set error if fetch fails
+        const enhancedError = new Error(`TimeStampSelector failed to fetch JSON files
+            Probably cause: EOS is not correctly mounted or there is no Kerberos ticket`);
+        enhancedError.cause = error;
+        enhancedError.bashCode = `# Temporary fix\n~/Desktop/burrito_src/mount_eos_for_7_days.sh`;
+        console.error('[ERROR]', enhancedError.message);
+        setError(enhancedError); // Set error if fetch fails
       }
     };
     fetchFiles();
