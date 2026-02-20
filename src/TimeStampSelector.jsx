@@ -73,7 +73,7 @@ function TimeStampSelector({
         const enhancedError = new Error(`TimeStampSelector failed to fetch JSON files
             Probably cause: EOS is not correctly mounted or there is no Kerberos ticket`);
         enhancedError.cause = error;
-        enhancedError.bashCode = `# Temporary fix\n~/Desktop/burrito_src/mount_eos_for_7_days.sh\n Check ReadMe for more details and a permanent solution.`;
+        enhancedError.bashCode = `# Temporary fix\n~/Desktop/burrito_src/mount_eos_for_7_days.sh\n #Check ReadMe for more details and a permanent solution.`;
         console.error('[ERROR]', enhancedError.message);
         setError(enhancedError); // Set error if fetch fails
       }
