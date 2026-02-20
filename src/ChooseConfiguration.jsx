@@ -290,9 +290,9 @@ const ChooseConfiguration = ({ selectedFile, forceRefreshSelectedFile }) => {
       {timestampMessage && diffInSeconds > 0 && diffInSeconds > 10 && <p>{`Latest acquisition: ${timestampMessage} -  From ${latestParticle}'s trigger`}</p>}
       {timestampMessage && diffInSeconds > 0 && diffInSeconds <= 10 && <p style={{ color: 'blue', fontWeight: 'bold' }}>{`New acquisition: ${timestampMessage} -  From ${latestParticle}'s trigger`}</p>}
       <div style={{ display: 'flex', flexDirection:'row', gap: '10px' }}>
-        <WorkerMonitor monitor="acquisition" />
+        <WorkerMonitor monitor="acquisition" pollingInterval={5000} />
         <span> - </span>
-        <WorkerMonitor monitor="analysis" />
+        <WorkerMonitor monitor="analysis" pollingInterval={5000} />
       </div>
     </div>
   );
