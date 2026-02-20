@@ -73,6 +73,31 @@ function App() {
     }));
   };
 
+  // On mount check if the server is reachable
+  useEffect(() => {
+    const checkServer = async () => {
+      try {
+        const res = await fetch('/api/test');
+        if (!res.ok) throw new Error('Server not reachable');
+      } catch (error) {
+        error.bashCode = `# Check server status
+pm2 status
+
+# Restart the server
+pm2 restart all
+
+# Start the server if not running (run all the following commands)
+cd ~/Desktop/alpha_burritos/
+pm2 start server.js --name burritos
+pm2 save
+pm2 startup`;
+        console.error('[ERROR]', error.message);
+        updateState('error', error);
+      }
+    };
+    checkServer();
+  }, []);
+
   // On mount, check if the user is authenticated by calling the profile API.
   // If not authenticated, set isLoggedIn to false.
   // @returns {void}
@@ -108,7 +133,7 @@ function App() {
   // Show login form if not authenticated.
   // MainTitle is always shown for branding/context.
   // @returns {JSX.Element|null}
-  if (!isLoggedIn) {
+  if (!isLoggedIn && !error) {
     return <>
       <MainTitle />
       <LoginForm onLogin={() => window.location.reload()} />
@@ -119,10 +144,20 @@ function App() {
   // This is a global error boundary for the main UI.
   // @returns {JSX.Element|null}
   if (error) {
+    const errorMessage = String(error.message || error);
     return (
       <>
         <MainTitle />
-        <p className="error">Something went wrong: {error.message}</p>
+        <div className="blocks">
+          {errorMessage.split('\n').map((line, index) => (
+            <span key={index}>
+              {line}
+              <br />
+            </span>
+          ))}
+          {error.bashCode && <strong>What you can try to fix this</strong>}
+          {error.bashCode && <pre className="bash-viewer">{error.bashCode}</pre>}
+        </div>
       </>
     )
   }

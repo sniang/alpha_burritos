@@ -24,6 +24,7 @@ import {
     getLatest,
     reAnalyse,
     MAIN_DIR,
+    isPythonRunning
 } from './routehandlers.js';
 
 // ====================
@@ -153,6 +154,17 @@ app.post('/api/logout', (req, res) => {
     sameSite: 'Strict'
   });
   res.json({ message: 'Logout successful' });
+});
+
+// Check if a Python worker process is running
+app.get("/api/status/:pidfile", async (req, res) => {
+  try {
+    const running = await isPythonRunning(req.params.pidfile);
+    res.json({ worker: running ? "running" : "stopped" });
+  } catch (err) {
+    console.error("Error in /api/status:", err);
+    res.status(500).json({ error: "internal_error" });
+  }
 });
 
 

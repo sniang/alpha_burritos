@@ -55,6 +55,7 @@ const DownloadButton = ({ selectedFile, selectedDetector }) => {
       window.URL.revokeObjectURL(url);
     } catch (error) {
       setError(error);
+      console.error('[ERROR]', 'DownloadButton failed to download signal file:', error);
     }
   };
 

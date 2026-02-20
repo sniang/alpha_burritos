@@ -4,6 +4,7 @@ import Button from '@mui/material/Button';
 import ButtonGroup from '@mui/material/ButtonGroup';
 import PsychologyIcon from '@mui/icons-material/Psychology';
 import AutoStoriesIcon from '@mui/icons-material/AutoStories';
+import WorkerMonitor from './WorkerMonitor.jsx';
 import InfoIcon from '@mui/icons-material/Info';
 import MonitorHeartIcon from '@mui/icons-material/MonitorHeart';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
@@ -66,7 +67,9 @@ const ChooseConfiguration = ({ selectedFile, forceRefreshSelectedFile }) => {
         setAntiprotonConfig(result.configPbar);
       } catch (err) {
         // Handle errors and reset data
-        setError(err.message);
+        const errorMessage = `${err.message}\nChooseConfiguration failed to fetch configuration`;
+        console.error('[ERROR]', errorMessage);
+        setError(errorMessage);
         setData(null);
         setDataKeys([]);
       }
@@ -101,7 +104,10 @@ const ChooseConfiguration = ({ selectedFile, forceRefreshSelectedFile }) => {
         }
         setTimestampMessage(result.latest.replace('_', ' '));
       } catch (err) {
-        setError(err.message);
+        const errorMessage = `${err.message}
+            ChooseConfiguration failed to fetch latest dump timestamp`;
+        console.error('[ERROR]', errorMessage);
+        setError(errorMessage);
         setDiffInSeconds(null);
         setLatestParticle(null);
         setTimestampMessage(null);
@@ -147,7 +153,10 @@ const ChooseConfiguration = ({ selectedFile, forceRefreshSelectedFile }) => {
     }
     catch (error) {
       // Handle errors during update
-      setError('Error updating configuration: ' + error.message);
+      const errorMessage = `${error.message}
+            ChooseConfiguration failed to update configuration`;
+      console.error('[ERROR]', errorMessage);
+      setError(errorMessage);
     }
   }
 
@@ -174,7 +183,9 @@ const ChooseConfiguration = ({ selectedFile, forceRefreshSelectedFile }) => {
     }
     catch (error) {
       // Handle errors during re-analysis
-      setError(error.message);
+      const errorMessage = `${error.message}`;
+      console.error('[ERROR]', errorMessage);
+      setError(errorMessage);
     }
     finally {
       // Clear message after 3 seconds
@@ -191,7 +202,7 @@ const ChooseConfiguration = ({ selectedFile, forceRefreshSelectedFile }) => {
   return (
     <div id="ChooseConfig" className="blocks">
       <h3>Offline analysis configuration</h3>
-      <ButtonGroup size="small" variant="contained"  color="success">
+      <ButtonGroup size="small" variant="contained" color="success">
         <Button
           startIcon={<AddCircleOutlineIcon />}
           style={{ opacity: data.config !== 'positrons' ? 0.5 : 1 }}
@@ -277,6 +288,11 @@ const ChooseConfiguration = ({ selectedFile, forceRefreshSelectedFile }) => {
       {/* Display timestamp message if any */}
       {timestampMessage && diffInSeconds > 0 && diffInSeconds > 10 && <p>{`Latest acquisition: ${timestampMessage} -  From ${latestParticle}'s trigger`}</p>}
       {timestampMessage && diffInSeconds > 0 && diffInSeconds <= 10 && <p style={{ color: 'blue', fontWeight: 'bold' }}>{`New acquisition: ${timestampMessage} -  From ${latestParticle}'s trigger`}</p>}
+      <div style={{ display: 'flex', flexDirection:'row', gap: '10px' }}>
+        <WorkerMonitor monitor="acquisition" pollingInterval={5000} />
+        <span> - </span>
+        <WorkerMonitor monitor="analysis" pollingInterval={5000} />
+      </div>
     </div>
   );
 }

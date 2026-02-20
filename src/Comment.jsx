@@ -33,6 +33,7 @@ const Comment = ({ selectedFile }) => {
         } catch (err) {
             // Handle and display any errors during API call
             setError(err);
+            console.error('[ERROR]', 'Comment failed to fetch comment:', err);
         }
     }
 

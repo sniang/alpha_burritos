@@ -70,7 +70,17 @@ function TimeStampSelector({
         setJsonFiles(filteredData); // Update available files
         setSelectedFile(filteredData[0]); // Set default selected file
       } catch (error) {
-        setError(error); // Set error if fetch fails
+        const enhancedError = new Error(`TimeStampSelector failed to fetch JSON files
+            Probably cause: EOS is not correctly mounted or there is no Kerberos ticket`);
+        enhancedError.cause = error;
+        enhancedError.bashCode = `# Temporary fix\n~/Desktop/burrito_src/mount_eos_for_7_days.sh`;
+        enhancedError.bashCode += `\n#Check ReadMe for more details and a permanent solution.`;
+        enhancedError.bashCode += `\n#The following should solve permanently the issue:\n`;
+        enhancedError.bashCode += `#1. Create a Kerberos ticket with kinit or wait for the watchdog to do it\n#2. Mount EOS with the command below:\n`;
+        enhancedError.bashCode += `sudo eosxd -ofsname=eos-burritos-data`;
+
+        console.error('[ERROR]', enhancedError.message);
+        setError(enhancedError); // Set error if fetch fails
       }
     };
     fetchFiles();
@@ -80,6 +90,9 @@ function TimeStampSelector({
   const handleSelectChange = (event) => {
     setSelectedFile(event.target.value); // Update selected file
   };
+  if (jsonFiles.length === 0) {
+    return null;
+  }
   return (
     <FormControl size="small" color="success" >
       <InputLabel sx={{ fontSize: 13 }} color="success">Timestamp</InputLabel>
