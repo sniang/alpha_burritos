@@ -28,10 +28,9 @@ function WorkerMonitor({ monitor }) {
 
   useEffect(() => {
     /**
-     * Set up a polling interval to check the worker status every second.
-     * Fetches the status from the backend API and updates the component state.
+     * Fetch the worker status from the backend API and update component state.
      */
-    const intervalId = setInterval(async () => {
+    const fetchStatus = async () => {
       try {
         const res = await fetch(`/api/status/${monitor}`);
         if (!res.ok) throw new Error("HTTP error");
@@ -41,7 +40,11 @@ function WorkerMonitor({ monitor }) {
         // If the API call fails, set status to "error"
         setStatus("error");
       }
-    }, 1000);
+    };
+
+    // Fetch immediately on mount, then poll every second
+    fetchStatus();
+    const intervalId = setInterval(fetchStatus, 1000);
 
     // Cleanup: clear the interval when the component unmounts
     return () => clearInterval(intervalId);
