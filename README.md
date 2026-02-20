@@ -203,7 +203,7 @@ The React app expects the following backend API (see [`server.js`](server.js)):
   - **Check Python Worker Status:**  
     `GET /api/status/:pidfile`  
     - Checks if a Python worker process is running, based on the given pidfile name.  
-    - Example: `/api/status/worker.pid`  
+    - Example: `/api/status/worker`  
     - Response:  
       ```json
       { "worker": "running" }
