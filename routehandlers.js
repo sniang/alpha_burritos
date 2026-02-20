@@ -317,6 +317,10 @@ export const reAnalyse = async (req, res) => {
 
 // Function to check if a Python worker process is running based on a PID file
 export const isPythonRunning = async (pidfile) => {
+  // Validate pidfile to prevent path traversal and disallow path separators
+  if (typeof pidfile !== 'string' || !/^[A-Za-z0-9_-]+$/.test(pidfile)) {
+    return false;
+  }
   const PID_FILE = path.join(ANALYSIS_DIR, pidfile + ".pid");
   // Check if the PID file exists
   try {
