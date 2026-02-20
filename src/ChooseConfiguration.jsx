@@ -67,8 +67,7 @@ const ChooseConfiguration = ({ selectedFile, forceRefreshSelectedFile }) => {
         setAntiprotonConfig(result.configPbar);
       } catch (err) {
         // Handle errors and reset data
-        const errorMessage = `${err.message}
-            ChooseConfiguration failed to fetch configuration`;
+        const errorMessage = `${err.message}\nChooseConfiguration failed to fetch configuration`;
         console.error('[ERROR]', errorMessage);
         setError(errorMessage);
         setData(null);
