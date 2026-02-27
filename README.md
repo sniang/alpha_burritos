@@ -10,8 +10,26 @@ The application communicates with a custom RESTful API to fetch and display crit
 
 ---
 
+- **Get Temperature Data:**  
+  `GET /api/temperature`  
+  - Returns the latest temperature readings for all detector hosts.  
+  - Example: `/api/temperature`  
+  - Response:  
+    ```json
+    {
+      "hosts": {
+        "rp-f0a821.local": { "temp_c": 41.59, "error": null },
+        "rp-f073bf.local": { "temp_c": 42.82, "error": null },
+        ...
+      },
+      "timestamp_utc": "2025-10-08 08:42:16"
+    }
+    ```
+
+
 ## Features
 
+- **Temperature Monitoring:** View real-time temperature readings from multiple detector hosts (pitaya boards) in a compact, color-coded table. The temperature data is fetched from the backend and auto-refreshes every 10 seconds. The table uses a green background to match the application's button style.
 - **Year/Month/Day Selection:** Choose the year, month, and day to filter available data files.
 - **Timestamp Selection:** Select a specific acquisition timestamp from available JSON files.
 - **Parameter Display:** View key parameters (area, FWHM, peak, rise, time peak, dt, arrival) for each detector.
@@ -46,6 +64,7 @@ src/
   AutoRefresh.jsx        # Checkbox to enable/disable auto-refresh
   Comment.jsx            # Add and edit comments for each acquisition
   Skimmer.jsx            # Browse and export a range of acquisitions
+  TemperatureDisplay.jsx # Displays real-time temperature readings for detector hosts
   LoginForm.jsx          # User authentication form
   assets/                # Static assets (e.g., ALPHA logo)
   CSS/                   # App and global CSS
