@@ -23,7 +23,7 @@ import DeviceThermostatIcon from '@mui/icons-material/DeviceThermostat';
  * @param {string} props.monitor - The name/identifier of the worker pidfile to monitor
  * @returns {JSX.Element} A Chip component displaying the worker status
  */
-function WorkerMonitor({ monitor }) {
+function WorkerMonitor({ monitor, onClick }) {
   // Track the current worker status: "unknown", "running", "stopped", or "error"
   const [status, setStatus] = useState("unknown");
 
@@ -52,6 +52,7 @@ function WorkerMonitor({ monitor }) {
   if (status === "running") {
     return (
       <Chip
+        onClick={onClick}
         color="success"
         icon={monitor === "temperature" ? <DeviceThermostatIcon /> : <DeviceHubSharpIcon />}
         label={`${monitor}: ${status}`}
@@ -60,6 +61,7 @@ function WorkerMonitor({ monitor }) {
   } else {
     return (
       <Chip
+        onClick={onClick}
         color="error"
         icon={<HeartBrokenSharpIcon />}
         label={`${monitor}: ${status}`}

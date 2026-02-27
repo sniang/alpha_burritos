@@ -9,6 +9,7 @@ import InfoIcon from '@mui/icons-material/Info';
 import MonitorHeartIcon from '@mui/icons-material/MonitorHeart';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
+import TemperatureDisplay from "./TemperatureDisplay.jsx";
 
 /**
  * ChooseConfiguration component provides UI controls for selecting the analysis configuration
@@ -43,6 +44,8 @@ const ChooseConfiguration = ({ selectedFile, forceRefreshSelectedFile }) => {
   const [diffInSeconds, setDiffInSeconds] = useState(null);
   // latest type dump
   const [latestParticle, setLatestParticle] = useState(null);
+  // Display TemperatureDisplay component
+  const [displayTemperature, setDisplayTemperature] = useState(false);
 
   // Fetch configuration data from backend on mount and every 500ms
   useEffect(() => {
@@ -291,8 +294,10 @@ const ChooseConfiguration = ({ selectedFile, forceRefreshSelectedFile }) => {
       <div style={{ display: 'flex', flexDirection:'row', gap: '10px' }}>
         <WorkerMonitor monitor="acquisition" pollingInterval={5000} />
         <WorkerMonitor monitor="analysis" pollingInterval={5000} />
-        <WorkerMonitor monitor="temperature" pollingInterval={5000} />
+        <WorkerMonitor monitor="temperature" pollingInterval={5000} onClick={() => setDisplayTemperature(!displayTemperature)}/>
       </div>
+
+      <TemperatureDisplay display={displayTemperature} />
     </div>
   );
 }
