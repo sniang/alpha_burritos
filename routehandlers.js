@@ -276,6 +276,20 @@ export const postConfiguration = async (req, res) => {
   }
 };
 
+// Route handler to get the latest temperature data
+export const getTemperature = async (req, res) => {
+  try {
+    const tempPath = path.join(ANALYSIS_DIR, 'configurations', 'latest_temperatures.json');
+    const data = await fs.readFile(tempPath, 'utf8');
+    const tempData = JSON.parse(data);
+    res.json(tempData);
+  } catch (error) {
+    console.error(getCurrentTimestamp());
+    console.error('Error in getTemperature:', error.message);
+    res.status(500).json({ error: 'Unable to read temperature data' });
+  }
+};
+
 // Route handler to re-analyse from a specific JSON file
 export const reAnalyse = async (req, res) => {
   try {

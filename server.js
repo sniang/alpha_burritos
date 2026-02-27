@@ -21,6 +21,7 @@ import {
     postComments,
     getConfiguration,
     postConfiguration,
+    getTemperature,
     getLatest,
     reAnalyse,
     MAIN_DIR,
@@ -167,6 +168,8 @@ app.get("/api/status/:pidfile", async (req, res) => {
   }
 });
 
+// Get Temperature data
+app.get("/api/temperature", (req, res) => getTemperature(req, res));
 
 // ====================
 // Error Handling
