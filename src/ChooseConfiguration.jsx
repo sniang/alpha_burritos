@@ -290,8 +290,8 @@ const ChooseConfiguration = ({ selectedFile, forceRefreshSelectedFile }) => {
       {timestampMessage && diffInSeconds > 0 && diffInSeconds <= 10 && <p style={{ color: 'blue', fontWeight: 'bold' }}>{`New acquisition: ${timestampMessage} -  From ${latestParticle}'s trigger`}</p>}
       <div style={{ display: 'flex', flexDirection:'row', gap: '10px' }}>
         <WorkerMonitor monitor="acquisition" pollingInterval={5000} />
-        <span> - </span>
         <WorkerMonitor monitor="analysis" pollingInterval={5000} />
+        <WorkerMonitor monitor="temperature" pollingInterval={5000} />
       </div>
     </div>
   );

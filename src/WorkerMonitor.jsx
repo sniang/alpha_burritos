@@ -10,6 +10,7 @@ import { useEffect, useState } from "react";
 import Chip from '@mui/material/Chip';
 import HeartBrokenSharpIcon from '@mui/icons-material/HeartBrokenSharp';
 import DeviceHubSharpIcon from '@mui/icons-material/DeviceHubSharp';
+import DeviceThermostatIcon from '@mui/icons-material/DeviceThermostat';
 
 /**
  * WorkerMonitor Component
@@ -52,8 +53,8 @@ function WorkerMonitor({ monitor }) {
     return (
       <Chip
         color="success"
-        icon={<DeviceHubSharpIcon />}
-        label={`Python ${monitor}: ${status}`}
+        icon={monitor === "temperature" ? <DeviceThermostatIcon /> : <DeviceHubSharpIcon />}
+        label={`${monitor}: ${status}`}
       />
     );
   } else {
@@ -61,7 +62,7 @@ function WorkerMonitor({ monitor }) {
       <Chip
         color="error"
         icon={<HeartBrokenSharpIcon />}
-        label={`Python ${monitor}: ${status}`}
+        label={`${monitor}: ${status}`}
       />
     );
   }
