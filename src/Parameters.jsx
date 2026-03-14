@@ -1,309 +1,399 @@
-import { useState, useEffect } from "react";
+/**
+ * @file Parameters.jsx
+ * @description Fetches and displays detector signal parameters (area, FWHM,
+ *              peak, rise time, etc.) in a MUI Table with two layout modes
+ *              (detectors-as-columns or parameters-as-columns). Clicking the
+ *              table switches to a copyable plain-text view. Includes share-link
+ *              and reverse-table controls.
+ * @author Samuel Niang
+ */
+
+import React, { useState, useEffect } from "react";
 import { parseTimestamp } from "./TimeStampSelector";
 import "./CSS/Parameters.css";
 import Button from "@mui/material/Button";
 import ShareIcon from "@mui/icons-material/Share";
 import PivotTableChartIcon from "@mui/icons-material/PivotTableChart";
 import CancelIcon from "@mui/icons-material/Cancel";
+
 import {
-    Typography,
-    Table,
-    TableBody,
-    TableCell,
-    TableContainer,
-    TableHead,
-    TableRow,
-    Paper
+  Typography,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper
 } from "@mui/material";
 
-// Parameter keys and display labels
+/** Parameter keys paired with their display labels and units. */
 export const parameterKeys = [
-    { key: "area", label: "Area [V·ns]" },
-    { key: "fwhm", label: "FWHM [ns]" },
-    { key: "peak", label: "Peak [mV]" },
-    { key: "rise", label: "Rise [ns]" },
-    { key: "time peak", label: "Time Peak [ns]" },
-    { key: "dt", label: "Interval [ns]" },
-    { key: "time arrival", label: "Arrival [ns]" },
+  { key: "area", label: "Area [V·ns]" },
+  { key: "fwhm", label: "FWHM [ns]" },
+  { key: "peak", label: "Peak [mV]" },
+  { key: "rise", label: "Rise [ns]" },
+  { key: "time peak", label: "Time Peak [ns]" },
+  { key: "dt", label: "Interval [ns]" },
+  { key: "time arrival", label: "Arrival [ns]" }
 ];
 
-// Format value for display in table
+/**
+ * Formats a numeric value for display with 3 significant digits.
+ * Returns "N/A" when the value is missing.
+ */
 const formatValue = (v) =>
-    v === undefined || v === null ? "N/A" : Number(v).toPrecision(3);
+  v === undefined || v === null ? "N/A" : Number(v).toPrecision(3);
 
 /**
- * Displays parameter data for a selected file and list of detectors.
+ * Parameters – table component showing signal parameters for every detector.
  *
- * Fetches parameter information from a backend API when a file is selected,
- * handles loading and error states, and renders a table of parameter values
- * for each detector in the provided detectorList. Allows toggling the table orientation.
- *
- * @param {Object} props
- * @param {string} props.selectedFile - The file to fetch parameters for.
- * @param {string[]} props.detectorList - List of detector locations to display.
- * @param {Function} props.setDetectorList - Updates the detector list.
- * @param {Function} props.setSelectedDetector - Sets the currently selected detector.
- * @param {number} props.fileVersion - Version counter for selectedFile.
- *
- * @author Samuel Niang
+ * @param {Object}   props
+ * @param {string}   props.selectedFile      - Currently selected JSON filename.
+ * @param {string[]} props.detectorList      - List of detector location keys.
+ * @param {Function} props.setDetectorList   - Setter to update the detector list.
+ * @param {Function} props.setSelectedDetector - Setter for the active detector.
+ * @param {*}        props.fileVersion       - Dependency trigger for refetching data.
  */
 const Parameters = ({
-    selectedFile,
-    detectorList,
-    setDetectorList,
-    setSelectedDetector,
-    fileVersion
+  selectedFile,
+  detectorList,
+  setDetectorList,
+  setSelectedDetector,
+  fileVersion
 }) => {
-    const [parameters, setParameters] = useState(null);
-    const [error, setError] = useState(null);
-    const [reverseTable, setReverseTable] = useState(true);
-    const [displayTable, setDisplayTable] = useState(false);
-    const [particleConfig, setParticleConfig] = useState(null);
 
-    useEffect(() => {
-        const fetchParameters = async () => {
-            try {
-                const res = await fetch(`/api/json/${selectedFile}`);
-                if (!res.ok) throw new Error("Network response was not ok");
+  const [parameters, setParameters] = useState(null);
+  const [error, setError] = useState(null);
+  const [reverseTable, setReverseTable] = useState(false);      // Toggle between the two table orientations
+  const [displayTable, setDisplayTable] = useState(false);      // Toggle plain-text / MUI table view
+  const [particleConfig, setParticleConfig] = useState(null);
 
-                const data = await res.json();
-                setParameters(data);
-                setDetectorList(Object.keys(data));
+  /**
+   * Fetches parameter JSON for the selected file, populates the detector
+   * list, and extracts the particle configuration label if present.
+   */
+  useEffect(() => {
+    const fetchParameters = async () => {
+      try {
+        const res = await fetch(`/api/json/${selectedFile}`);
+        if (!res.ok) throw new Error("Network response was not ok");
 
-                if (
-                    Object.keys(data) &&
-                    Object.keys(data)[0] &&
-                    data[Object.keys(data)[0]] &&
-                    data[Object.keys(data)[0]].config
-                ) {
-                    setParticleConfig(data[Object.keys(data)[0]].config);
-                }
+        const data = await res.json();
+        setParameters(data);
+        setDetectorList(Object.keys(data));
 
-                const dataKeys = Object.keys(data);
-                const areArraysEqual =
-                    dataKeys.length === detectorList.length &&
-                    dataKeys.every((key, idx) => key === detectorList[idx]);
-
-                if (dataKeys.length === 0 || !areArraysEqual) {
-                    setSelectedDetector(dataKeys[0]);
-                }
-            } catch (error) {
-                setError(error);
-                console.error("[ERROR]", "Parameters failed to fetch parameters:", error);
-                setDetectorList([]);
-            }
-        };
-
-        if (selectedFile) {
-            fetchParameters();
-            setDisplayTable(false);
+        if (
+          Object.keys(data)[0] &&
+          data[Object.keys(data)[0]] &&
+          data[Object.keys(data)[0]].config
+        ) {
+          setParticleConfig(data[Object.keys(data)[0]].config);
         }
-    }, [selectedFile, fileVersion]);
 
-    /**
-     * Build a tab-separated text version of the currently displayed table.
-     */
-    const makeTable = () => {
-        if (!parameters) return "";
-        const keys = Object.keys(parameters);
-        if (keys.length === 0) return "";
-
-        if (reverseTable) {
-            const header = ["Parameters", ...keys].join("\t");
-            const rows = parameterKeys.map(({ key, label }) => {
-                const values = keys.map((loc) => formatValue(parameters[loc][key]));
-                return [label, ...values].join("\t");
-            });
-            return [header, ...rows].join("\n");
-        } else {
-            const header = ["Location", ...parameterKeys.map(({ label }) => label)].join("\t");
-            const rows = keys.map((loc) => {
-                const values = parameterKeys.map(({ key }) =>
-                    formatValue(parameters[loc][key])
-                );
-                return [loc, ...values].join("\t");
-            });
-            return [header, ...rows].join("\n");
+        const dataKeys = Object.keys(data);
+        if (dataKeys.length > 0) {
+          setSelectedDetector(dataKeys[0]);
         }
+
+      } catch (error) {
+        setError(error);
+        console.error("[ERROR]", error);
+        setDetectorList([]);
+      }
     };
 
-    const displayButtons = () => {
-        return (
-            <div style={{ display: "flex", gap: "10px", marginTop: "10px" }}>
-                <Button
-                    size="small"
-                    variant="contained"
-                    color="success"
-                    onClick={() => {
-                        const url = new URL(window.location.href);
-                        url.searchParams.set("id", selectedFile);
-                        const text = url.toString();
-
-                        if (navigator.clipboard && navigator.clipboard.writeText) {
-                            navigator.clipboard
-                                .writeText(text)
-                                .then(() => alert("Share link copied to clipboard"))
-                                .catch(() => alert("Error copying link"));
-                        } else {
-                            const textarea = document.createElement("textarea");
-                            textarea.value = text;
-                            textarea.style.position = "fixed";
-                            textarea.style.left = "-9999px";
-                            document.body.appendChild(textarea);
-                            textarea.select();
-                            try {
-                                document.execCommand("copy");
-                                alert("Share link copied to clipboard");
-                            } catch (err) {
-                                alert("Error copying link");
-                            }
-                            document.body.removeChild(textarea);
-                        }
-                    }}
-                    startIcon={<ShareIcon />}
-                >
-                    Share link
-                </Button>
-
-                <Button
-                    startIcon={<PivotTableChartIcon />}
-                    size="small"
-                    variant="contained"
-                    color="success"
-                    onClick={() => setReverseTable(!reverseTable)}
-                >
-                    Reverse Table
-                </Button>
-
-                {displayTable && (
-                    <Button
-                        startIcon={<CancelIcon />}
-                        size="small"
-                        variant="contained"
-                        color="error"
-                        onClick={() => setDisplayTable(false)}
-                    >
-                        Back
-                    </Button>
-                )}
-            </div>
-        );
-    };
-
-    if (error) {
-        return (
-            <div>
-                <Typography variant="h5">Parameters</Typography>
-                <p className="error">
-                    Something went wrong while loading the parameters: {error.message}
-                </p>
-            </div>
-        );
+    if (selectedFile) {
+      fetchParameters();
+      setDisplayTable(false);
     }
 
-    if (!parameters) return null;
+  }, [selectedFile, fileVersion]);
 
-    const validDetectorList = detectorList.filter((loc) => parameters[loc]);
+
+  /**
+   * Builds a fixed-width plain-text representation of the parameter
+   * table for easy copy-paste. Layout depends on `reverseTable`.
+   * Each column is padded to the widest value in that column.
+   */
+  const makeTable = () => {
+
+    if (!parameters) return "";
+
+    const keys = Object.keys(parameters);
+
+    // Build a 2D grid of strings (rows × cols) including headers
+    let grid;
+
+    if (reverseTable) {
+      grid = [
+        ["Parameters", ...keys],
+        ...parameterKeys.map(({ key, label }) => [
+          label,
+          ...keys.map((loc) => formatValue(parameters[loc][key]))
+        ])
+      ];
+    } else {
+      grid = [
+        ["Location", ...parameterKeys.map(({ label }) => label)],
+        ...keys.map((loc) => [
+          loc,
+          ...parameterKeys.map(({ key }) => formatValue(parameters[loc][key]))
+        ])
+      ];
+    }
+
+    // Compute the max width for each column
+    const colCount = grid[0].length;
+    const colWidths = Array.from({ length: colCount }, (_, c) =>
+      Math.max(...grid.map((row) => (row[c] || "").length))
+    );
+
+    // Pad each cell and join with two-space separator
+    return grid
+      .map((row) =>
+        row.map((cell, c) => cell.padEnd(colWidths[c])).join("  ")
+      )
+      .join("\n");
+  };
+
+
+  /**
+   * Renders the action buttons row: share link, reverse table,
+   * and (when in text view) a back button.
+   */
+  const displayButtons = () => {
 
     return (
-        <div id="parametersBlock" className="blocks">
-            <Typography variant="subtitle1" sx={{ mb: 1 }}>
-                {particleConfig && `${capitalizeFirstLetter(particleConfig)} - `}
-                {parseTimestamp(selectedFile)}
-            </Typography>
+      <div style={{ display: "flex", gap: "10px", marginTop: "10px" }}>
 
-            {displayTable ? (
-                <textarea value={makeTable()} readOnly />
-            ) : (
-                <TableContainer
-                    component={Paper}
-                    onClick={() => setDisplayTable(true)}
-                    sx={{
-                        mb: 1,
-                        maxWidth: "100%",
-                        overflowX: "auto",
-                        cursor: "pointer"
-                    }}
-                >
-                    <Table size="small">
-                        <TableHead>
-                            {reverseTable ? (
-                                <TableRow>
-                                    <TableCell>
-                                        <Typography variant="body2" fontWeight={600}>
-                                            Parameters
-                                        </Typography>
-                                    </TableCell>
-                                    {validDetectorList.map((loc) => (
-                                        <TableCell key={loc}>
-                                            <Typography variant="body2" fontWeight={600}>
-                                                {loc}
-                                            </Typography>
-                                        </TableCell>
-                                    ))}
-                                </TableRow>
-                            ) : (
-                                <TableRow>
-                                    <TableCell>
-                                        <Typography variant="body2" fontWeight={600}>
-                                            Location
-                                        </Typography>
-                                    </TableCell>
-                                    {parameterKeys.map(({ key, label }) => (
-                                        <TableCell key={key}>
-                                            <Typography variant="body2" fontWeight={600}>
-                                                {label}
-                                            </Typography>
-                                        </TableCell>
-                                    ))}
-                                </TableRow>
-                            )}
-                        </TableHead>
+        <Button
+          size="small"
+          variant="contained"
+          startIcon={<ShareIcon />}
+          onClick={() => {
 
-                        <TableBody>
-                            {reverseTable
-                                ? parameterKeys.map(({ key, label }) => (
-                                      <TableRow key={key}>
-                                          <TableCell>
-                                              <Typography variant="body2">{label}</Typography>
-                                          </TableCell>
-                                          {validDetectorList.map((loc) => (
-                                              <TableCell key={`${loc}-${key}`}>
-                                                  <Typography variant="body2">
-                                                      {formatValue(parameters[loc][key])}
-                                                  </Typography>
-                                              </TableCell>
-                                          ))}
-                                      </TableRow>
-                                  ))
-                                : validDetectorList.map((loc) => (
-                                      <TableRow key={loc}>
-                                          <TableCell>
-                                              <Typography variant="body2">{loc}</Typography>
-                                          </TableCell>
-                                          {parameterKeys.map(({ key }) => (
-                                              <TableCell key={`${loc}-${key}`}>
-                                                  <Typography variant="body2">
-                                                      {formatValue(parameters[loc][key])}
-                                                  </Typography>
-                                              </TableCell>
-                                          ))}
-                                      </TableRow>
-                                  ))}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
-            )}
+            const url = new URL(window.location.href);
+            url.searchParams.set("id", selectedFile);
 
-            {displayButtons()}
-        </div>
+            const text = url.toString();
+
+            navigator.clipboard.writeText(text)
+              .then(() => alert("Share link copied"))
+              .catch(() => alert("Copy failed"));
+
+          }}
+        >
+          Share link
+        </Button>
+
+        <Button
+          startIcon={<PivotTableChartIcon />}
+          size="small"
+          variant="contained"
+          onClick={() => setReverseTable(!reverseTable)}
+        >
+          Reverse Table
+        </Button>
+
+        {displayTable && (
+          <Button
+            startIcon={<CancelIcon />}
+            size="small"
+            variant="contained"
+            onClick={() => setDisplayTable(false)}
+          >
+            Back
+          </Button>
+        )}
+
+      </div>
     );
+  };
+
+
+  // Error state: show heading + message
+  if (error) {
+    return (
+      <div>
+        <Typography variant="h5">Parameters</Typography>
+        <p className="error">
+          Something went wrong while loading parameters: {error.message}
+        </p>
+      </div>
+    );
+  }
+
+  // Nothing to render until data arrives
+  if (!parameters) return null;
+
+  // Keep only detectors that actually exist in the fetched data
+  const validDetectorList = detectorList.filter(
+    (loc) => parameters[loc]
+  );
+
+  return (
+
+    <div id="parametersBlock" className="blocks">
+
+      <Typography variant="subtitle1" sx={{ mb: 1 }}>
+        {particleConfig && `${capitalizeFirstLetter(particleConfig)} - `}
+        {parseTimestamp(selectedFile)}
+      </Typography>
+
+      {/* Plain-text view (copyable) */}
+      {displayTable ? (
+
+        <pre
+          style={{
+            background: "#f5f5f5",
+            padding: "10px",
+            borderRadius: "6px",
+            fontSize: "0.65rem",
+            overflowX: "auto",
+            marginBottom: "10px",
+            textAlign: "left"
+          }}
+        >
+          {makeTable()}
+        </pre>
+
+      ) : (
+        <TableContainer
+          component={Paper}
+          sx={{ maxWidth: "100%", overflowX: "auto", mb: 1 }}
+          onClick={() => setDisplayTable(true)}
+        >
+
+          <Table size="small" sx={{ tableLayout: "auto" }}>
+
+            <TableHead>
+
+              {reverseTable ? (
+
+                <TableRow>
+
+                  <TableCell sx={{ width: 100, padding: "4px 6px" }}>
+                    <Typography variant="body2" fontWeight={600}>
+                      Parameters
+                    </Typography>
+                  </TableCell>
+
+                  {validDetectorList.map((loc) => (
+                    <TableCell key={loc} align="center" sx={{ padding: "4px 6px" }}>
+                      <Typography variant="body2" fontWeight={600}>
+                        {loc}
+                      </Typography>
+                    </TableCell>
+                  ))}
+
+                </TableRow>
+
+              ) : (
+
+                <TableRow>
+
+                  <TableCell sx={{ width: 80, padding: "4px 6px" }}>
+                    <Typography variant="body2" fontWeight={600}>
+                      Location
+                    </Typography>
+                  </TableCell>
+
+                  {parameterKeys.map(({ key, label }) => (
+                    <TableCell key={key} align="center" sx={{ padding: "4px 6px" }}>
+                      <Typography variant="body2" fontWeight={600}>
+                        {label}
+                      </Typography>
+                    </TableCell>
+                  ))}
+
+                </TableRow>
+
+              )}
+
+            </TableHead>
+
+            {/* Reversed layout: parameters as rows, detectors as columns */}
+            <TableBody>
+
+              {reverseTable
+                ? parameterKeys.map(({ key, label }) => (
+
+                  <TableRow key={key}>
+
+                    <TableCell sx={{ padding: "4px 6px" }}>
+                      <Typography variant="body2">
+                        {label}
+                      </Typography>
+                    </TableCell>
+
+                    {validDetectorList.map((loc) => (
+                      <TableCell
+                        key={`${loc}-${key}`}
+                        align="center"
+                        sx={{ padding: "4px 6px", minWidth: 50 }}
+                      >
+                        <Typography variant="body2">
+                          {formatValue(parameters[loc][key])}
+                        </Typography>
+                      </TableCell>
+                    ))}
+
+                  </TableRow>
+
+                ))
+
+                /* Default layout: detectors as rows, parameters as columns */
+                : validDetectorList.map((loc) => (
+
+                  <TableRow key={loc}>
+
+                    <TableCell sx={{ padding: "4px 6px" }}>
+                      <Typography variant="body2">
+                        {loc}
+                      </Typography>
+                    </TableCell>
+
+                    {parameterKeys.map(({ key }) => (
+                      <TableCell
+                        key={`${loc}-${key}`}
+                        align="center"
+                        sx={{ padding: "4px 6px", minWidth: 50 }}
+                      >
+                        <Typography variant="body2">
+                          {formatValue(parameters[loc][key])}
+                        </Typography>
+                      </TableCell>
+                    ))}
+
+                  </TableRow>
+
+                ))}
+
+            </TableBody>
+
+          </Table>
+
+        </TableContainer>
+
+      )}
+
+      {displayButtons()}
+
+    </div>
+  );
 };
 
 export default Parameters;
 
-// Capitalize the first letter of a string
+
+/**
+ * Capitalizes the first letter of a string.
+ *
+ * @param {string} str - Input string.
+ * @returns {string} The string with its first character uppercased.
+ */
 export function capitalizeFirstLetter(str) {
-    if (!str) return "";
-    return str.charAt(0).toUpperCase() + str.slice(1);
+  if (!str) return "";
+  return str.charAt(0).toUpperCase() + str.slice(1);
 }
