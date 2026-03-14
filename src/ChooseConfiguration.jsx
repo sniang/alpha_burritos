@@ -7,10 +7,7 @@ import MonitorHeartIcon from '@mui/icons-material/MonitorHeart';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import MessageAlert from "./MessageAlert.jsx";
-import Alert from '@mui/material/Alert';
-import Paper from '@mui/material/Paper';
-import Typography from '@mui/material/Typography';
-
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Alert, Typography} from "@mui/material";
 /**
  * ChooseConfiguration component provides UI controls for selecting the analysis configuration
  * ("positrons" or "antiprotons") and toggling the "fit" option. It fetches the current configuration
@@ -47,7 +44,8 @@ const ChooseConfiguration = ({ selectedFile, forceRefreshSelectedFile }) => {
   const [diffInSeconds, setDiffInSeconds] = useState(null);
   // latest type dump
   const [latestParticle, setLatestParticle] = useState(null);
-
+  // Extract configuration parameters (excluding "Mapping") for details display
+  const params = dataKeys.filter((key) => key !== "Mapping").sort((a, b) => a.localeCompare(b));
   // Fetch configuration data from backend on mount and every 500ms
   useEffect(() => {
     const fetchData = async () => {
@@ -252,33 +250,128 @@ const ChooseConfiguration = ({ selectedFile, forceRefreshSelectedFile }) => {
       {/* Display configuration details if toggled */}
       {showDetails && (
         <div style={{ display: 'flex', flexDirection: "column", alignItems: "center" }}>
-          <strong>Details of the configuration</strong>
-          <ul>
-            {dataKeys.map((key) => {
-              if (key === "Mapping") return null;
-              return (
-                <li key={key}>
-                  <strong>{key}:</strong> {data[key].toString()}
-                </li>
-              );
-            })
-            }
-          </ul>
+{params.length > 0 && (
+  <TableContainer component={Paper} sx={{ mt: 2, maxWidth: 700 }}>
+    <Table size="small">
+
+      <TableHead>
+        <TableRow>
+          <TableCell>
+            <Typography fontWeight={600}>Parameter</Typography>
+          </TableCell>
+          <TableCell>
+            <Typography fontWeight={600}>Value</Typography>
+          </TableCell>
+          <TableCell>
+            <Typography fontWeight={600}>Parameter</Typography>
+          </TableCell>
+          <TableCell>
+            <Typography fontWeight={600}>Value</Typography>
+          </TableCell>
+        </TableRow>
+      </TableHead>
+
+      <TableBody>
+        {Array.from({ length: Math.ceil(params.length / 2) }).map((_, i) => {
+          const p1 = params[i * 2];
+          const p2 = params[i * 2 + 1];
+
+          return (
+            <TableRow key={i}>
+              <TableCell>
+                <Typography variant="body2">{p1}</Typography>
+              </TableCell>
+              <TableCell>
+                <Typography variant="body2">
+                  {data[p1]?.toString()}
+                </Typography>
+              </TableCell>
+
+              <TableCell>
+                <Typography variant="body2">{p2 || ""}</Typography>
+              </TableCell>
+              <TableCell>
+                <Typography variant="body2">
+                  {p2 ? data[p2]?.toString() : ""}
+                </Typography>
+              </TableCell>
+            </TableRow>
+          );
+        })}
+      </TableBody>
+
+    </Table>
+  </TableContainer>
+)}
+
           {/* Display Mapping details if available */}
-          {data.Mapping && <>
-            <strong>Mapping</strong>
-            <ul>
-              {Object.keys(data.Mapping).map((key, index) => (
-                <li key={key + String(index)}>
-                  <strong>{key}:</strong> <ul>
-                    {data.Mapping[key].map((item, itemIndex) => (
-                      <li key={item + String(itemIndex)}>{item.join('; ')}</li>
-                    ))}
-                  </ul>
-                </li>
-              ))}
-            </ul>
-          </>}
+          {data.Mapping && (
+  <TableContainer component={Paper} sx={{ mt: 2, maxWidth: 500 }}>
+    <Table size="small">
+
+      <TableHead>
+        {/* Table title */}
+        <TableRow>
+          <TableCell colSpan={3} align="center">
+            <Typography variant="subtitle1" fontWeight={600}>
+              Mapping
+            </Typography>
+          </TableCell>
+        </TableRow>
+
+        {/* Column headers */}
+        <TableRow>
+          <TableCell>
+            <Typography variant="body2" fontWeight={600}>
+              Red Pitaya
+            </Typography>
+          </TableCell>
+          <TableCell>
+            <Typography variant="body2" fontWeight={600}>
+              Channel 1
+            </Typography>
+          </TableCell>
+          <TableCell>
+            <Typography variant="body2" fontWeight={600}>
+              Channel 2
+            </Typography>
+          </TableCell>
+        </TableRow>
+      </TableHead>
+
+      <TableBody>
+        {Object.entries(data.Mapping).map(([key, channels], index) => {
+
+          const ch1 = channels.find(c => c[0].includes("ch1"))?.[1] || "-";
+          const ch2 = channels.find(c => c[0].includes("ch2"))?.[1] || "-";
+
+          return (
+            <TableRow key={key}>
+              <TableCell>
+                <Typography variant="body2">
+                  {index + 1}
+                </Typography>
+              </TableCell>
+
+              <TableCell>
+                <Typography variant="body2">
+                  {ch1}
+                </Typography>
+              </TableCell>
+
+              <TableCell>
+                <Typography variant="body2">
+                  {ch2}
+                </Typography>
+              </TableCell>
+            </TableRow>
+          );
+        })}
+      </TableBody>
+
+    </Table>
+  </TableContainer>
+)}
         </div>
       )}
       {/* Display timestamp message if any */}
