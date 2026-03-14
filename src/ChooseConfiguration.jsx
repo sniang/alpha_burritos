@@ -1,7 +1,5 @@
 import { useState, useEffect } from "react";
-import './CSS/ChooseConfiguration.css';
 import Button from '@mui/material/Button';
-import ButtonGroup from '@mui/material/ButtonGroup';
 import PsychologyIcon from '@mui/icons-material/Psychology';
 import AutoStoriesIcon from '@mui/icons-material/AutoStories';
 import InfoIcon from '@mui/icons-material/Info';
@@ -9,7 +7,9 @@ import MonitorHeartIcon from '@mui/icons-material/MonitorHeart';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import MessageAlert from "./MessageAlert.jsx";
-
+import Alert from '@mui/material/Alert';
+import Paper from '@mui/material/Paper';
+import Typography from '@mui/material/Typography';
 
 /**
  * ChooseConfiguration component provides UI controls for selecting the analysis configuration
@@ -203,15 +203,11 @@ const ChooseConfiguration = ({ selectedFile, forceRefreshSelectedFile }) => {
   if (!data) return null;
 
   return (
-    <div id="ChooseConfig" className="blocks">
+    <Paper elevation={3} sx={{ width: '100%', padding: 2, border: '2px solid red', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: "2px" }}>
       <MessageAlert message={message} open={openAlert} setOpen={setOpenAlert}  />
-      <h3>Offline analysis configuration</h3>
-      <ButtonGroup size="small" variant="contained" color="success">
-        <Button
-          startIcon={<AddCircleOutlineIcon />}
-          style={{ opacity: data.config !== 'positrons' ? 0.5 : 1 }}
-          onClick={() => handleConfigChange('positrons')}
-        >
+      <Typography variant="h5">Offline analysis configuration</Typography>
+      <div style={{ display: 'flex', flexDirection: 'row', gap: '10px', justifyContent: 'center', alignItems: 'center', flexWrap: 'wrap' }}>
+        <Button startIcon={<AddCircleOutlineIcon />} style={{ opacity: data.config !== 'positrons' ? 0.5 : 1 }} onClick={() => handleConfigChange('positrons')}>
           Positrons
         </Button>
         {/* Button to select antiprotons configuration */}
@@ -251,7 +247,7 @@ const ChooseConfiguration = ({ selectedFile, forceRefreshSelectedFile }) => {
             Go to the guide
           </Button>
         </a>
-      </ButtonGroup>
+      </div>
 
       {/* Display configuration details if toggled */}
       {showDetails && (
@@ -285,11 +281,9 @@ const ChooseConfiguration = ({ selectedFile, forceRefreshSelectedFile }) => {
           </>}
         </div>
       )}
-      {/* Display error message if any */}
-      {error && <p>{error}</p>}
       {/* Display timestamp message if any */}
-      {timestampMessage && <p>{`Latest acquisition: ${timestampMessage} -  From ${latestParticle}'s trigger`}</p>}
-    </div>
+      {timestampMessage && <Alert severity="info">{`Latest acquisition: ${timestampMessage} -  From ${latestParticle}'s trigger`}</Alert>}
+    </Paper>
   );
 }
 
