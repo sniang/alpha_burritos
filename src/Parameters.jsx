@@ -5,6 +5,7 @@ import Button from '@mui/material/Button';
 import ShareIcon from '@mui/icons-material/Share';
 import PivotTableChartIcon from '@mui/icons-material/PivotTableChart';
 import CancelIcon from '@mui/icons-material/Cancel';
+import { Typography } from '@mui/material';
 
 // Parameter keys and display labels
 export const parameterKeys = [
@@ -166,7 +167,7 @@ const Parameters = ({ selectedFile, detectorList, setDetectorList, setSelectedDe
     if (error) {
         return (
             <div>
-                <h2>Parameters</h2>
+                <Typography variant="h5">Parameters</Typography>
                 <p className="error">Something went wrong while loading the parameters: {error.message}</p>
             </div>
         );
@@ -182,7 +183,7 @@ const Parameters = ({ selectedFile, detectorList, setDetectorList, setSelectedDe
             // Table: parameters as rows, detectors as columns
             return (
                 <div id="parametersBlock" className="blocks">
-                    <h4>{particleConfig && `${capitalizeFirstLetter(particleConfig)} - `}{parseTimestamp(selectedFile)}</h4>
+                    <Typography variant="subtitle1">{particleConfig && `${capitalizeFirstLetter(particleConfig)} - `}{parseTimestamp(selectedFile)}</Typography>
                     {displayTable && (<textarea
                         value={makeTable()}
                         readOnly
@@ -225,7 +226,7 @@ const Parameters = ({ selectedFile, detectorList, setDetectorList, setSelectedDe
         // Table: detectors as rows, parameters as columns
         return (
             <div id="parametersBlock" className="blocks">
-                <h4>{particleConfig && `${capitalizeFirstLetter(particleConfig)} - `}{parseTimestamp(selectedFile)}</h4>
+                <Typography variant="subtitle1">{particleConfig && `${capitalizeFirstLetter(particleConfig)} - `}{parseTimestamp(selectedFile)}</Typography>
                 {displayTable && (<textarea
                     value={makeTable()}
                     readOnly

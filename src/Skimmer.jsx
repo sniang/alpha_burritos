@@ -6,7 +6,7 @@ import { parameterKeys } from "./Parameters";
 import SaveIcon from '@mui/icons-material/Save';
 import Button from '@mui/material/Button';
 import CancelIcon from '@mui/icons-material/Cancel';
-import { Switch, FormControl, InputLabel, Select, MenuItem, TextField, FormControlLabel, Box } from "@mui/material";
+import { Switch, FormControl, InputLabel, Select, MenuItem, TextField, FormControlLabel, Box, Typography } from "@mui/material";
 
 
 /**
@@ -237,7 +237,7 @@ const Skimmer = ({ jsonFiles, selectedDetector, setSelectedDetector, detectorLis
 
     return (
         <div className="skimmer-container blocks" style={{ minWidth: "850px" }}>
-            <h2>Skimmer</h2>
+            <Typography variant="h5">Skimmer</Typography>
             <Selectors />
             {isLoading && <div className="loading-indicator">Loading data...</div>}
             {!isLoading && data && !isTableTextArea && <Table />}

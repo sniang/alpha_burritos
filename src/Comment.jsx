@@ -7,6 +7,7 @@
  * @param {string} props.selectedFile - The path of the currently selected file
  */
 import { useState, useEffect } from "react";
+import { Typography } from '@mui/material';
 import './CSS/Comment.css';
 import { Button } from "@mui/material";
 import EditNoteIcon from '@mui/icons-material/EditNote';
@@ -85,7 +86,7 @@ const Comment = ({ selectedFile }) => {
 
     return (
         <div id="comment-block" className="blocks">
-            <h2>Comments</h2>
+            <Typography variant="h5">Comments</Typography>
             {/* Display the current comment when not in edit mode */}
             {!update && <p style={{ whiteSpace: 'pre-wrap' }}>{comment}</p>}
             {/* Render textarea only when in edit mode */}
