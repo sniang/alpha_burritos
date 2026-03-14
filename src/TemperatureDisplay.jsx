@@ -52,7 +52,6 @@ function TemperatureDisplay({ display, setDisplay }) {
 			if (!res.ok) throw new Error('Failed to fetch');
 			const json = await res.json();
 			setData(json.hosts || {});
-			console.log('Fetched temperature data:', json);
 			setTimestamp(json.timestamp_utc || '');
 		} catch (err) {
 			setError('Error fetching temperature data');
