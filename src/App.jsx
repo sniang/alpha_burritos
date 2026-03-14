@@ -12,8 +12,7 @@ import Comment from './Comment.jsx'
 import Skimmer from './Skimmer.jsx'
 import LoginForm from './LoginForm.jsx'
 import ChooseConfiguration from './ChooseConfiguration.jsx'
-import LogoutIcon from '@mui/icons-material/Logout';
-import Button from "@mui/material/Button";
+import SystemStatus from './SystemStatus.jsx'
 
 /**
  * Root component of the application that orchestrates detector visualization and data management.
@@ -170,7 +169,6 @@ pm2 startup`;
    */
   const renderDetectorComponents = () => {
     if (!selectedFile) return null; // Don't render if no file is selected
-
     return (
       <>
         <div id='detector-block'>
@@ -255,9 +253,7 @@ pm2 startup`;
   return (
     <>
       <MainTitle />
-      <Button onClick={handleLogout} startIcon={<LogoutIcon />} variant="contained" color="error">
-        Log out
-      </Button>
+      <SystemStatus handleLogout={handleLogout} />
       {renderSelectorComponents()}
       <ChooseConfiguration
         selectedFile={selectedFile}
