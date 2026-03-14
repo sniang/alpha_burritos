@@ -1,4 +1,12 @@
-import React, { useEffect, useState } from 'react';
+/**
+ * @file TemperatureDisplay.jsx
+ * @description Dialog component that displays real-time temperature readings
+ *              from the Pitaya (Red Pitaya) boards. Polls the server every
+ *              second and renders the data in a Material-UI table.
+ * @author Samuel Niang
+ */
+
+import { useEffect, useState } from 'react';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -6,7 +14,10 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
+import Dialog from '@mui/material/Dialog';
+import DialogTitle from '@mui/material/DialogTitle';
 
+/** Mapping from Red Pitaya hostnames to human-readable labels. */
 const HOST_MAP = {
 	'rp-f0a821.local': 'pitaya_1',
 	'rp-f073bf.local': 'pitaya_2',
@@ -15,15 +26,24 @@ const HOST_MAP = {
 	'rp-f0be4b.local': 'pitaya_5',
 };
 
-function TemperatureDisplay( {display = true} ) {
+/**
+ * TemperatureDisplay – modal dialog showing live Pitaya temperatures.
+ *
+ * @param {Object}   props
+ * @param {boolean}  props.display    - Whether the dialog is visible.
+ * @param {Function} props.setDisplay - Callback to toggle dialog visibility.
+ */
+function TemperatureDisplay({ display, setDisplay }) {
 	const [data, setData] = useState({});
 	const [timestamp, setTimestamp] = useState('');
-	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState(null);
 
+	/**
+	 * Fetches the latest temperature data from the backend API
+	 * and updates the component state accordingly.
+	 */
 	const fetchData = async () => {
 		try {
-			setLoading(true);
 			setError(null);
 			const res = await fetch('/api/temperature');
 			if (!res.ok) throw new Error('Failed to fetch');
@@ -32,55 +52,57 @@ function TemperatureDisplay( {display = true} ) {
 			setTimestamp(json.timestamp_utc || '');
 		} catch (err) {
 			setError('Error fetching temperature data');
-		} finally {
-			setLoading(false);
 		}
 	};
 
+	// Poll the temperature endpoint every second while the component is mounted.
 	useEffect(() => {
 		fetchData();
-		const interval = setInterval(fetchData, 10000);
+		const interval = setInterval(fetchData, 1000);
 		return () => clearInterval(interval);
 	}, []);
 
-	       return display ? (
-		       <TableContainer component={Paper} sx={{ maxWidth: 300, mt: 2, bgcolor: 'success.main', color: 'white', borderRadius: 2, boxShadow: 3 }}>
-			       <Table sx={{ color: 'white' }}>
-				       <TableHead>
-					       <TableRow>
-						       <TableCell sx={{ color: 'white', fontWeight: 'bold' }}>Host</TableCell>
-						       <TableCell align="right" sx={{ color: 'white', fontWeight: 'bold' }}>Temperature (°C)</TableCell>
-						       <TableCell align="right" sx={{ color: 'white', fontWeight: 'bold' }}>Error</TableCell>
-					       </TableRow>
-				       </TableHead>
-				<TableBody>
-					{loading ? (
+	return (data) ? (
+		<Dialog open={display} maxWidth="sm" fullWidth onClose={() => { setDisplay(false) }} sx={{ textAlign: 'center' }}>
+			<DialogTitle>Temperatures of the Pitayas</DialogTitle>
+			<TableContainer component={Paper} sx={{ width: '400px', mt: 2, borderRadius: 2, boxShadow: 3, margin: '0 auto' }}>
+				<Table >
+					<TableHead>
 						<TableRow>
-							<TableCell colSpan={3}>Loading...</TableCell>
+							<TableCell sx={{ fontWeight: 'bold' }}>Host</TableCell>
+							<TableCell align="right" sx={{ fontWeight: 'bold' }}>Temperature (°C)</TableCell>
+							<TableCell align="right" sx={{ fontWeight: 'bold' }}>Error</TableCell>
 						</TableRow>
-					) : error ? (
-						<TableRow>
-							<TableCell colSpan={3}>{error}</TableCell>
-						</TableRow>
-					) : (
-						Object.entries(HOST_MAP).map(([host, name]) => (
-							<TableRow key={host}>
-								       <TableCell sx={{ color: 'white' }}>{name}</TableCell>
-								       <TableCell align="right" sx={{ color: 'white' }}>
-									       {data[host]?.temp_c !== undefined ? data[host].temp_c.toFixed(2) : 'N/A'}
-								       </TableCell>
-								       <TableCell align="right" sx={{ color: 'white' }}>
-									       {data[host]?.error || ''}
-								       </TableCell>
+					</TableHead>
+					<TableBody>
+						{error ? (
+							<TableRow>
+								<TableCell colSpan={3}>{error}</TableCell>
 							</TableRow>
-						))
-					)}
-				</TableBody>
-			</Table>
-			       <div style={{ padding: 8, fontSize: 12, color: 'white' }}>
-				       {timestamp && `Last updated: ${timestamp}`}
-			       </div>
-		</TableContainer>
+						) : (
+							/* Iterate over the known hosts and display their temperature or 'N/A'. */
+							Object.entries(HOST_MAP).map(([host, name]) => (
+								<TableRow key={host}>
+									<TableCell >{name}</TableCell>
+									<TableCell align="right" >
+										{data[host]?.temp_c !== undefined ? data[host].temp_c.toFixed(2) : 'N/A'}
+									</TableCell>
+									<TableCell align="right" >
+										{data[host]?.error || ''}
+									</TableCell>
+								</TableRow>
+							))
+						)}
+					</TableBody>
+				</Table>
+				{/* Display the UTC timestamp of the last successful data fetch. */}
+				<div style={{ padding: 8, fontSize: 12 }}>
+					{timestamp && `Last updated: ${timestamp}`}
+				</div>
+			</TableContainer>
+			<br />
+		</Dialog>
+
 	) : null;
 }
 
