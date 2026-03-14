@@ -16,6 +16,7 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
+import Alert from '@mui/material/Alert';
 
 /** Mapping from Red Pitaya hostnames to human-readable labels. */
 const HOST_MAP = {
@@ -25,6 +26,8 @@ const HOST_MAP = {
 	'rp-f0be22.local': 'pitaya_4',
 	'rp-f0be4b.local': 'pitaya_5',
 };
+
+const TEMPERATURE_THRESHOLD = 50; // °C - threshold for highlighting high temperatures in red
 
 /**
  * TemperatureDisplay – modal dialog showing live Pitaya temperatures.
@@ -49,6 +52,7 @@ function TemperatureDisplay({ display, setDisplay }) {
 			if (!res.ok) throw new Error('Failed to fetch');
 			const json = await res.json();
 			setData(json.hosts || {});
+			console.log('Fetched temperature data:', json);
 			setTimestamp(json.timestamp_utc || '');
 		} catch (err) {
 			setError('Error fetching temperature data');
@@ -60,9 +64,23 @@ function TemperatureDisplay({ display, setDisplay }) {
 		fetchData();
 		const interval = setInterval(fetchData, 1000);
 		return () => clearInterval(interval);
-	}, []);
+	}, []);1
 
 	return (data) ? (
+		<>
+		{/* Warning alerts rendered outside the dialog for hosts exceeding the temperature threshold. */}
+		{Object.entries(HOST_MAP).map(([host, name]) => {
+			if (!data[host]?.temp_c ) return null; // Skip hosts with no data
+			if (data[host].temp_c > TEMPERATURE_THRESHOLD){
+				return (
+					<Alert severity="warning" key={host} sx={{ marginTop: '5px' }}>
+						{`High temperature detected on ${name.replace('_', ' ')}`}
+					</Alert>
+				);
+			}
+		})}
+
+		{/* Temperature details dialog */}
 		<Dialog open={display} maxWidth="sm" fullWidth onClose={() => { setDisplay(false) }} sx={{ textAlign: 'center' }}>
 			<DialogTitle>Temperatures of the Pitayas</DialogTitle>
 			<TableContainer component={Paper} sx={{ width: '400px', mt: 2, borderRadius: 2, boxShadow: 3, margin: '0 auto' }}>
@@ -85,7 +103,7 @@ function TemperatureDisplay({ display, setDisplay }) {
 								<TableRow key={host}>
 									<TableCell >{name}</TableCell>
 									<TableCell align="right" >
-										{data[host]?.temp_c !== undefined ? data[host].temp_c.toFixed(2) : 'N/A'}
+										{data[host]?.temp_c ? data[host].temp_c.toFixed(2) : 'N/A'}
 									</TableCell>
 									<TableCell align="right" >
 										{data[host]?.error || ''}
@@ -102,7 +120,7 @@ function TemperatureDisplay({ display, setDisplay }) {
 			</TableContainer>
 			<br />
 		</Dialog>
-
+		</>
 	) : null;
 }
 
