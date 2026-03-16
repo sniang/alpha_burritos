@@ -1,10 +1,3 @@
-/* Container for the comment section */
-#comment-block {
-    align-self: stretch;
-    flex: 1;
-    min-width: 200px;
-}
-
 /* Textarea for entering comments */
 #comment-textarea {
     width: 98%;

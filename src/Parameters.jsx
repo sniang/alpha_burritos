@@ -234,7 +234,7 @@ const Parameters = ({
 
   return (
 
-    <Paper sx={{ flex: 1, padding: 2, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center', gap: "2px" }}>
+    <Paper sx={{ flex: 1, minWidth: "300px", padding: 2, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center', gap: "2px"}}>
 
       <Typography variant="h6" sx={{ mb: 2 }}>
         {particleConfig && `${capitalizeFirstLetter(particleConfig)} - `}
@@ -273,7 +273,7 @@ const Parameters = ({
 
                 <TableRow>
 
-                  <TableCell sx={{ width: 100, padding: "4px 6px" }}>
+                  <TableCell sx={{ padding: "4px 6px" }}>
                     <Typography variant="body2" fontWeight={600}>
                       Parameters
                     </Typography>
@@ -293,7 +293,7 @@ const Parameters = ({
 
                 <TableRow>
 
-                  <TableCell sx={{ width: 80, padding: "4px 6px" }}>
+                  <TableCell sx={{ padding: "4px 6px" }}>
                     <Typography variant="body2" fontWeight={600}>
                       Location
                     </Typography>
@@ -331,7 +331,7 @@ const Parameters = ({
                       <TableCell
                         key={`${loc}-${key}`}
                         align="center"
-                        sx={{ padding: "4px 6px", minWidth: 50 }}
+                        sx={{ padding: "4px 6px" }}
                       >
                         <Typography variant="body2">
                           {formatValue(parameters[loc][key])}
@@ -358,7 +358,7 @@ const Parameters = ({
                       <TableCell
                         key={`${loc}-${key}`}
                         align="center"
-                        sx={{ padding: "4px 6px", minWidth: 50 }}
+                        sx={{ padding: "4px 6px" }}
                       >
                         <Typography variant="body2">
                           {formatValue(parameters[loc][key])}

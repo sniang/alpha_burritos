@@ -4,7 +4,8 @@ import { useState } from 'react';
 import LoginIcon from '@mui/icons-material/Login';
 import Button from "@mui/material/Button";
 import TextField from '@mui/material/TextField';
-
+import Paper from '@mui/material/Paper';
+import { Typography } from '@mui/material';
 
 /**
  * LoginForm component for user authentication.
@@ -43,18 +44,20 @@ export default function LoginForm({ onLogin }) {
     };
 
     return (
-        <form onSubmit={handleSubmit} className="blocks" style={{ width: '300px', margin: '0 auto' }}>
-            {/* Login input field */}
-            <TextField  id="outlined-basic" label="Login" variant="outlined" value={login} onChange={e => setLogin(e.target.value)} />
-
-            {/* Password input field */}
-            <TextField  id="outlined-password" label="Password" variant="outlined" type="password" value={password} onChange={e => setPassword(e.target.value)} />
-            {/* Submit button */}
-            <Button type="submit" startIcon={<LoginIcon />} variant="contained" >
-                Log in
-            </Button>
-            {/* Message display area */}
-            {message && <span className="message">{message}</span>}
+        <form onSubmit={handleSubmit} >
+            <Paper elevation={3} style={{ padding: '20px', maxWidth: '400px', margin: '20px auto', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '20px'  }}>
+                <Typography variant="h6">Please log in</Typography>
+                {/* Login input field */}
+                <TextField id="outlined-basic" label="Login" variant="outlined" value={login} onChange={e => setLogin(e.target.value)} />
+                {/* Password input field */}
+                <TextField id="outlined-password" label="Password" variant="outlined" type="password" value={password} onChange={e => setPassword(e.target.value)} />
+                {/* Submit button */}
+                <Button type="submit" startIcon={<LoginIcon />} variant="contained" >
+                    Log in
+                </Button>
+                {/* Message display area */}
+                {message && <span className="message">{message}</span>}
+            </Paper>
         </form>
     );
 }

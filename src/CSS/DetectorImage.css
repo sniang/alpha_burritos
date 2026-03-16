@@ -8,33 +8,3 @@
   margin-right: auto; /* Center the container horizontally */
 }
 
-/* Styling for the main detector image */
-#detectorImage {
-  height: 350px;
-  width: auto;
-  display: block; /* Center the image horizontally */
-  margin: 0 auto; /* Center the image horizontally */
-}
-
-/* Container for buttons related to the detector image */
-#detectorImageButtonContainer {
-  display: flex;                /* Use flexbox for layout */
-  flex-direction: column;       /* Stack children vertically */
-  align-items: center;          /* Center children horizontally */
-  justify-content: center;      /* Center children vertically */
-  flex: 1;                   /* Allow to grow and fill available space */
-}
-
-/* Styling for the container holding the detector image */
-.detectorImageContainer {
-  width: 100%;                  /* Full width */
-  text-align: center;           /* Center text */
-  box-sizing: border-box;       /* Include border and padding in width */
-}
-
-/* Responsive design for smaller screens */
-@media (max-width: 900px) {
-  #detectorImageButtonContainer {
-    height: auto;               /* Adjust height for small screens */
-  }
-}

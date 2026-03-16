@@ -1,5 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
-import "./CSS/Skimmer.css";
+import { useState, useEffect, useMemo } from "react";
 import { parseTimestamp } from "./TimeStampSelector";
 import DetectorSelector from "./DetectorSelector";
 import { parameterKeys } from "./Parameters";
@@ -83,7 +82,7 @@ const Skimmer = ({ jsonFiles, selectedDetector, setSelectedDetector, detectorLis
 
     // Control panel for detector and range selection
     const Selectors = () => (
-        <><div className="skimmer-controls" style={{ display: "flex", gap: "10px", flexWrap: "wrap", justifyContent: "center" }}>
+        <><div style={{ display: "flex", gap: "10px", flexWrap: "wrap", justifyContent: "center" }}>
             <FormControl size="small"  sx={{ minWidth: 150 }}>
                 <InputLabel sx={{ fontSize: 13 }}>Particle</InputLabel>
                 <Select sx={{ fontSize: 13 }} value={particles} onChange={e => setParticles(e.target.value)} label="Particle">
