@@ -200,7 +200,7 @@ const ChooseConfiguration = ({ selectedFile, forceRefreshSelectedFile }) => {
   if (!data) return null;
 
   return (
-    <Paper elevation={3} sx={{ width: '100%', padding: 2, border: '2px solid red', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: "2px" }}>
+    <Paper elevation={3} sx={{ width: '100%', padding: 2, border: '2px solid black', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: "2px" }}>
       <MessageAlert message={message} open={openAlert} setOpen={setOpenAlert}  />
       <Typography variant="h5">Offline analysis configuration</Typography>
       <div style={{ display: 'flex', flexDirection: 'row', gap: '10px', justifyContent: 'center', alignItems: 'center', flexWrap: 'wrap' }}>

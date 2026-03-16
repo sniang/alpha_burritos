@@ -1,5 +1,4 @@
 import DownloadButton from "./DownloadButton";
-import "./CSS/DetectorImage.css";
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 

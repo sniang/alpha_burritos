@@ -8,9 +8,8 @@
  * @author Samuel Niang
  */
 
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { parseTimestamp } from "./TimeStampSelector";
-import "./CSS/Parameters.css";
 import Button from "@mui/material/Button";
 import ShareIcon from "@mui/icons-material/Share";
 import PivotTableChartIcon from "@mui/icons-material/PivotTableChart";

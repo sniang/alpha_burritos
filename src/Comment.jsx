@@ -86,7 +86,7 @@ const Comment = ({ selectedFile }) => {
     }
 
     return (
-    <Paper elevation={3} sx={{ flex: 1, padding: 2, border: '2px solid red', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center', gap: "2px" }}>
+    <Paper elevation={3} sx={{ flex: 1, padding: 2, border: '2px solid black', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center', gap: "2px" }}>
             <Typography variant="h6">Comments</Typography>
             {/* Display the current comment when not in edit mode */}
             {!update && <p style={{ whiteSpace: 'pre-wrap' }}>{comment}</p>}

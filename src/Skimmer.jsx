@@ -75,7 +75,7 @@ const Skimmer = ({ jsonFiles, selectedDetector, setSelectedDetector, detectorLis
 
     // Early return if no files are available
     if (!jsonFiles || !jsonFiles.length)
-        return <Paper elevation={3} sx={{ width: '100%', padding: 2, border: '2px solid red' }}>No JSON files available.</Paper>;
+        return <Paper elevation={3} sx={{ width: '100%', padding: 2, border: '2px solid black' }}>No JSON files available.</Paper>;
 
     // Format value for display in table
     const formatValue = v => (v === undefined || v === null) ? "N/A" : Number(v).toPrecision(3);
@@ -246,7 +246,8 @@ const Skimmer = ({ jsonFiles, selectedDetector, setSelectedDetector, detectorLis
                     fontSize: "0.65rem",
                     overflowX: "auto",
                     marginBottom: "10px",
-                    textAlign: "left"
+                    textAlign: "left",
+                    width: "100%"
                 }}
             >
                 {tableText}
@@ -290,7 +291,7 @@ const Skimmer = ({ jsonFiles, selectedDetector, setSelectedDetector, detectorLis
     };
 
     return (
-    <Paper elevation={3} sx={{ width: '100%', padding: 2, border: '2px solid red', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: "10px" }}>
+    <Paper elevation={3} sx={{ width: '100%', padding: 2, border: '2px solid black', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: "10px" }}>
             <Typography variant="h5">Skimmer</Typography>
             <Selectors />
             {isLoading && <div className="loading-indicator">Loading data...</div>}

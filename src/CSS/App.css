@@ -57,8 +57,6 @@ label {
 .blocks {
   padding: 20px;
   /* Internal spacing */
-  border: 2px solid #e33933;
-  /* Brand red border */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   /* Subtle shadow effect */
   border-radius: 10px;

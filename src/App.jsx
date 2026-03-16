@@ -173,7 +173,7 @@ pm2 startup`;
     if (!selectedFile) return null; // Don't render if no file is selected
     return (
       <>
-    <Paper elevation={3} sx={{ width: '100%', padding: 2, border: '2px solid red', display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'stretch', gap: "10px", flexWrap: 'wrap' }}>
+    <Paper elevation={3} sx={{ width: '100%', padding: 2, border: '2px solid black', display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'stretch', gap: "10px", flexWrap: 'wrap' }}>
           {/* Parameters: Controls for detector selection and parameter adjustment */}
           <Parameters
             selectedFile={selectedFile}
@@ -208,7 +208,7 @@ pm2 startup`;
    */
   const renderSelectorComponents = () => {
     return (
-    <Paper elevation={3} sx={{ width: '100%', padding: 2, border: '2px solid red', display: 'flex', flexDirection: 'column', gap: "10px", justifyContent: 'center', alignItems: 'center', flexWrap: 'wrap' }}>
+    <Paper elevation={3} sx={{ width: '100%', padding: 2, border: '2px solid black', display: 'flex', flexDirection: 'column', gap: "10px", justifyContent: 'center', alignItems: 'center', flexWrap: 'wrap' }}>
         <Typography variant="h5" sx={{ mb: 1 }}>Data selection</Typography>
         <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: "20px", flexWrap: "wrap" }}>
                   {/* AutoRefresh: Handles periodic refresh of file list */}

@@ -1,5 +1,4 @@
 import { useState, useEffect, useCallback } from "react";
-import "./CSS/DetectorImage.css";
 import DownloadAllButton from "./DownloadAllButton";
 import Button from '@mui/material/Button';
 import DrawIcon from '@mui/icons-material/Draw';
@@ -31,11 +30,12 @@ const DetectorImageAll = ({ selectedFile, fileVersion = 0 }) => {
   const handleToggleSignals = () => setAllSignals(prev => !prev);
 
   return (
-    <Paper elevation={3} sx={{ width: '100%', padding: 2, border: '2px solid red', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: "2px" }}>
+    <Paper elevation={3} sx={{ width: '100%', padding: 2, border: '2px solid black', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: "2px" }}>
       <img
         id="detectorImageAll"
         src={imgSrc}
         alt={`Preview for ${imgSrc}`}
+        style={{ width: '100%' }}
       />
       <div style={{ display: "flex", gap: "10px" }}>
         <Button variant="contained" size="small" onClick={handleToggleSignals} startIcon={<DrawIcon />}>
