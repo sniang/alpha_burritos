@@ -67,10 +67,7 @@ const ChooseConfiguration = ({ selectedFile, forceRefreshSelectedFile }) => {
         setPositronConfig(result.configPos);
         setAntiprotonConfig(result.configPbar);
       } catch (err) {
-        // Handle errors and reset data
-        const errorMessage = `${err.message}\nChooseConfiguration failed to fetch configuration`;
-        console.error('[ERROR]', errorMessage);
-        setError(errorMessage);
+        setError(err);
         setData(null);
         setDataKeys([]);
       }
@@ -157,11 +154,7 @@ const ChooseConfiguration = ({ selectedFile, forceRefreshSelectedFile }) => {
       }
     }
     catch (error) {
-      // Handle errors during update
-      const errorMessage = `${error.message}
-            ChooseConfiguration failed to update configuration`;
-      console.error('[ERROR]', errorMessage);
-      setError(errorMessage);
+      setError(error);
     }
   }
 
@@ -189,17 +182,19 @@ const ChooseConfiguration = ({ selectedFile, forceRefreshSelectedFile }) => {
       }
     }
     catch (error) {
-      // Handle errors during re-analysis
-      const errorMessage = `${error.message}`;
-      console.error('[ERROR]', errorMessage);
-      setError(errorMessage);
+      setMessage(`${error.message}`);
+      setOpenAlert(true);
     }
   }
 
-  // If no configuration data is loaded, render nothing
-  if (!data) return null;
+  if (!data && error) return (
+    <Paper elevation={3} sx={{ width: '100%', padding: 2, border: '2px solid black', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', gap: "10px" }}>
+      <Typography variant="h5">Offline analysis configuration</Typography>
+      <Alert severity="error">{error.message}</Alert>
+    </Paper>
+  );
 
-  return (
+  return data && (
     <Paper elevation={3} sx={{ width: '100%', padding: 2, border: '2px solid black', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: "2px" }}>
       <MessageAlert message={message} open={openAlert} setOpen={setOpenAlert}  />
       <Typography variant="h5">Offline analysis configuration</Typography>
@@ -247,7 +242,10 @@ const ChooseConfiguration = ({ selectedFile, forceRefreshSelectedFile }) => {
       </div>
       <ConfigTable showDetails={showDetails} data={data} dataKeys={dataKeys} />
       {/* Display timestamp message if any */}
-      {timestampMessage && <Alert severity="info">{`Latest acquisition: ${timestampMessage} -  From ${latestParticle}'s trigger`}</Alert>}
+      {timestampMessage && <Alert severity="info">{`Latest acquisition: ${timestampMessage} - From the ${latestParticle} trigger`}</Alert>}
+      {!timestampMessage && <Alert severity="error">An error occurred while fetching the latest acquisition timestamp.</Alert>}
+      {/* Display error message if any */}
+      {error && <Alert severity="error">{error.message}</Alert>}
     </Paper>
   );
 }
