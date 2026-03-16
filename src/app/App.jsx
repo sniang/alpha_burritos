@@ -1,18 +1,15 @@
 import { useState, useEffect } from 'react'
 import TimeStampSelector from '../dataSelection/TimeStampSelector.jsx'
-import Parameters from '../dataDisplay/Parameters.jsx'
-import DetectorImageAll from '../dataDisplay/DetectorImageAll.jsx'
 import DetectorSelector from '../dataSelection/DetectorSelector.jsx'
-import DetectorImage from '../dataDisplay/DetectorImage.jsx'
 import DateSelector from '../dataSelection/DateSelector.jsx'
 import MainTitle from './MainTitle.jsx'
 import AutoRefresh from '../dataSelection/AutoRefresh.jsx'
-import Skimmer from '../skimmer/Skimmer.jsx'
 import LoginForm from './LoginForm.jsx'
 import ChooseConfiguration from '../configuration/ChooseConfiguration.jsx'
 import SystemStatus from '../systemStatus/SystemStatus.jsx'
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
+import DataDisplay from '../dataDisplay/DataDisplay.jsx'
 
 /**
  * Root component of the application that orchestrates detector visualization and data management.
@@ -162,43 +159,6 @@ pm2 startup`;
   }
 
   /**
-   * Renders detector-related components if a file is selected.
-   * Includes parameter controls, detector images, comments, and skimmer.
-   * Only shown after a file is chosen.
-   * @returns {JSX.Element|null} The detector-related UI or null if no file selected
-   */
-  const renderDetectorComponents = () => {
-    if (!selectedFile) return null; // Don't render if no file is selected
-    return (
-      <>
-    <Paper elevation={3} sx={{ width: '100%', padding: 2, border: '2px solid black', display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, justifyContent: 'space-between', alignItems: 'stretch', gap: "10px", flexWrap: 'wrap', '@media (max-width: 700px)': { flexDirection: 'column' } }}>
-          {/* Parameters: Controls for detector selection and parameter adjustment */}
-          <Parameters
-            selectedFile={selectedFile}
-            detectorList={detectorList}
-            setDetectorList={(value) => updateState('detectorList', value)}
-            setSelectedDetector={(value) => updateState('selectedDetector', value)}
-            fileVersion={fileVersion}
-          />
-          {/* Show image for selected detector if one is chosen */}
-          {selectedDetector && <DetectorImage selectedFile={selectedFile} selectedDetector={selectedDetector} detectorList={detectorList} fileVersion={fileVersion} />}
-          {/* Comment section for the selected file */}
-          {/* <Comment selectedFile={selectedFile} /> */}
-        </Paper>
-        {/* Show all detector images for the selected file */}
-        <DetectorImageAll selectedFile={selectedFile} fileVersion={fileVersion} />
-        {/* Skimmer: Allows browsing through files and detectors */}
-        <Skimmer
-          jsonFiles={jsonFiles}
-          selectedDetector={selectedDetector}
-          setSelectedDetector={(value) => updateState('selectedDetector', value)}
-          detectorList={detectorList}
-        />
-      </>
-    );
-  };
-
-  /**
    * Renders the controls for selecting year, month, timestamp, and detector.
    * Also includes auto-refresh functionality.
    * These controls are always visible when logged in.
@@ -262,7 +222,14 @@ pm2 startup`;
         selectedFile={selectedFile}
         forceRefreshSelectedFile={forceRefreshSelectedFile}
       />
-      {renderDetectorComponents()}
+      <DataDisplay
+        selectedFile={selectedFile}
+        detectorList={detectorList}
+        selectedDetector={selectedDetector}
+        fileVersion={fileVersion}
+        jsonFiles={jsonFiles}
+        updateState={updateState}
+      />
     </>
   )
 }
