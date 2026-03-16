@@ -1,15 +1,10 @@
 import { useState, useEffect } from 'react'
-import TimeStampSelector from '../dataSelection/TimeStampSelector.jsx'
-import DetectorSelector from '../dataSelection/DetectorSelector.jsx'
-import DateSelector from '../dataSelection/DateSelector.jsx'
 import MainTitle from './MainTitle.jsx'
-import AutoRefresh from '../dataSelection/AutoRefresh.jsx'
 import LoginForm from './LoginForm.jsx'
 import ChooseConfiguration from '../configuration/ChooseConfiguration.jsx'
 import SystemStatus from '../systemStatus/SystemStatus.jsx'
-import Paper from '@mui/material/Paper';
-import Typography from '@mui/material/Typography';
 import DataDisplay from '../dataDisplay/DataDisplay.jsx'
+import DataSelection from '../dataSelection/DataSelection.jsx'
 
 /**
  * Root component of the application that orchestrates detector visualization and data management.
@@ -111,91 +106,25 @@ function App() {
     </>;
   }
 
-  // Show error message if an error occurred anywhere in the app.
-  // This is a global error boundary for the main UI.
-  // @returns {JSX.Element|null}
-  if (error) {
-    const errorMessage = String(error.message || error);
-    return (
-      <>
-        <MainTitle />
-        <div className="blocks">
-          {errorMessage.split('\n').map((line, index) => (
-            <span key={index}>
-              {line}
-              <br />
-            </span>
-          ))}
-          {error.bashCode && <strong>What you can try to fix this</strong>}
-          {error.bashCode && <pre className="bash-viewer">{error.bashCode}</pre>}
-        </div>
-      </>
-    )
-  }
-
-  /**
-   * Renders the controls for selecting year, month, timestamp, and detector.
-   * Also includes auto-refresh functionality.
-   * These controls are always visible when logged in.
-   * @returns {JSX.Element} The selector controls UI
-   */
-  const renderSelectorComponents = () => {
-    return (
-    <Paper elevation={3} sx={{ width: '100%', padding: 2, border: '2px solid black', display: 'flex', flexDirection: 'column', gap: "10px", justifyContent: 'center', alignItems: 'center', flexWrap: 'wrap' }}>
-        <Typography variant="h5" sx={{ mb: 1 }}>Data selection</Typography>
-        <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: "20px", flexWrap: "wrap" }}>
-                  {/* AutoRefresh: Handles periodic refresh of file list */}
-        <AutoRefresh
-          selectedFile={selectedFile}
-          year={year}
-          month={month}
-          day={day}
-          setJsonFiles={(value) => updateState('jsonFiles', value)}
-          setSelectedFile={(value) => updateState('selectedFile', value)}
-          setError={(value) => updateState('error', value)}
-        />
-        {/* DateSelector: Allows user to pick year, month and day */}
-        <DateSelector
-          year={year}
-          month={month}
-          day={day}
-          setYear={(value) => updateState('year', value)}
-          setMonth={(value) => updateState('month', value)}
-          setDay={(value) => updateState('day', value)}
-        />
-        {/* TimeStampSelector: Lets user pick a file (timestamp) */}
-        <TimeStampSelector
-          year={year}
-          month={month}
-          day={day}
-          jsonFiles={jsonFiles}
-          setJsonFiles={(value) => updateState('jsonFiles', value)}
-          selectedFile={selectedFile}
-          setSelectedFile={(value) => updateState('selectedFile', value)}
-          error={error}
-          setError={(value) => updateState('error', value)}
-        />
-        {/* DetectorSelector: Lets user pick a detector from the list */}
-        <DetectorSelector
-          selectedDetector={selectedDetector}
-          setSelectedDetector={(value) => updateState('selectedDetector', value)}
-          detectorList={detectorList}
-        />
-        </div>
-      </Paper>
-    );
-  }
-
   // Main render: Show title, selectors, and detector components (if file selected)
   // @returns {JSX.Element} The main application UI
   return (
     <>
       <MainTitle />
       <SystemStatus handleLogout={handleLogout} />
-      {renderSelectorComponents()}
       <ChooseConfiguration
         selectedFile={selectedFile}
         forceRefreshSelectedFile={forceRefreshSelectedFile}
+      />
+      <DataSelection
+        selectedFile={selectedFile}
+        updateState={updateState}
+        year={year}
+        month={month}
+        day={day}
+        jsonFiles={jsonFiles}
+        detectorList={detectorList}
+        selectedDetector={selectedDetector}
       />
       <DataDisplay
         selectedFile={selectedFile}
