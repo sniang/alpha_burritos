@@ -361,3 +361,100 @@ export const isPythonRunning = async (pidfile) => {
     return false;
   }
 };
+
+/** Allowed script names mapped to their Python filenames and PID files. */
+const SCRIPT_MAP = {
+  temperature:  { script: 'temperature.py',        pidFile: 'temperature.pid' },
+  acquisition:  { script: 'START_ACQUISITION.py',   pidFile: 'acquisition.pid' },
+  analysis:     { script: 'ONLINE_ANALYSIS.py',     pidFile: 'analysis.pid' },
+};
+
+/**
+ * Starts a Python script in the background and saves its PID to a file.
+ * Only scripts listed in SCRIPT_MAP are allowed.
+ *
+ * @param {import('express').Request}  req - Express request (req.params.name = script key).
+ * @param {import('express').Response} res - Express response.
+ */
+export const startPythonScript = async (req, res) => {
+  try {
+    const { name } = req.params;
+
+    const entry = SCRIPT_MAP[name];
+    if (!entry) {
+      return res.status(400).json({ error: `Unknown script "${name}". Allowed: ${Object.keys(SCRIPT_MAP).join(', ')}` });
+    }
+
+    // Check if the script is already running
+    const alreadyRunning = await isPythonRunning(name);
+    if (alreadyRunning) {
+      return res.status(409).json({ error: `${name} is already running` });
+    }
+
+    const scriptPath = path.join(ANALYSIS_DIR, entry.script);
+    const pidFilePath = path.join(ANALYSIS_DIR, entry.pidFile);
+
+    // Spawn the Python process detached so it survives if the server restarts
+    const child = spawn(PYTHON_PATH, [scriptPath], {
+      cwd: ANALYSIS_DIR,
+      detached: true,
+      stdio: 'ignore',
+    });
+
+    // Allow the parent (Node) to exit independently of the child
+    child.unref();
+
+    // Save the PID to disk
+    await fs.writeFile(pidFilePath, String(child.pid), 'utf8');
+
+    console.log(`[startPythonScript] Started ${entry.script} (PID ${child.pid})`);
+    res.json({ success: true, script: entry.script, pid: child.pid });
+  } catch (error) {
+    console.error(getCurrentTimestamp());
+    console.error('Error in startPythonScript:', error.message);
+    res.status(500).json({ error: error.message });
+  }
+};
+
+/**
+ * Stops a running Python script by sending SIGTERM and removes its PID file.
+ * Only scripts listed in SCRIPT_MAP are allowed.
+ *
+ * @param {import('express').Request}  req - Express request (req.params.name = script key).
+ * @param {import('express').Response} res - Express response.
+ */
+export const stopPythonScript = async (req, res) => {
+  try {
+    const { name } = req.params;
+
+    const entry = SCRIPT_MAP[name];
+    if (!entry) {
+      return res.status(400).json({ error: `Unknown script "${name}". Allowed: ${Object.keys(SCRIPT_MAP).join(', ')}` });
+    }
+
+    // Check if the script is actually running
+    const running = await isPythonRunning(name);
+    if (!running) {
+      return res.json({ success: true, message: `${name} is not running` });
+    }
+
+    const pidFilePath = path.join(ANALYSIS_DIR, entry.pidFile);
+
+    // Read the PID from the file
+    const content = await fs.readFile(pidFilePath, 'utf8');
+    const pid = parseInt(content.trim(), 10);
+
+    // Send SIGTERM to the process
+    process.kill(pid, 'SIGTERM');
+
+    // Remove the PID file
+    await fs.unlink(pidFilePath);
+
+    console.log(`[stopPythonScript] Stopped ${entry.script} (PID ${pid})`);
+    res.json({ success: true, script: entry.script, pid });
+  } catch (error) {
+    console.error(getCurrentTimestamp());
+    console.error('Error in stopPythonScript:', error.message);
+    res.status(500).json({ error: error.message });
+  }
+};

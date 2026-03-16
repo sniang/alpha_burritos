@@ -25,7 +25,9 @@ import {
     getLatest,
     reAnalyse,
     MAIN_DIR,
-    isPythonRunning
+    isPythonRunning,
+    startPythonScript,
+    stopPythonScript
 } from './routehandlers.js';
 
 // ====================
@@ -167,6 +169,12 @@ app.get("/api/status/:pidfile", async (req, res) => {
     res.status(500).json({ error: "internal_error" });
   }
 });
+
+// Start a Python script in the background (temperature, acquisition, analysis)
+app.get('/api/start/:name', verifyToken, (req, res) => startPythonScript(req, res));
+
+// Stop a running Python script (temperature, acquisition, analysis)
+app.get('/api/stop/:name', verifyToken, (req, res) => stopPythonScript(req, res));
 
 // Get Temperature data
 app.get("/api/temperature", (req, res) => getTemperature(req, res));
