@@ -2,6 +2,7 @@
 import { getCurrentTimestamp, padToTwoDigits, validateFilename, parseDateFromFilename } from './utils.js';
 import dotenv from 'dotenv';    // Loads environment variables from .env file
 import fs from 'fs/promises';   // Modern promise-based filesystem operations
+import fsSync from 'fs';        // Synchronous fs for createWriteStream
 import path from 'path';        // Cross-platform path handling
 import { spawn } from 'child_process';
 
@@ -362,11 +363,11 @@ export const isPythonRunning = async (pidfile) => {
   }
 };
 
-/** Allowed script names mapped to their Python filenames and PID files. */
+/** Allowed script names mapped to their Python filenames, PID files, and log files. */
 const SCRIPT_MAP = {
-  temperature:  { script: 'temperature.py',        pidFile: 'temperature.pid' },
-  acquisition:  { script: 'START_ACQUISITION.py',   pidFile: 'acquisition.pid' },
-  analysis:     { script: 'ONLINE_ANALYSIS.py',     pidFile: 'analysis.pid' },
+  temperature:  { script: 'temperature.py',        pidFile: 'temperature.pid', logFile: 'temperature.log' },
+  acquisition:  { script: 'START_ACQUISITION.py',   pidFile: 'acquisition.pid', logFile: 'acquisition.log' },
+  analysis:     { script: 'ONLINE_ANALYSIS.py',     pidFile: 'analysis.pid',    logFile: 'analysis.log' },
 };
 
 /**
@@ -393,13 +394,21 @@ export const startPythonScript = async (req, res) => {
 
     const scriptPath = path.join(ANALYSIS_DIR, entry.script);
     const pidFilePath = path.join(ANALYSIS_DIR, entry.pidFile);
+    const logFilePath = path.join(ANALYSIS_DIR, entry.logFile);
+
+    // Open a write stream for logging stdout and stderr
+    const logStream = fsSync.createWriteStream(logFilePath, { flags: 'w' });
 
     // Spawn the Python process detached so it survives if the server restarts
     const child = spawn(PYTHON_PATH, [scriptPath], {
       cwd: ANALYSIS_DIR,
       detached: true,
-      stdio: 'ignore',
+      stdio: ['ignore', 'pipe', 'pipe'],
     });
+
+    // Pipe stdout and stderr to the log file
+    child.stdout.pipe(logStream);
+    child.stderr.pipe(logStream);
 
     // Allow the parent (Node) to exit independently of the child
     child.unref();
@@ -455,6 +464,49 @@ export const stopPythonScript = async (req, res) => {
   } catch (error) {
     console.error(getCurrentTimestamp());
     console.error('Error in stopPythonScript:', error.message);
+    res.status(500).json({ error: error.message });
+  }
+};
+
+/**
+ * Returns the log contents for a given script.
+ * Supports an optional `lines` query parameter to return only the last N lines.
+ *
+ * @param {import('express').Request}  req - Express request (req.params.name = script key).
+ * @param {import('express').Response} res - Express response.
+ */
+export const getScriptLogs = async (req, res) => {
+  try {
+    const { name } = req.params;
+
+    const entry = SCRIPT_MAP[name];
+    if (!entry) {
+      return res.status(400).json({ error: `Unknown script "${name}". Allowed: ${Object.keys(SCRIPT_MAP).join(', ')}` });
+    }
+
+    const logFilePath = path.join(ANALYSIS_DIR, entry.logFile);
+
+    let content;
+    try {
+      content = await fs.readFile(logFilePath, 'utf8');
+    } catch (error) {
+      if (error.code === 'ENOENT') {
+        return res.json({ name, log: '', lines: 0 });
+      }
+      throw error;
+    }
+
+    // If ?lines=N is specified, return only the last N lines
+    const linesParam = parseInt(req.query.lines, 10);
+    if (!Number.isNaN(linesParam) && linesParam > 0) {
+      const allLines = content.split('\n');
+      content = allLines.slice(-linesParam).join('\n');
+    }
+
+    res.json({ name, log: content });
+  } catch (error) {
+    console.error(getCurrentTimestamp());
+    console.error('Error in getScriptLogs:', error.message);
     res.status(500).json({ error: error.message });
   }
 };

@@ -27,7 +27,8 @@ import {
     MAIN_DIR,
     isPythonRunning,
     startPythonScript,
-    stopPythonScript
+    stopPythonScript,
+    getScriptLogs
 } from './routehandlers.js';
 
 // ====================
@@ -175,6 +176,9 @@ app.post('/api/start/:name', verifyToken, (req, res) => startPythonScript(req, r
 
 // Stop a running Python script (temperature, acquisition, analysis)
 app.post('/api/stop/:name', verifyToken, (req, res) => stopPythonScript(req, res));
+
+// Get logs for a Python script (temperature, acquisition, analysis)
+app.get('/api/logs/:name', (req, res) => getScriptLogs(req, res));
 
 // Get Temperature data
 app.get("/api/temperature", (req, res) => getTemperature(req, res));
