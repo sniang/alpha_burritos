@@ -27,6 +27,7 @@ The application communicates with a custom RESTful API to fetch and display crit
 - **Authentication:** Secure login for authorized users.
 - **Choose Configuration:** Select the analysis mode ("positrons" or "antiprotons") and toggle the fit option for the current session.
 - **Re-analyse:** Trigger a new analysis of the currently selected file with the current configuration.
+- **Script Logs:** View stdout/stderr logs for each Python worker script (acquisition, analysis, temperature) directly in the UI via a dialog, with a refresh button to fetch the latest output.
 
 ---
 
@@ -251,6 +252,17 @@ The React app expects the following backend API (see [`server.js`](server.js)):
     { "success": true, "script": "ONLINE_ANALYSIS.py", "pid": 12345 }
     ```
   - Returns `{ "success": true, "message": "analysis is not running" }` if not running.
+
+- **Get Python Worker Script Logs:**  
+  `GET /api/logs/:name`  
+  - Returns the log output (stdout + stderr) for a Python worker script. Allowed names: `acquisition`, `analysis`, `temperature`.  
+  - Supports an optional `?lines=N` query parameter to return only the last N lines.  
+  - Example: `/api/logs/acquisition`  
+  - Response:  
+    ```json
+    { "name": "acquisition", "log": "...log content..." }
+    ```
+  - Returns `{ "name": "acquisition", "log": "", "lines": 0 }` if no log file exists yet.
 
 - **Get Temperature Data:**  
   `GET /api/temperature`  
