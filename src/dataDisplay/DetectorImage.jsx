@@ -1,5 +1,4 @@
 import DownloadButton from "./DownloadButton";
-import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 
 /**
@@ -24,11 +23,11 @@ const DetectorImage = ({ selectedFile, selectedDetector, fileVersion }) => {
     const imgSrc = `/api/img/${selectedDetector}/${selectedFile.replace('.json', '.png').replace('data', selectedDetector)}?v=${fileVersion}`;
 
     return (
-    <Paper sx={{ flex: 1,  padding: 2, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center', gap: "2px" }}>
+    <div style={{ flex: 1,  padding: 2, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center', gap: "2px" }}>
         <Typography variant="h6" >{`Detector: ${selectedDetector}`}</Typography>
             <img
                 key={fileVersion}
-                style={{ width: '100%', maxWidth: '500px' }}
+                style={{ width: '100%', maxWidth: '450px' }}
                 src={imgSrc}
                 alt={`Preview for ${selectedFile.replace('.json', '.png')} with ${selectedDetector}`}
                 loading="eager"
@@ -43,7 +42,7 @@ const DetectorImage = ({ selectedFile, selectedDetector, fileVersion }) => {
                 selectedFile={selectedFile}
                 selectedDetector={selectedDetector}
             />
-        </Paper>
+        </div>
     );
 };
 

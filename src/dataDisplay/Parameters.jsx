@@ -10,21 +10,12 @@
 
 import { useState, useEffect } from "react";
 import { parseTimestamp } from "../dataSelection/TimeStampSelector";
-import Button from "@mui/material/Button";
 import ShareIcon from "@mui/icons-material/Share";
 import PivotTableChartIcon from "@mui/icons-material/PivotTableChart";
 import CancelIcon from "@mui/icons-material/Cancel";
+import EditNoteIcon from '@mui/icons-material/EditNote';
+import { TextField, Button, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Alert } from "@mui/material";
 
-import {
-  Typography,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper
-} from "@mui/material";
 
 /** Parameter keys paired with their display labels and units. */
 export const parameterKeys = [
@@ -67,7 +58,9 @@ const Parameters = ({
   const [reverseTable, setReverseTable] = useState(false);      // Toggle between the two table orientations
   const [displayTable, setDisplayTable] = useState(false);      // Toggle plain-text / MUI table view
   const [particleConfig, setParticleConfig] = useState(null);
-
+  const [comment, setComment] = useState("No comment"); // Stores the current comment for the selected file
+  const [newComment, setNewComment] = useState(""); // Stores the comment being edited
+  const [update, setUpdate] = useState(false); // Controls whether edit mode is active
   /**
    * Fetches parameter JSON for the selected file, populates the detector
    * list, and extracts the particle configuration label if present.
@@ -97,7 +90,6 @@ const Parameters = ({
 
       } catch (error) {
         setError(error);
-        console.error("[ERROR]", error);
         setDetectorList([]);
       }
     };
@@ -109,6 +101,67 @@ const Parameters = ({
 
   }, [selectedFile, fileVersion]);
 
+  const fetchComment = async () => {
+    try {
+      // Fetch the existing comment for the selected file from the API
+      const response = await fetch(`/api/comments/${selectedFile}`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch comment');
+      }
+      const data = await response.json();
+      // Update the comment state with the fetched data
+      setComment(data.comment || "No comment");
+      setNewComment(data.comment || "");
+    } catch (err) {
+      // Handle and display any errors during API call
+      setError(err);
+      console.error('[ERROR]', 'Comment failed to fetch comment:', err);
+    }
+  }
+  // Fetch the comment when the component mounts or when selectedFile changes
+  useEffect(() => {
+    if (selectedFile) {
+      fetchComment();
+    }
+  }, [selectedFile]);
+
+  /**
+* Handles saving or toggling the comment edit mode
+* Makes API request to save the new comment when in edit mode
+* Toggles between view and edit mode
+*/
+  const updateComment = async () => {
+    setError(null); // Reset any previous errors
+    if (update && newComment !== comment) {
+      // Save the new comment via API call when in edit mode and comment is not empty
+      try {
+        // POST request to save the comment for the selected file
+        const response = await fetch(`/api/comments/${selectedFile}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ comment: newComment })
+        });
+        if (!response.ok) {
+          throw new Error('Failed to save comment');
+        }
+        // Reset states after successful save
+        if (newComment !== "") {
+          setComment(newComment);
+        } else {
+          setComment("No comment");
+        }
+        return setUpdate(!update); // Exit edit mode
+      } catch (err) {
+        // Handle and display any errors during API call
+        setError(err);
+        return;
+      }
+    }
+    // Toggle edit mode when not saving or when comment is empty
+    setUpdate(!update);
+  }
 
   /**
    * Builds a fixed-width plain-text representation of the parameter
@@ -205,23 +258,14 @@ const Parameters = ({
             Back
           </Button>
         )}
-
+                {/* Button text changes based on edit mode */}
+                <Button startIcon={<EditNoteIcon />} size="small" variant="contained" onClick={updateComment}>{!update ? "Update comments" : "Save comments"}</Button>
+                                {/* Cancel button only appears in edit mode */}
+                {update && <Button startIcon={<CancelIcon />} size="small" color="error" variant="contained" onClick={() => setUpdate(!update)}>Cancel</Button>}
       </div>
     );
   };
 
-
-  // Error state: show heading + message
-  if (error) {
-    return (
-      <div>
-        <Typography variant="h5">Parameters</Typography>
-        <p className="error">
-          Something went wrong while loading parameters: {error.message}
-        </p>
-      </div>
-    );
-  }
 
   // Nothing to render until data arrives
   if (!parameters) return null;
@@ -233,7 +277,7 @@ const Parameters = ({
 
   return (
 
-    <Paper sx={{ flex: 1, minWidth: "300px", padding: 2, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center', gap: "2px"}}>
+    <div style={{ flex: 1, minWidth: "300px", padding: 2, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center', gap: "2px" }}>
 
       <Typography variant="h6" sx={{ mb: 2 }}>
         {particleConfig && `${capitalizeFirstLetter(particleConfig)} - `}
@@ -376,10 +420,12 @@ const Parameters = ({
         </TableContainer>
 
       )}
-
+      {update && <TextField value={newComment}
+                    onChange={(e) => setNewComment(e.target.value)} label="Write a comment..."  />}
+      {!update && <Alert severity="info">{comment}</Alert>}
       {displayButtons()}
 
-    </Paper>
+    </div>
   );
 };
 

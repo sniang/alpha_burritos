@@ -171,7 +171,7 @@ pm2 startup`;
     if (!selectedFile) return null; // Don't render if no file is selected
     return (
       <>
-    <Paper elevation={3} sx={{ width: '100%', padding: 2, border: '2px solid black', display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'stretch', gap: "10px", flexWrap: 'wrap' }}>
+    <Paper elevation={3} sx={{ width: '100%', padding: 2, border: '2px solid black', display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, justifyContent: 'space-between', alignItems: 'stretch', gap: "10px", flexWrap: 'wrap', '@media (max-width: 700px)': { flexDirection: 'column' } }}>
           {/* Parameters: Controls for detector selection and parameter adjustment */}
           <Parameters
             selectedFile={selectedFile}
