@@ -43,7 +43,7 @@ const DataDisplay = ({ selectedFile, detectorList, selectedDetector, fileVersion
 
   return (
     <>
-      {/* Paper container: switches to column layout on small screens (<700px) */}
+      {/* Paper container: switches to column layout on small screens (<900px>) */}
       <Paper
         elevation={3}
         sx={{
@@ -56,7 +56,8 @@ const DataDisplay = ({ selectedFile, detectorList, selectedDetector, fileVersion
           alignItems: 'stretch',
           gap: "10px",
           flexWrap: 'wrap',
-          '@media (max-width: 700px)': { flexDirection: 'column' },
+          overflow: 'hidden',
+          '@media (max-width: 900px)': { flexDirection: 'column' },
         }}
       >
         {/* Parameters: Controls for detector selection and parameter adjustment */}

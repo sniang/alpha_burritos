@@ -217,7 +217,7 @@ const Parameters = ({
   const displayButtons = () => {
 
     return (
-      <div style={{ display: "flex", gap: "10px", marginTop: "10px" }}>
+      <div style={{ display: "flex", gap: "10px", marginTop: "10px", flexWrap: "wrap", justifyContent: "center" }}>
 
         <Button
           size="small"
@@ -277,7 +277,7 @@ const Parameters = ({
 
   return (
 
-    <div style={{ flex: 1, minWidth: "300px", padding: 2, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center', gap: "2px" }}>
+    <div style={{ flex: 1, padding: 2, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center', gap: "2px", minWidth: 0, maxWidth: '100%', width: '100%', overflow: 'hidden', boxSizing: 'border-box' }}>
 
       <Typography variant="h6" sx={{ mb: 2 }}>
         {particleConfig && `${capitalizeFirstLetter(particleConfig)} - `}
@@ -295,7 +295,10 @@ const Parameters = ({
             fontSize: "0.65rem",
             overflowX: "auto",
             marginBottom: "10px",
-            textAlign: "left"
+            textAlign: "left",
+            maxWidth: "100%",
+            width: "100%",
+            boxSizing: "border-box"
           }}
         >
           {makeTable()}
@@ -304,7 +307,7 @@ const Parameters = ({
       ) : (
         <TableContainer
           component={Paper}
-          sx={{ maxWidth: "100%", overflowX: "auto", mb: 1 }}
+          sx={{ maxWidth: "100%", width: "100%", overflowX: "auto", mb: 1 }}
           onClick={() => setDisplayTable(true)}
         >
 
