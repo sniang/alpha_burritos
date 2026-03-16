@@ -69,31 +69,6 @@ function App() {
     }));
   };
 
-  // On mount check if the server is reachable
-  useEffect(() => {
-    const checkServer = async () => {
-      try {
-        const res = await fetch('/api/test');
-        if (!res.ok) throw new Error('Server not reachable');
-      } catch (error) {
-        error.bashCode = `# Check server status
-pm2 status
-
-# Restart the server
-pm2 restart all
-
-# Start the server if not running (run all the following commands)
-cd ~/Desktop/alpha_burritos/
-pm2 start server.js --name burritos
-pm2 save
-pm2 startup`;
-        console.error('[ERROR]', error.message);
-        updateState('error', error);
-      }
-    };
-    checkServer();
-  }, []);
-
   // On mount, check if the user is authenticated by calling the profile API.
   // If not authenticated, set isLoggedIn to false.
   // @returns {void}

@@ -5,9 +5,8 @@
  *              expert-mode toggle, a temperature dialog, and a logout button.
  * @author Samuel Niang
  */
-
+import { useState, useEffect } from 'react';
 import Paper from '@mui/material/Paper';
-import { useState } from 'react';
 import WorkerMonitor from './WorkerMonitor.jsx';
 import { Typography } from '@mui/material';
 import TemperatureDisplay from './TemperatureDisplay.jsx';
