@@ -234,9 +234,9 @@ const Parameters = ({
 
   return (
 
-    <div id="parametersBlock" className="blocks">
+    <Paper sx={{ flex: 1, padding: 2, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center', gap: "2px" }}>
 
-      <Typography variant="subtitle1" sx={{ mb: 1 }}>
+      <Typography variant="h6" sx={{ mb: 2 }}>
         {particleConfig && `${capitalizeFirstLetter(particleConfig)} - `}
         {parseTimestamp(selectedFile)}
       </Typography>
@@ -380,7 +380,7 @@ const Parameters = ({
 
       {displayButtons()}
 
-    </div>
+    </Paper>
   );
 };
 

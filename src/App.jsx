@@ -13,6 +13,8 @@ import Skimmer from './Skimmer.jsx'
 import LoginForm from './LoginForm.jsx'
 import ChooseConfiguration from './ChooseConfiguration.jsx'
 import SystemStatus from './SystemStatus.jsx'
+import Paper from '@mui/material/Paper';
+import Typography from '@mui/material/Typography';
 
 /**
  * Root component of the application that orchestrates detector visualization and data management.
@@ -171,7 +173,7 @@ pm2 startup`;
     if (!selectedFile) return null; // Don't render if no file is selected
     return (
       <>
-        <div id='detector-block'>
+    <Paper elevation={3} sx={{ width: '100%', padding: 2, border: '2px solid red', display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'stretch', gap: "10px", flexWrap: 'wrap' }}>
           {/* Parameters: Controls for detector selection and parameter adjustment */}
           <Parameters
             selectedFile={selectedFile}
@@ -183,8 +185,8 @@ pm2 startup`;
           {/* Show image for selected detector if one is chosen */}
           {selectedDetector && <DetectorImage selectedFile={selectedFile} selectedDetector={selectedDetector} detectorList={detectorList} fileVersion={fileVersion} />}
           {/* Comment section for the selected file */}
-          <Comment selectedFile={selectedFile} />
-        </div>
+          {/* <Comment selectedFile={selectedFile} /> */}
+        </Paper>
         {/* Show all detector images for the selected file */}
         <DetectorImageAll selectedFile={selectedFile} fileVersion={fileVersion} />
         {/* Skimmer: Allows browsing through files and detectors */}
@@ -206,8 +208,10 @@ pm2 startup`;
    */
   const renderSelectorComponents = () => {
     return (
-      <div id="selects-block">
-        {/* AutoRefresh: Handles periodic refresh of file list */}
+    <Paper elevation={3} sx={{ width: '100%', padding: 2, border: '2px solid red', display: 'flex', flexDirection: 'column', gap: "10px", justifyContent: 'center', alignItems: 'center', flexWrap: 'wrap' }}>
+        <Typography variant="h5" sx={{ mb: 1 }}>Data selection</Typography>
+        <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: "20px", flexWrap: "wrap" }}>
+                  {/* AutoRefresh: Handles periodic refresh of file list */}
         <AutoRefresh
           selectedFile={selectedFile}
           year={year}
@@ -244,7 +248,8 @@ pm2 startup`;
           setSelectedDetector={(value) => updateState('selectedDetector', value)}
           detectorList={detectorList}
         />
-      </div>
+        </div>
+      </Paper>
     );
   }
 

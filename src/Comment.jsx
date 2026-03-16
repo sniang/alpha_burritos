@@ -12,6 +12,7 @@ import './CSS/Comment.css';
 import { Button } from "@mui/material";
 import EditNoteIcon from '@mui/icons-material/EditNote';
 import CancelIcon from '@mui/icons-material/Cancel';
+import Paper from '@mui/material/Paper';
 
 const Comment = ({ selectedFile }) => {
     // State for existing comment, new comment input, edit mode, and error handling
@@ -85,8 +86,8 @@ const Comment = ({ selectedFile }) => {
     }
 
     return (
-        <div id="comment-block" className="blocks">
-            <Typography variant="h5">Comments</Typography>
+    <Paper elevation={3} sx={{ flex: 1, padding: 2, border: '2px solid red', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center', gap: "2px" }}>
+            <Typography variant="h6">Comments</Typography>
             {/* Display the current comment when not in edit mode */}
             {!update && <p style={{ whiteSpace: 'pre-wrap' }}>{comment}</p>}
             {/* Render textarea only when in edit mode */}
@@ -102,12 +103,12 @@ const Comment = ({ selectedFile }) => {
                 {/* Cancel button only appears in edit mode */}
                 {update && <Button startIcon={<CancelIcon />} size="small" color="error" variant="contained" onClick={() => setUpdate(!update)}>Cancel</Button>}
                 {/* Button text changes based on edit mode */}
-                <Button startIcon={<EditNoteIcon />} size="small" color="success" variant="contained" onClick={updateComment}>{!update ? "Update comments" : "Save comments"}</Button>
+                <Button startIcon={<EditNoteIcon />} size="small" variant="contained" onClick={updateComment}>{!update ? "Update comments" : "Save comments"}</Button>
             </div>
 
             {/* Error message display when applicable */}
             {error && <p>Error: {error.message}</p>}
-        </div>
+        </Paper>
     );
 }
 

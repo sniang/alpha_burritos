@@ -84,7 +84,7 @@ const Skimmer = ({ jsonFiles, selectedDetector, setSelectedDetector, detectorLis
     // Control panel for detector and range selection
     const Selectors = () => (
         <><div className="skimmer-controls" style={{ display: "flex", gap: "10px", flexWrap: "wrap", justifyContent: "center" }}>
-            <FormControl size="small" color="success" sx={{ minWidth: 150 }}>
+            <FormControl size="small"  sx={{ minWidth: 150 }}>
                 <InputLabel sx={{ fontSize: 13 }}>Particle</InputLabel>
                 <Select sx={{ fontSize: 13 }} value={particles} onChange={e => setParticles(e.target.value)} label="Particle">
                     <MenuItem sx={{ fontSize: 13 }} value="positrons">Positrons</MenuItem>
@@ -97,7 +97,7 @@ const Skimmer = ({ jsonFiles, selectedDetector, setSelectedDetector, detectorLis
                 detectorList={detectorList}
             />
 
-            <FormControl size="small" color="success" sx={{ minWidth: 150 }}>
+            <FormControl size="small"  sx={{ minWidth: 150 }}>
                 <InputLabel sx={{ fontSize: 13 }}>Acquisition timestamp</InputLabel>
                 <Select sx={{ fontSize: 13 }} value={endingIndex} onChange={e => setEndingIndex(Number(e.target.value))} label="Acquisition timestamp">
                     {jsonFilesSorted.map((file, i) =>
@@ -106,7 +106,7 @@ const Skimmer = ({ jsonFiles, selectedDetector, setSelectedDetector, detectorLis
                 </Select>
             </FormControl>
 
-            <FormControl size="small" color="success" sx={{ minWidth: 150 }}>
+            <FormControl size="small"  sx={{ minWidth: 150 }}>
                 <InputLabel sx={{ fontSize: 13 }}>Acquisition timestamp</InputLabel>
                 <Select sx={{ fontSize: 13 }} value={startingIndex} onChange={e => setStartingIndex(Number(e.target.value))} label="Acquisition timestamp">
                     <MenuItem sx={{ fontSize: 13 }} value="" disabled>Acquisition timestamp</MenuItem>
@@ -124,7 +124,7 @@ const Skimmer = ({ jsonFiles, selectedDetector, setSelectedDetector, detectorLis
                         <Switch
                             checked={isSwitchOn}
                             onChange={e => setIsSwitchOn(e.target.checked)}
-                            color="success"
+                            
                         />
                     }
                     label="Last N acquisitions"
@@ -137,7 +137,7 @@ const Skimmer = ({ jsonFiles, selectedDetector, setSelectedDetector, detectorLis
                     value={nValue}
                     onChange={e => handleNValueChange(Number(e.target.value))}
                     disabled={!isSwitchOn}
-                    color="success"
+                    
                     sx={{ width: '100px' }}
                 />
             </Box>

@@ -45,12 +45,12 @@ export default function LoginForm({ onLogin }) {
     return (
         <form onSubmit={handleSubmit} className="blocks" style={{ width: '300px', margin: '0 auto' }}>
             {/* Login input field */}
-            <TextField color="success" id="outlined-basic" label="Login" variant="outlined" value={login} onChange={e => setLogin(e.target.value)} />
+            <TextField  id="outlined-basic" label="Login" variant="outlined" value={login} onChange={e => setLogin(e.target.value)} />
 
             {/* Password input field */}
-            <TextField color="success" id="outlined-password" label="Password" variant="outlined" type="password" value={password} onChange={e => setPassword(e.target.value)} />
+            <TextField  id="outlined-password" label="Password" variant="outlined" type="password" value={password} onChange={e => setPassword(e.target.value)} />
             {/* Submit button */}
-            <Button type="submit" startIcon={<LoginIcon />} variant="contained" color="success">
+            <Button type="submit" startIcon={<LoginIcon />} variant="contained" >
                 Log in
             </Button>
             {/* Message display area */}

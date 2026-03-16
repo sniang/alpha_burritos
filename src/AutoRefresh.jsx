@@ -109,7 +109,7 @@ function AutoRefresh({
 
     // Render the auto-refresh checkbox UI
     return (
-        <FormControlLabel control={<Checkbox checked={autoRefresh} color="success" onChange={handleCheckboxChange} />} label="Auto-refresh" />
+        <FormControlLabel control={<Checkbox checked={autoRefresh} onChange={handleCheckboxChange} />} label="Auto-refresh" />
     );
 }
 

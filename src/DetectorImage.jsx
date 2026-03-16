@@ -1,5 +1,7 @@
 import DownloadButton from "./DownloadButton";
 import "./CSS/DetectorImage.css";
+import Paper from '@mui/material/Paper';
+import Typography from '@mui/material/Typography';
 
 /**
  * DetectorImage component displays an image processed by a selected detector.
@@ -23,14 +25,14 @@ const DetectorImage = ({ selectedFile, selectedDetector, fileVersion }) => {
     const imgSrc = `/api/img/${selectedDetector}/${selectedFile.replace('.json', '.png').replace('data', selectedDetector)}?v=${fileVersion}`;
 
     return (
-        <div id="detectorImageButtonContainer" className="blocks">
+    <Paper sx={{ flex: 1,  padding: 2, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center', gap: "2px" }}>
+        <Typography variant="h6" >{`Detector: ${selectedDetector}`}</Typography>
             <img
                 key={fileVersion}
-                id="detectorImage"
+                style={{ width: '100%' }}
                 src={imgSrc}
                 alt={`Preview for ${selectedFile.replace('.json', '.png')} with ${selectedDetector}`}
                 loading="eager"
-                style={{ imageRendering: "auto" }}
                 crossOrigin="anonymous"
                 ref={img => {
                     if (img) {
@@ -42,7 +44,7 @@ const DetectorImage = ({ selectedFile, selectedDetector, fileVersion }) => {
                 selectedFile={selectedFile}
                 selectedDetector={selectedDetector}
             />
-        </div>
+        </Paper>
     );
 };
 

@@ -3,7 +3,7 @@ import "./CSS/DetectorImage.css";
 import DownloadAllButton from "./DownloadAllButton";
 import Button from '@mui/material/Button';
 import DrawIcon from '@mui/icons-material/Draw';
-
+import Paper from '@mui/material/Paper';
 
 /**
  * Displays an image for the selected file, allowing toggling between combined and subplot views.
@@ -31,19 +31,19 @@ const DetectorImageAll = ({ selectedFile, fileVersion = 0 }) => {
   const handleToggleSignals = () => setAllSignals(prev => !prev);
 
   return (
-    <div className="detectorImageContainer blocks">
+    <Paper elevation={3} sx={{ width: '100%', padding: 2, border: '2px solid red', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: "2px" }}>
       <img
         id="detectorImageAll"
         src={imgSrc}
         alt={`Preview for ${imgSrc}`}
       />
       <div style={{ display: "flex", gap: "10px" }}>
-        <Button color="success" variant="contained" size="small" onClick={handleToggleSignals} startIcon={<DrawIcon />}>
+        <Button variant="contained" size="small" onClick={handleToggleSignals} startIcon={<DrawIcon />}>
           {allSignals ? "Subplots" : "Combined plot"}
         </Button>
         <DownloadAllButton selectedFile={selectedFile} />
       </div>
-    </div>
+    </Paper>
   );
 };
 
