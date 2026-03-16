@@ -84,7 +84,7 @@ function TimeStampSelector({
     return null;
   }
   return (
-    <FormControl size="small" color="success" >
+    <FormControl size="small" color="success">
       <InputLabel sx={{ fontSize: 13 }} color="success">Timestamp</InputLabel>
       <Select
         sx={{ fontSize: 13 }}

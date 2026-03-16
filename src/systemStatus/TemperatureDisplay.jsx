@@ -69,8 +69,8 @@ function TemperatureDisplay({ display, setDisplay }) {
 		<>
 		{/* Warning alerts rendered outside the dialog for hosts exceeding the temperature threshold. */}
 		{Object.entries(HOST_MAP).map(([host, name]) => {
-			if (!data[host]?.temp_c ) return null; // Skip hosts with no data
-			if (data[host].temp_c > TEMPERATURE_THRESHOLD){
+			if (!data[host]?.temp_c) return null; // Skip hosts with no data
+			if (data[host].temp_c > TEMPERATURE_THRESHOLD) {
 				return (
 					<Alert severity="warning" key={host} sx={{ marginTop: '5px' }}>
 						{`High temperature detected on ${name.replace('_', ' ')}`}
@@ -83,7 +83,7 @@ function TemperatureDisplay({ display, setDisplay }) {
 		<Dialog open={display} maxWidth="sm" fullWidth onClose={() => { setDisplay(false) }} sx={{ textAlign: 'center' }}>
 			<DialogTitle>Temperatures of the Pitayas</DialogTitle>
 			<TableContainer component={Paper} sx={{ width: '400px', mt: 2, borderRadius: 2, boxShadow: 3, margin: '0 auto' }}>
-				<Table >
+				<Table>
 					<TableHead>
 						<TableRow>
 							<TableCell sx={{ fontWeight: 'bold' }}>Host</TableCell>
@@ -100,11 +100,11 @@ function TemperatureDisplay({ display, setDisplay }) {
 							/* Iterate over the known hosts and display their temperature or 'N/A'. */
 							Object.entries(HOST_MAP).map(([host, name]) => (
 								<TableRow key={host}>
-									<TableCell >{name}</TableCell>
-									<TableCell align="right" >
+									<TableCell>{name}</TableCell>
+									<TableCell align="right">
 										{data[host]?.temp_c ? data[host].temp_c.toFixed(2) : 'N/A'}
 									</TableCell>
-									<TableCell align="right" >
+									<TableCell align="right">
 										{data[host]?.error || ''}
 									</TableCell>
 								</TableRow>

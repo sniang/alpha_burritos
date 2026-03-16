@@ -54,7 +54,7 @@ const DataSelection = ({ selectedFile, updateState, year, month, day, jsonFiles,
         </div>
         {/* Show error alert if there's an error fetching files */}
         {error && (
-          <Alert severity="error" >
+          <Alert severity="error">
             {error.message || 'An error occurred while fetching files'}
           </Alert>
         )}

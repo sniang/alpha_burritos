@@ -424,7 +424,7 @@ const Parameters = ({
 
       )}
       {update && <TextField value={newComment}
-                    onChange={(e) => setNewComment(e.target.value)} label="Write a comment..."  />}
+                    onChange={(e) => setNewComment(e.target.value)} label="Write a comment..." />}
       {!update && <Alert severity="info">{comment}</Alert>}
       {displayButtons()}
 
