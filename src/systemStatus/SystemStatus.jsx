@@ -40,7 +40,7 @@ export default function SystemStatus({handleLogout}) {
     const handleScript = async (action, name) => {
         setScriptError(null);
         try {
-            const res = await fetch(`/api/${action}/${name}`, { credentials: 'include' });
+            const res = await fetch(`/api/${action}/${name}`, { method: 'POST', credentials: 'include' });
             const data = await res.json();
             if (!res.ok) throw new Error(data.error || `Failed to ${action} ${name}`);
         } catch (err) {

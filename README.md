@@ -10,23 +10,6 @@ The application communicates with a custom RESTful API to fetch and display crit
 
 ---
 
-- **Get Temperature Data:**  
-  `GET /api/temperature`  
-  - Returns the latest temperature readings for all detector hosts.  
-  - Example: `/api/temperature`  
-  - Response:  
-    ```json
-    {
-      "hosts": {
-        "rp-f0a821.local": { "temp_c": 41.59, "error": null },
-        "rp-f073bf.local": { "temp_c": 42.82, "error": null },
-        ...
-      },
-      "timestamp_utc": "2025-10-08 08:42:16"
-    }
-    ```
-
-
 ## Features
 
 - **Temperature Monitoring:** View real-time temperature readings from multiple detector hosts (pitaya boards) in a compact, color-coded table. The temperature data is fetched from the backend and auto-refreshes every 10 seconds. The table uses a green background to match the application's button style.
@@ -51,24 +34,36 @@ The application communicates with a custom RESTful API to fetch and display crit
 
 ```
 src/
-  App.jsx                # Main React component
-  MainTitle.jsx          # App title and logo
-  DateSelector.jsx       # Dropdowns for year/month/day selection
-  TimeStampSelector.jsx  # Dropdown for timestamp/file selection
-  Parameters.jsx         # Displays detector parameters from JSON
-  DetectorImageAll.jsx   # Shows combined detector image
-  DetectorSelector.jsx   # Dropdown for detector selection
-  DetectorImage.jsx      # Shows image for selected detector
-  DownloadButton.jsx     # Button to download the signal as a text file
-  DownloadAllButton.jsx  # Button to download all signals for all detectors
-  AutoRefresh.jsx        # Checkbox to enable/disable auto-refresh
-  Comment.jsx            # Add and edit comments for each acquisition
-  Skimmer.jsx            # Browse and export a range of acquisitions
-  TemperatureDisplay.jsx # Displays real-time temperature readings for detector hosts
-  LoginForm.jsx          # User authentication form
-  assets/                # Static assets (e.g., ALPHA logo)
-  CSS/                   # App and global CSS
-  main.jsx               # React entry point
+  main.jsx                         # React entry point
+  main.css                         # Global styles
+  app/
+    App.jsx                        # Main React component
+    LoginForm.jsx                  # User authentication form
+    MainTitle.jsx                  # App title and logo
+    MessageAlert.jsx               # Reusable alert/message component
+  assets/
+    ALPHA_Logo_png.png             # ALPHA experiment logo
+  configuration/
+    ChooseConfiguration.jsx        # Select analysis mode (positrons/antiprotons) and fit option
+    ConfigTable.jsx                # Displays configuration details in a table
+  dataDisplay/
+    DataDisplay.jsx                # Container for detector data visualization
+    DetectorImage.jsx              # Shows image for a selected detector
+    DetectorImageAll.jsx           # Shows combined detector image (all detectors)
+    DownloadButton.jsx             # Button to download the signal as a text file
+    DownloadAllButton.jsx          # Button to download all signals for all detectors
+    Parameters.jsx                 # Displays detector parameters from JSON
+    Skimmer.jsx                    # Browse and export a range of acquisitions as CSV
+  dataSelection/
+    AutoRefresh.jsx                # Toggle auto-refresh of file list
+    DataSelection.jsx              # Container for data selection controls
+    DateSelector.jsx               # Dropdowns for year/month/day selection
+    DetectorSelector.jsx           # Dropdown for detector selection
+    TimeStampSelector.jsx          # Dropdown for timestamp/file selection
+  systemStatus/
+    SystemStatus.jsx               # System status panel with expert-mode controls
+    TemperatureDisplay.jsx         # Real-time temperature readings for detector hosts
+    WorkerMonitor.jsx              # Monitors Python worker process status
 ```
 
 ---
@@ -203,7 +198,7 @@ The React app expects the following backend API (see [`server.js`](server.js)):
     ```
 
 - **Get/Update Configuration:**  
-  - `GET /api/configuration` — Get the current configuration (from `ANALYSIS_DIR/configuration.json`).
+  - `GET /api/configuration` — Get the current configuration (from `ANALYSIS_DIR/configurations/configuration.json`).
   - `POST /api/configuration` — Update the configuration (expects JSON body).
 
 - **Get the Latest Dump Timestamp:**  
@@ -219,40 +214,57 @@ The React app expects the following backend API (see [`server.js`](server.js)):
   `GET /api/reanalyse/:filename`  
   - Triggers a re-analysis for the specified JSON file.
 
-  - **Check Python Worker Status:**  
-    `GET /api/status/:pidfile`  
-    - Checks if a Python worker process is running, based on the given pidfile name.  
-    - Example: `/api/status/worker`  
-    - Response:  
-      ```json
-      { "worker": "running" }
-      ```
-      or
-      ```json
-      { "worker": "stopped" }
-      ```
+- **Check Python Worker Status:**  
+  `GET /api/status/:pidfile`  
+  - Checks if a Python worker process is running, based on the given pidfile name.  
+  - Example: `/api/status/worker`  
+  - Response:  
+    ```json
+    { "worker": "running" }
+    ```
+    or
+    ```json
+    { "worker": "stopped" }
+    ```
 
 - **Authentication:**  
   - `POST /api/login` — Authenticate user (expects `{ login, password }` in body).  
   - `GET /api/profile` — Returns user info if authenticated.
   - `POST /api/logout` — Logout user and clear authentication cookie.
 
-### Additional Endpoints
-
-- **Get Subplots Image:**  
-  `GET /api/img_same/:imageName`  
-  - Returns the PNG image showing subplots for all signals.  
-  - Example: `/api/img_same/data-2025-06-02_08-25-03.png`  
-  - Response:  
-    Binary PNG image.
-
-- **Get User Profile:**  
-  `GET /api/profile`  
-  - Returns the authenticated user's profile information.  
-  - Example: `/api/profile`  
+- **Start a Python Worker Script (requires authentication):**  
+  `POST /api/start/:name`  
+  - Starts a Python worker script in the background. Allowed names: `acquisition`, `analysis`, `temperature`.  
+  - Example: `/api/start/acquisition`  
   - Response:  
     ```json
-    { "login": "your_login" }
+    { "success": true, "script": "START_ACQUISITION.py", "pid": 12345 }
+    ```
+  - Returns `409` with `{ "error": "acquisition is already running" }` if already running.
+
+- **Stop a Python Worker Script (requires authentication):**  
+  `POST /api/stop/:name`  
+  - Stops a running Python worker script. Allowed names: `acquisition`, `analysis`, `temperature`.  
+  - Example: `/api/stop/analysis`  
+  - Response:  
+    ```json
+    { "success": true, "script": "ONLINE_ANALYSIS.py", "pid": 12345 }
+    ```
+  - Returns `{ "success": true, "message": "analysis is not running" }` if not running.
+
+- **Get Temperature Data:**  
+  `GET /api/temperature`  
+  - Returns the latest temperature readings for all detector hosts.  
+  - Example: `/api/temperature`  
+  - Response:  
+    ```json
+    {
+      "hosts": {
+        "rp-f0a821.local": { "temp_c": 41.59, "error": null },
+        "rp-f073bf.local": { "temp_c": 42.82, "error": null }
+      },
+      "timestamp_utc": "2025-10-08 08:42:16"
+    }
     ```
 
 ### Error Handling

@@ -171,10 +171,10 @@ app.get("/api/status/:pidfile", async (req, res) => {
 });
 
 // Start a Python script in the background (temperature, acquisition, analysis)
-app.get('/api/start/:name', verifyToken, (req, res) => startPythonScript(req, res));
+app.post('/api/start/:name', verifyToken, (req, res) => startPythonScript(req, res));
 
 // Stop a running Python script (temperature, acquisition, analysis)
-app.get('/api/stop/:name', verifyToken, (req, res) => stopPythonScript(req, res));
+app.post('/api/stop/:name', verifyToken, (req, res) => stopPythonScript(req, res));
 
 // Get Temperature data
 app.get("/api/temperature", (req, res) => getTemperature(req, res));
