@@ -12,7 +12,7 @@ const DataSelection = ({ selectedFile, updateState, year, month, day, jsonFiles,
     
     return (
     <Paper elevation={3} sx={{ width: '100%', padding: 2, border: '2px solid black', display: 'flex', flexDirection: 'column', gap: "10px", justifyContent: 'center', alignItems: 'center', flexWrap: 'wrap' }}>
-        <Typography variant="h5" sx={{ mb: 1 }}>Data selection</Typography>
+        <Typography variant="h5" sx={{ mb: 1 }}>Data Selection</Typography>
         <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: "20px", flexWrap: "wrap" }}>
                   {/* AutoRefresh: Handles periodic refresh of file list */}
         <AutoRefresh

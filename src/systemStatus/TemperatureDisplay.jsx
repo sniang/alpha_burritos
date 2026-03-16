@@ -63,7 +63,7 @@ function TemperatureDisplay({ display, setDisplay }) {
 		fetchData();
 		const interval = setInterval(fetchData, 1000);
 		return () => clearInterval(interval);
-	}, []);1
+	}, []);
 
 	return (data) ? (
 		<>

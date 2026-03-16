@@ -189,7 +189,7 @@ const ChooseConfiguration = ({ selectedFile, forceRefreshSelectedFile }) => {
 
   if (!data && error) return (
     <Paper elevation={3} sx={{ width: '100%', padding: 2, border: '2px solid black', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', gap: "10px" }}>
-      <Typography variant="h5">Offline analysis configuration</Typography>
+      <Typography variant="h5">Offline Analysis Configuration</Typography>
       <Alert severity="error">{error.message}</Alert>
     </Paper>
   );
@@ -197,7 +197,7 @@ const ChooseConfiguration = ({ selectedFile, forceRefreshSelectedFile }) => {
   return data && (
     <Paper elevation={3} sx={{ width: '100%', padding: 2, border: '2px solid black', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: "2px" }}>
       <MessageAlert message={message} open={openAlert} setOpen={setOpenAlert}  />
-      <Typography variant="h5">Offline analysis configuration</Typography>
+      <Typography variant="h5">Offline Analysis Configuration</Typography>
       <div style={{ display: 'flex', flexDirection: 'row', gap: '10px', justifyContent: 'center', alignItems: 'center', flexWrap: 'wrap' }}>
         <Button startIcon={<AddCircleOutlineIcon />} style={{ opacity: data.config !== 'positrons' ? 0.5 : 1 }} onClick={() => handleConfigChange('positrons')}>
           Positrons
