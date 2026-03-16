@@ -3,15 +3,18 @@
  * @description Panel that displays the overall system status, including
  *              worker monitors (acquisition, analysis, temperature), an
  *              expert-mode toggle, a temperature dialog, and a logout button.
+ *              In expert mode, provides controls to start/stop Python workers.
  * @author Samuel Niang
  */
 import { useState, useEffect } from 'react';
 import Paper from '@mui/material/Paper';
 import WorkerMonitor from './WorkerMonitor.jsx';
-import { Typography } from '@mui/material';
+import { Typography, Alert } from '@mui/material';
 import TemperatureDisplay from './TemperatureDisplay.jsx';
 import Switch from '@mui/material/Switch';
 import LogoutIcon from '@mui/icons-material/Logout';
+import PlayArrowIcon from '@mui/icons-material/PlayArrow';
+import StopIcon from '@mui/icons-material/Stop';
 import Button from "@mui/material/Button";
 
 /** List of worker processes to monitor. */
@@ -27,6 +30,23 @@ const monitors = ["acquisition", "analysis", "temperature"];
 export default function SystemStatus({handleLogout}) {
     const [expertMode, setExpertMode] = useState(false);
     const [displayTemperature, setDisplayTemperature] = useState(false);
+    const [scriptError, setScriptError] = useState(null);
+
+    /**
+     * Calls the start or stop API for a given script name.
+     * @param {'start'|'stop'} action - The action to perform.
+     * @param {string} name - The script key (acquisition, analysis, temperature).
+     */
+    const handleScript = async (action, name) => {
+        setScriptError(null);
+        try {
+            const res = await fetch(`/api/${action}/${name}`, { credentials: 'include' });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error || `Failed to ${action} ${name}`);
+        } catch (err) {
+            setScriptError(err.message);
+        }
+    };
 
     return (
         <Paper elevation={3} sx={{ width: '100%', padding: 2, border: '2px solid black', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: "2px" }}>
@@ -51,6 +71,22 @@ export default function SystemStatus({handleLogout}) {
 
                 <Button onClick={handleLogout} startIcon={<LogoutIcon />} variant="contained">Log out</Button>
             </div>
+
+            {/* Expert mode: start/stop controls for each Python worker */}
+            {expertMode && (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', justifyContent: 'center', flexWrap: 'wrap', marginTop: '10px', width: '100%', marginTop: '20px', maxWidth: '400px' }}>
+                    {monitors.map(name => (
+                        <div key={name} style={{ display: 'flex', gap: '4px', alignItems: 'center' }}>
+                            <Typography variant="body2" sx={{ fontWeight: 600, mr: 0.5, flex: 1 }}>{name}</Typography>
+                            <Button sx={{flex: 1}} size="small" variant="contained" color="success" startIcon={<PlayArrowIcon />} onClick={() => handleScript('start', name)}>Start</Button>
+                            <Button sx={{flex: 1}} size="small" variant="contained" color="error" startIcon={<StopIcon />} onClick={() => handleScript('stop', name)}>Stop</Button>
+                        </div>
+                    ))}
+                </div>
+            )}
+
+            {/* Display error from start/stop actions */}
+            {scriptError && <Alert severity="error" sx={{ mt: 1 }} onClose={() => setScriptError(null)}>{scriptError}</Alert>}
 
             {/* Modal dialog with live Pitaya temperature readings */}
             <TemperatureDisplay display={displayTemperature} setDisplay={setDisplayTemperature} />
