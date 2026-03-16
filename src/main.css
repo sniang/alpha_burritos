@@ -88,3 +88,21 @@ label {
 }
 
 
+/* Root variables and global font settings */
+:root {
+  font-family: 'Helvetica', 'Arial', sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Remove default body margin and padding, add bottom margin */
+body {
+  margin: 0;
+  padding: 0;
+  margin-bottom: 20px;
+  font-family: 'Roboto', 'Helvetica', 'Arial', sans-serif;
+}

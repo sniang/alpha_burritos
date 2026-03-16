@@ -28,7 +28,7 @@ const DetectorImage = ({ selectedFile, selectedDetector, fileVersion }) => {
         <Typography variant="h6" >{`Detector: ${selectedDetector}`}</Typography>
             <img
                 key={fileVersion}
-                style={{ width: '100%' }}
+                style={{ width: '100%', maxWidth: '500px' }}
                 src={imgSrc}
                 alt={`Preview for ${selectedFile.replace('.json', '.png')} with ${selectedDetector}`}
                 loading="eager"

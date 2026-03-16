@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
-import { parseTimestamp } from "./TimeStampSelector";
-import DetectorSelector from "./DetectorSelector";
-import { parameterKeys } from "./Parameters";
+import { parseTimestamp } from "../dataSelection/TimeStampSelector";
+import DetectorSelector from "../dataSelection/DetectorSelector";
+import { parameterKeys } from "../dataDisplay/Parameters";
 import SaveIcon from '@mui/icons-material/Save';
 import Button from '@mui/material/Button';
 import CancelIcon from '@mui/icons-material/Cancel';

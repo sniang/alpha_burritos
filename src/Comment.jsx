@@ -8,7 +8,6 @@
  */
 import { useState, useEffect } from "react";
 import { Typography } from '@mui/material';
-import './CSS/Comment.css';
 import { Button } from "@mui/material";
 import EditNoteIcon from '@mui/icons-material/EditNote';
 import CancelIcon from '@mui/icons-material/Cancel';

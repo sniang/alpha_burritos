@@ -9,7 +9,7 @@
  */
 
 import { useState, useEffect } from "react";
-import { parseTimestamp } from "./TimeStampSelector";
+import { parseTimestamp } from "../dataSelection/TimeStampSelector";
 import Button from "@mui/material/Button";
 import ShareIcon from "@mui/icons-material/Share";
 import PivotTableChartIcon from "@mui/icons-material/PivotTableChart";

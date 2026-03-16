@@ -6,7 +6,7 @@ import InfoIcon from '@mui/icons-material/Info';
 import MonitorHeartIcon from '@mui/icons-material/MonitorHeart';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
-import MessageAlert from "./MessageAlert.jsx";
+import MessageAlert from "../app/MessageAlert.jsx";
 import {Paper, Alert, Typography} from "@mui/material";
 import ConfigTable from "./ConfigTable.jsx";
 /**

@@ -1,6 +1,5 @@
-import alphaLogo from './assets/ALPHA_Logo_png.png';
+import alphaLogo from '../assets/ALPHA_Logo_png.png';
 import Typography from '@mui/material/Typography';
-
 
 /**
  * Renders the main title component of the ALPHA Burritos application.
@@ -13,7 +12,7 @@ import Typography from '@mui/material/Typography';
 const MainTitle = () => {
     return (
         <Typography variant="h4" sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '10px', justifyContent: 'center', flexWrap: 'wrap', marginTop: '10px' }}>
-            <img id="alphaLogo" src={alphaLogo} alt="Logo of the ALPHA experiment" />
+            <img style={{ width: '55px', marginRight: '20px' }} src={alphaLogo} alt="Logo of the ALPHA experiment" />
             ALPHA Burrito Detectors
         </Typography>
     );
