@@ -98,7 +98,7 @@ const ConfigTable = ({ showDetails, data, dataKeys }) => {
                         <TableHead>
                             {/* Table title */}
                             <TableRow>
-                                <TableCell colSpan={3} align="center">
+                                <TableCell colSpan={4} align="center">
                                     <Typography variant="subtitle1" fontWeight={600}>
                                         Mapping
                                     </Typography>
