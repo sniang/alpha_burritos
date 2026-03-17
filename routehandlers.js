@@ -400,10 +400,9 @@ export const startPythonScript = async (req, res) => {
     const logStream = fsSync.createWriteStream(logFilePath, { flags: 'w' });
 
     // Spawn the Python process detached so it survives if the server restarts
-    // -u: force unbuffered stdout/stderr so all output reaches the log file immediately.
     // stdin is 'pipe' (not 'ignore') so scripts with interactive prompts
     // (e.g. "press q to stop") block on input() instead of crashing with EOFError.
-    const child = spawn(PYTHON_PATH, ['-u', scriptPath], {
+    const child = spawn(PYTHON_PATH, [scriptPath], {
       cwd: ANALYSIS_DIR,
       detached: true,
       stdio: ['pipe', 'pipe', 'pipe'],
