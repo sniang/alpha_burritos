@@ -363,6 +363,9 @@ export const isPythonRunning = async (pidfile) => {
   }
 };
 
+/** In-memory map of running child processes keyed by script name. */
+const runningProcesses = new Map();
+
 /** Allowed script names mapped to their Python filenames, PID files, and log files. */
 const SCRIPT_MAP = {
   temperature:  { script: 'temperature.py',        pidFile: 'temperature.pid', logFile: 'temperature.log' },
@@ -412,6 +415,14 @@ export const startPythonScript = async (req, res) => {
     child.stdout.pipe(logStream);
     child.stderr.pipe(logStream);
 
+    // Store the child process reference so we can interact with its stdin later
+    runningProcesses.set(name, child);
+
+    // Clean up the map entry when the process exits
+    child.on('close', () => {
+      runningProcesses.delete(name);
+    });
+
     // Allow the parent (Node) to exit independently of the child
     child.unref();
 
@@ -455,11 +466,19 @@ export const stopPythonScript = async (req, res) => {
     const content = await fs.readFile(pidFilePath, 'utf8');
     const pid = parseInt(content.trim(), 10);
 
-    // Send SIGTERM to the process
-    process.kill(pid, 'SIGTERM');
+    // For acquisition, gracefully stop by writing 'q' to stdin
+    const child = runningProcesses.get(name);
+    if (name === 'acquisition' && child && child.stdin && !child.stdin.destroyed) {
+      child.stdin.write('q\n');
+      child.stdin.end();
+    } else {
+      // Fallback: send SIGTERM
+      process.kill(pid, 'SIGTERM');
+    }
 
     // Remove the PID file
     await fs.unlink(pidFilePath);
+    runningProcesses.delete(name);
 
     console.log(`[stopPythonScript] Stopped ${entry.script} (PID ${pid})`);
     res.json({ success: true, script: entry.script, pid });
