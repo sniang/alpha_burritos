@@ -9,8 +9,9 @@
 import { useEffect, useState } from "react";
 import Chip from '@mui/material/Chip';
 import HeartBrokenSharpIcon from '@mui/icons-material/HeartBrokenSharp';
-import DeviceHubSharpIcon from '@mui/icons-material/DeviceHubSharp';
 import DeviceThermostatIcon from '@mui/icons-material/DeviceThermostat';
+import SensorsIcon from '@mui/icons-material/Sensors';
+import AnalyticsIcon from '@mui/icons-material/Analytics';
 
 /**
  * WorkerMonitor Component
@@ -54,7 +55,7 @@ function WorkerMonitor({ monitor, onClick }) {
       <Chip
         onClick={onClick}
         color="success"
-        icon={monitor === "temperature" ? <DeviceThermostatIcon /> : <DeviceHubSharpIcon />}
+        icon={monitor === "temperature" ? <DeviceThermostatIcon /> : monitor === "acquisition" ? <SensorsIcon /> : <AnalyticsIcon />}
         label={`${monitor}: ${status}`}
       />
     );
