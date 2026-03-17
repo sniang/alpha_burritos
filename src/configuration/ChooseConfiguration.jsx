@@ -98,7 +98,7 @@ const ChooseConfiguration = ({ selectedFile, forceRefreshSelectedFile }) => {
           setDiffInSeconds(diffInSec);
           if (result.particle) {
             setLatestParticle(result.particle);
-            if (diffInSec > 0 && diffInSec <= 10) {
+            if (diffInSec > 0 && diffInSec <= 2) {
               setMessage(`New acquisition: ${result.latest.replace('_', ' ')} -  From ${result.particle}'s trigger`);
               setOpenAlert(true);
             }
