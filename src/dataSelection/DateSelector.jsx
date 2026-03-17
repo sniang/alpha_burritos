@@ -36,7 +36,7 @@ const DateSelector = ({ year, setYear, month, setMonth, day, setDay }) => {
 
 
     return (
-        <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+        <Box sx={{ display: "flex", alignItems: "center", gap: 2, flexWrap: "wrap" }}>
             {/* Year selector */}
             <FormControl size="small"  sx={{ minWidth: 120 }}>
                 <InputLabel sx={{ fontSize: 13 }}>Year</InputLabel>
