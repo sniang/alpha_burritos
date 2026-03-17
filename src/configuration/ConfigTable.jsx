@@ -122,6 +122,11 @@ const ConfigTable = ({ showDetails, data, dataKeys }) => {
                                         Channel 2
                                     </Typography>
                                 </TableCell>
+                                <TableCell>
+                                    <Typography variant="body2" fontWeight={600}>
+                                        Hostname
+                                    </Typography>
+                                </TableCell>
                             </TableRow>
                         </TableHead>
 
@@ -146,6 +151,11 @@ const ConfigTable = ({ showDetails, data, dataKeys }) => {
                                         <TableCell>
                                             <Typography variant="body2">
                                                 {ch2}
+                                            </Typography>
+                                        </TableCell>
+                                        <TableCell>
+                                            <Typography variant="body2">
+                                                {data.hostnames?.[key] || key}
                                             </Typography>
                                         </TableCell>
                                     </TableRow>
