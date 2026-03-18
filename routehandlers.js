@@ -519,36 +519,40 @@ export const getPitayaStatus = async (_req, res) => {
 
     // Start a new refresh
     pitayaCache.pending = (async () => {
-      // Read the configuration to discover hostnames
-      const configPath = path.join(ANALYSIS_DIR, 'configurations', 'configuration.json');
-      const raw = await fs.readFile(configPath, 'utf8');
-      const config = JSON.parse(raw);
-      const hostnames = config.hostnames || {};
+      try {
+        // Read the configuration to discover hostnames
+        const configPath = path.join(ANALYSIS_DIR, 'configurations', 'configuration.json');
+        const raw = await fs.readFile(configPath, 'utf8');
+        const config = JSON.parse(raw);
+        const hostnames = config.hostnames || {};
 
-      // Ping every enabled host in parallel
-      const entries = await Promise.all(
-        Object.entries(hostnames).map(([name, host]) => {
-          const enabled = config[name] !== undefined ? config[name] : false;
-          if (!enabled) {
-            return { name, host, status: 'disabled' };
-          }
-          return new Promise((resolve) => {
-            const ping = spawn('ping', ['-c', '1', '-W', '2', host]);
-            ping.on('close', (code) => {
-              resolve({ name, host, status: code === 0 ? 'on' : 'off' });
+        // Ping every enabled host in parallel
+        const entries = await Promise.all(
+          Object.entries(hostnames).map(([name, host]) => {
+            const enabled = config[name] !== undefined ? config[name] : false;
+            if (!enabled) {
+              return { name, host, status: 'disabled' };
+            }
+            return new Promise((resolve) => {
+              const ping = spawn('ping', ['-c', '1', '-W', '2', host]);
+              ping.on('close', (code) => {
+                resolve({ name, host, status: code === 0 ? 'on' : 'off' });
+              });
+              ping.on('error', () => {
+                resolve({ name, host, status: 'off' });
+              });
             });
-            ping.on('error', () => {
-              resolve({ name, host, status: 'off' });
-            });
-          });
-        })
-      );
+          })
+        );
 
-      const result = { pitayas: entries, updatedAt: new Date().toISOString() };
-      pitayaCache.data = result;
-      pitayaCache.updatedAt = Date.now();
-      pitayaCache.pending = null;
-      return result;
+        const result = { pitayas: entries, updatedAt: new Date().toISOString() };
+        pitayaCache.data = result;
+        pitayaCache.updatedAt = Date.now();
+        return result;
+      } finally {
+        // Always clear pending so future requests can trigger a new refresh
+        pitayaCache.pending = null;
+      }
     })();
 
     const result = await pitayaCache.pending;
