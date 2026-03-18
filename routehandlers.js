@@ -489,6 +489,77 @@ export const stopPythonScript = async (req, res) => {
   }
 };
 
+// ====================
+// Pitaya status (cached ping)
+// ====================
+
+/** Cached pitaya status result and timestamp. */
+let pitayaCache = { data: null, updatedAt: 0, pending: null };
+const PITAYA_CACHE_TTL = 2000; // ms – re-ping at most every 2 s
+
+/**
+ * Pings all enabled Red Pitaya hosts in parallel and returns their statuses.
+ * Results are cached for PITAYA_CACHE_TTL ms so rapid polling from the
+ * frontend does not spawn hundreds of ping processes.
+ */
+export const getPitayaStatus = async (_req, res) => {
+  try {
+    const now = Date.now();
+
+    // Return cached result if still fresh
+    if (pitayaCache.data && now - pitayaCache.updatedAt < PITAYA_CACHE_TTL) {
+      return res.json(pitayaCache.data);
+    }
+
+    // If a refresh is already in-flight, wait for it instead of spawning dupes
+    if (pitayaCache.pending) {
+      const result = await pitayaCache.pending;
+      return res.json(result);
+    }
+
+    // Start a new refresh
+    pitayaCache.pending = (async () => {
+      // Read the configuration to discover hostnames
+      const configPath = path.join(ANALYSIS_DIR, 'configurations', 'configuration.json');
+      const raw = await fs.readFile(configPath, 'utf8');
+      const config = JSON.parse(raw);
+      const hostnames = config.hostnames || {};
+
+      // Ping every enabled host in parallel
+      const entries = await Promise.all(
+        Object.entries(hostnames).map(([name, host]) => {
+          const enabled = config[name] !== undefined ? config[name] : false;
+          if (!enabled) {
+            return { name, host, status: 'disabled' };
+          }
+          return new Promise((resolve) => {
+            const ping = spawn('ping', ['-c', '1', '-W', '2', host]);
+            ping.on('close', (code) => {
+              resolve({ name, host, status: code === 0 ? 'on' : 'off' });
+            });
+            ping.on('error', () => {
+              resolve({ name, host, status: 'off' });
+            });
+          });
+        })
+      );
+
+      const result = { pitayas: entries, updatedAt: new Date().toISOString() };
+      pitayaCache.data = result;
+      pitayaCache.updatedAt = Date.now();
+      pitayaCache.pending = null;
+      return result;
+    })();
+
+    const result = await pitayaCache.pending;
+    res.json(result);
+  } catch (error) {
+    console.error(getCurrentTimestamp());
+    console.error('Error in getPitayaStatus:', error.message);
+    res.status(500).json({ error: 'Unable to check pitaya status' });
+  }
+};
+
 /**
  * Returns the log contents for a given script.
  * Supports an optional `lines` query parameter to return only the last N lines.

@@ -11,6 +11,7 @@ import Paper from '@mui/material/Paper';
 import WorkerMonitor from './WorkerMonitor.jsx';
 import { Typography, Alert } from '@mui/material';
 import TemperatureDisplay from './TemperatureDisplay.jsx';
+import PitayaStatus from './PitayaStatus.jsx';
 import Switch from '@mui/material/Switch';
 import LogoutIcon from '@mui/icons-material/Logout';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
@@ -92,6 +93,9 @@ export default function SystemStatus({handleLogout}) {
                     />
                 ))}
             </div>
+
+            {/* Red Pitaya connection status */}
+            <PitayaStatus />
 
             {/* Expert mode: start/stop controls for each Python worker */}
             {expertMode && (

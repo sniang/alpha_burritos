@@ -28,7 +28,8 @@ import {
     isPythonRunning,
     startPythonScript,
     stopPythonScript,
-    getScriptLogs
+    getScriptLogs,
+    getPitayaStatus
 } from './routehandlers.js';
 
 // ====================
@@ -182,6 +183,9 @@ app.get('/api/logs/:name', (req, res) => getScriptLogs(req, res));
 
 // Get Temperature data
 app.get("/api/temperature", (req, res) => getTemperature(req, res));
+
+// Get Red Pitaya connection status (cached ping)
+app.get('/api/pitaya-status', (req, res) => getPitayaStatus(req, res));
 
 // ====================
 // Error Handling
