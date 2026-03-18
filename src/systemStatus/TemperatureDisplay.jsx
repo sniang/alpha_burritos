@@ -70,7 +70,7 @@ function TemperatureDisplay({ display, setDisplay }) {
 		<>
 		{/* Warning alerts rendered outside the dialog for hosts exceeding the temperature threshold. */}
 		{Object.entries(HOST_MAP).map(([host, name]) => {
-			if (!data[host]?.temp_c) return null; // Skip hosts with no data
+			if (data[host]?.temp_c == null) return null; // Skip hosts with no data
 			if (data[host].temp_c > TEMPERATURE_THRESHOLD) {
 				return (
 					<Alert severity="warning" key={host} sx={{ marginTop: '5px' }}>
@@ -103,7 +103,7 @@ function TemperatureDisplay({ display, setDisplay }) {
 								<TableRow key={host}>
 									<TableCell>{name}</TableCell>
 									<TableCell align="right">
-										{data[host]?.temp_c ? data[host].temp_c.toFixed(2) : 'N/A'}
+										{data[host]?.temp_c != null ? data[host].temp_c.toFixed(2) : 'N/A'}
 									</TableCell>
 									<TableCell align="right">
 										{data[host]?.error || ''}
