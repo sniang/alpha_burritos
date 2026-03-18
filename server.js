@@ -179,7 +179,7 @@ app.post('/api/start/:name', verifyToken, (req, res) => startPythonScript(req, r
 app.post('/api/stop/:name', verifyToken, (req, res) => stopPythonScript(req, res));
 
 // Get logs for a Python script (temperature, acquisition, analysis)
-app.get('/api/logs/:name', (req, res) => getScriptLogs(req, res));
+app.get('/api/logs/:name', verifyToken, (req, res) => getScriptLogs(req, res));
 
 // Get Temperature data
 app.get("/api/temperature", (req, res) => getTemperature(req, res));
