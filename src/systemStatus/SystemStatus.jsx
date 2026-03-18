@@ -94,9 +94,6 @@ export default function SystemStatus({handleLogout}) {
                 ))}
             </div>
 
-            {/* Red Pitaya connection status */}
-            <PitayaStatus />
-
             {/* Expert mode: start/stop controls for each Python worker */}
             {expertMode && (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', justifyContent: 'center', flexWrap: 'wrap', width: '100%', marginTop: '20px', maxWidth: '400px' }}>
@@ -111,6 +108,9 @@ export default function SystemStatus({handleLogout}) {
                 </div>
             )}
 
+            {/* Red Pitaya connection status */}
+            <PitayaStatus />
+            
             {/* Display error from start/stop actions */}
             {scriptError && <Alert severity="error" sx={{ mt: 1 }} onClose={() => setScriptError(null)}>{scriptError}</Alert>}
 
