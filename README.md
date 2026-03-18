@@ -12,7 +12,7 @@ The application communicates with a custom RESTful API to fetch and display crit
 
 ## Features
 
-- **Temperature Monitoring:** View real-time temperature readings from multiple detector hosts (pitaya boards) in a compact, color-coded table. The temperature data is fetched from the backend and auto-refreshes every 10 seconds. The table uses a green background to match the application's button style.
+- **Temperature Monitoring:** View real-time temperature readings from multiple detector hosts (pitaya boards) in a compact, color-coded table. The temperature data is fetched from the backend and auto-refreshes every 1 second. The table uses a green background to match the application's button style.
 - **Year/Month/Day Selection:** Choose the year, month, and day to filter available data files.
 - **Timestamp Selection:** Select a specific acquisition timestamp from available JSON files.
 - **Parameter Display:** View key parameters (area, FWHM, peak, rise, time peak, dt, arrival) for each detector.
