@@ -1,15 +1,14 @@
 import { useState, useEffect } from "react";
-import './CSS/ChooseConfiguration.css';
 import Button from '@mui/material/Button';
-import ButtonGroup from '@mui/material/ButtonGroup';
 import PsychologyIcon from '@mui/icons-material/Psychology';
 import AutoStoriesIcon from '@mui/icons-material/AutoStories';
-import WorkerMonitor from './WorkerMonitor.jsx';
 import InfoIcon from '@mui/icons-material/Info';
 import MonitorHeartIcon from '@mui/icons-material/MonitorHeart';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
-
+import MessageAlert from "../app/MessageAlert.jsx";
+import {Paper, Alert, Typography} from "@mui/material";
+import ConfigTable from "./ConfigTable.jsx";
 /**
  * ChooseConfiguration component provides UI controls for selecting the analysis configuration
  * ("positrons" or "antiprotons") and toggling the "fit" option. It fetches the current configuration
@@ -38,12 +37,14 @@ const ChooseConfiguration = ({ selectedFile, forceRefreshSelectedFile }) => {
   const [showDetails, setShowDetails] = useState(false);
   // State for displaying messages (e.g., success messages)
   const [message, setMessage] = useState(null);
+  // State to open MessageAlert component
+  const [openAlert, setOpenAlert] = useState(false);
+    // Timestamp message
   const [timestampMessage, setTimestampMessage] = useState(null);
-  // Timestamp message
+  // State for difference in seconds between current time and latest dump timestamp
   const [diffInSeconds, setDiffInSeconds] = useState(null);
   // latest type dump
   const [latestParticle, setLatestParticle] = useState(null);
-
   // Fetch configuration data from backend on mount and every 500ms
   useEffect(() => {
     const fetchData = async () => {
@@ -66,10 +67,7 @@ const ChooseConfiguration = ({ selectedFile, forceRefreshSelectedFile }) => {
         setPositronConfig(result.configPos);
         setAntiprotonConfig(result.configPbar);
       } catch (err) {
-        // Handle errors and reset data
-        const errorMessage = `${err.message}\nChooseConfiguration failed to fetch configuration`;
-        console.error('[ERROR]', errorMessage);
-        setError(errorMessage);
+        setError(err);
         setData(null);
         setDataKeys([]);
       }
@@ -100,6 +98,10 @@ const ChooseConfiguration = ({ selectedFile, forceRefreshSelectedFile }) => {
           setDiffInSeconds(diffInSec);
           if (result.particle) {
             setLatestParticle(result.particle);
+            if (diffInSec > 0 && diffInSec <= 2) {
+              setMessage(`New acquisition: ${result.latest.replace('_', ' ')} -  From ${result.particle}'s trigger`);
+              setOpenAlert(true);
+            }
           }
         }
         setTimestampMessage(result.latest.replace('_', ' '));
@@ -152,11 +154,7 @@ const ChooseConfiguration = ({ selectedFile, forceRefreshSelectedFile }) => {
       }
     }
     catch (error) {
-      // Handle errors during update
-      const errorMessage = `${error.message}
-            ChooseConfiguration failed to update configuration`;
-      console.error('[ERROR]', errorMessage);
-      setError(errorMessage);
+      setError(error);
     }
   }
 
@@ -169,6 +167,7 @@ const ChooseConfiguration = ({ selectedFile, forceRefreshSelectedFile }) => {
     setShowDetails(false);
     try {
       setMessage("Re-analyzing the file...");
+      setOpenAlert(true);
       // Call backend API to re-analyse the selected file
       const response = await fetch(`/api/reanalyse/${selectedFile}`)
       if (!response.ok) {
@@ -179,35 +178,28 @@ const ChooseConfiguration = ({ selectedFile, forceRefreshSelectedFile }) => {
       if (result.success) {
         setMessage('Re-analysis successful');
         forceRefreshSelectedFile();
+        setOpenAlert(true);
       }
     }
     catch (error) {
-      // Handle errors during re-analysis
-      const errorMessage = `${error.message}`;
-      console.error('[ERROR]', errorMessage);
-      setError(errorMessage);
-    }
-    finally {
-      // Clear message after 3 seconds
-      setTimeout(() => {
-        setMessage(null);
-        setError(null);
-      }, 3000);
+      setMessage(`${error.message}`);
+      setOpenAlert(true);
     }
   }
 
-  // If no configuration data is loaded, render nothing
-  if (!data) return null;
+  if (!data && error) return (
+    <Paper elevation={3} sx={{ width: '100%', padding: 2, border: '2px solid black', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', gap: "10px" }}>
+      <Typography variant="h5">Offline Analysis Configuration</Typography>
+      <Alert severity="error">{error.message}</Alert>
+    </Paper>
+  );
 
-  return (
-    <div id="ChooseConfig" className="blocks">
-      <h3>Offline analysis configuration</h3>
-      <ButtonGroup size="small" variant="contained" color="success">
-        <Button
-          startIcon={<AddCircleOutlineIcon />}
-          style={{ opacity: data.config !== 'positrons' ? 0.5 : 1 }}
-          onClick={() => handleConfigChange('positrons')}
-        >
+  return data && (
+    <Paper elevation={3} sx={{ width: '100%', padding: 2, border: '2px solid black', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: "2px" }}>
+      <MessageAlert message={message} open={openAlert} setOpen={setOpenAlert} />
+      <Typography variant="h5">Offline Analysis Configuration</Typography>
+      <div style={{ display: 'flex', flexDirection: 'row', gap: '10px', justifyContent: 'center', alignItems: 'center', flexWrap: 'wrap' }}>
+        <Button startIcon={<AddCircleOutlineIcon />} style={{ opacity: data.config !== 'positrons' ? 0.5 : 1 }} onClick={() => handleConfigChange('positrons')}>
           Positrons
         </Button>
         {/* Button to select antiprotons configuration */}
@@ -247,53 +239,14 @@ const ChooseConfiguration = ({ selectedFile, forceRefreshSelectedFile }) => {
             Go to the guide
           </Button>
         </a>
-      </ButtonGroup>
-
-      {/* Display configuration details if toggled */}
-      {showDetails && (
-        <div style={{ display: 'flex', flexDirection: "column", alignItems: "center" }}>
-          <strong>Details of the configuration</strong>
-          <ul>
-            {dataKeys.map((key) => {
-              if (key === "Mapping") return null;
-              return (
-                <li key={key}>
-                  <strong>{key}:</strong> {data[key].toString()}
-                </li>
-              );
-            })
-            }
-          </ul>
-          {/* Display Mapping details if available */}
-          {data.Mapping && <>
-            <strong>Mapping</strong>
-            <ul>
-              {Object.keys(data.Mapping).map((key, index) => (
-                <li key={key + String(index)}>
-                  <strong>{key}:</strong> <ul>
-                    {data.Mapping[key].map((item, itemIndex) => (
-                      <li key={item + String(itemIndex)}>{item.join('; ')}</li>
-                    ))}
-                  </ul>
-                </li>
-              ))}
-            </ul>
-          </>}
-        </div>
-      )}
-      {/* Display error message if any */}
-      {error && <p>{error}</p>}
-      {/* Display success message if any */}
-      {message && <p>{message}</p>}
-      {/* Display timestamp message if any */}
-      {timestampMessage && diffInSeconds > 0 && diffInSeconds > 10 && <p>{`Latest acquisition: ${timestampMessage} -  From ${latestParticle}'s trigger`}</p>}
-      {timestampMessage && diffInSeconds > 0 && diffInSeconds <= 10 && <p style={{ color: 'blue', fontWeight: 'bold' }}>{`New acquisition: ${timestampMessage} -  From ${latestParticle}'s trigger`}</p>}
-      <div style={{ display: 'flex', flexDirection:'row', gap: '10px' }}>
-        <WorkerMonitor monitor="acquisition" pollingInterval={5000} />
-        <span> - </span>
-        <WorkerMonitor monitor="analysis" pollingInterval={5000} />
       </div>
-    </div>
+      <ConfigTable showDetails={showDetails} data={data} dataKeys={dataKeys} />
+      {/* Display timestamp message if any */}
+      {timestampMessage && <Alert severity="info">{`Latest acquisition: ${timestampMessage} - From the ${latestParticle} trigger`}</Alert>}
+      {!timestampMessage && <Alert severity="error">An error occurred while fetching the latest acquisition timestamp.</Alert>}
+      {/* Display error message if any */}
+      {error && <Alert severity="error">{error.message}</Alert>}
+    </Paper>
   );
 }
 

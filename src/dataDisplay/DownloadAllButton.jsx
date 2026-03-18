@@ -101,7 +101,7 @@ const DownloadAllButton = ({ selectedFile }) => {
 
   return (
     <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-      <ButtonGroup size="small" color="success" variant="contained" aria-label="split button">
+      <ButtonGroup size="small" variant="contained" aria-label="split button">
         <Button startIcon={<CloudDownloadIcon />} onClick={handleClick}>
           {options[selectedIndex]}
         </Button>

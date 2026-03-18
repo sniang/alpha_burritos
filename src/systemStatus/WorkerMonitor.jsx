@@ -9,7 +9,9 @@
 import { useEffect, useState } from "react";
 import Chip from '@mui/material/Chip';
 import HeartBrokenSharpIcon from '@mui/icons-material/HeartBrokenSharp';
-import DeviceHubSharpIcon from '@mui/icons-material/DeviceHubSharp';
+import DeviceThermostatIcon from '@mui/icons-material/DeviceThermostat';
+import SensorsIcon from '@mui/icons-material/Sensors';
+import AnalyticsIcon from '@mui/icons-material/Analytics';
 
 /**
  * WorkerMonitor Component
@@ -22,7 +24,7 @@ import DeviceHubSharpIcon from '@mui/icons-material/DeviceHubSharp';
  * @param {string} props.monitor - The name/identifier of the worker pidfile to monitor
  * @returns {JSX.Element} A Chip component displaying the worker status
  */
-function WorkerMonitor({ monitor }) {
+function WorkerMonitor({ monitor, onClick }) {
   // Track the current worker status: "unknown", "running", "stopped", or "error"
   const [status, setStatus] = useState("unknown");
 
@@ -51,17 +53,19 @@ function WorkerMonitor({ monitor }) {
   if (status === "running") {
     return (
       <Chip
+        onClick={onClick}
         color="success"
-        icon={<DeviceHubSharpIcon />}
-        label={`Python ${monitor}: ${status}`}
+        icon={monitor === "temperature" ? <DeviceThermostatIcon /> : monitor === "acquisition" ? <SensorsIcon /> : <AnalyticsIcon />}
+        label={`${monitor}: ${status}`}
       />
     );
   } else {
     return (
       <Chip
+        onClick={onClick}
         color="error"
         icon={<HeartBrokenSharpIcon />}
-        label={`Python ${monitor}: ${status}`}
+        label={`${monitor}: ${status}`}
       />
     );
   }

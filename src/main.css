@@ -51,73 +51,12 @@ label {
   /* Make label text bold */
 }
 
-/* Dropdown select styling */
-select {
-  width: 100%;
-  /* Take full width of container */
-  padding: 10px;
-  /* Internal spacing */
-  border: 1px solid #ccc;
-  /* Light gray border */
-  border-radius: 5px;
-  /* Rounded corners */
-  font-size: 12px;
-  /* Text size */
-}
 
-/* Block containing select elements - wrapped in a bordered container */
-#selects-block {
-  display: flex;
-  /* Use flexbox layout */
-  flex-wrap: wrap;
-  /* Allow items to wrap to next line */
-  align-items: center;
-  /* Center items vertically */
-  justify-content: space-around;
-  /* Distribute items evenly */
-  width: 100%;
-  /* Take full width of parent */
-  box-sizing: border-box;
-  /* Include padding in width calculation */
-  border: 2px solid #e33933;
-  /* Brand red border */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  /* Subtle shadow effect */
-  border-radius: 10px;
-  /* Rounded corners */
-  padding: 10px;
-  /* Internal spacing */
-  gap: 5px;
-  /* Space between items */
-  min-width: 850px;
-}
-
-/* Block containing detector elements - flexible layout with even spacing */
-#detector-block {
-  display: flex;
-  /* Use flexbox layout */
-  flex-wrap: wrap;
-  /* Allow items to wrap to next line */
-  flex-direction: row;
-  /* Arrange items horizontally */
-  justify-content: space-between;
-  /* Space items evenly */
-  width: 100%;
-  /* Take full width of parent */
-  margin: 0;
-  /* Remove default margin */
-  align-items: stretch;
-  /* Make children equal height */
-  gap: 20px;
-  /* Space between items */
-}
 
 /* Styling for block-level containers */
 .blocks {
   padding: 20px;
   /* Internal spacing */
-  border: 2px solid #e33933;
-  /* Brand red border */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   /* Subtle shadow effect */
   border-radius: 10px;
@@ -148,10 +87,22 @@ select {
   margin: 0;
 }
 
-button.green {
-    background-color:#008C45 ;
+
+/* Root variables and global font settings */
+:root {
+  font-family: 'Helvetica', 'Arial', sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-button.red {
-    background-color: #C0392B;
+/* Remove default body margin and padding, add bottom margin */
+body {
+  margin: 0;
+  padding: 0;
+  margin-bottom: 20px;
+  font-family: 'Roboto', 'Helvetica', 'Arial', sans-serif;
 }

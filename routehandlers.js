@@ -2,6 +2,7 @@
 import { getCurrentTimestamp, padToTwoDigits, validateFilename, parseDateFromFilename } from './utils.js';
 import dotenv from 'dotenv';    // Loads environment variables from .env file
 import fs from 'fs/promises';   // Modern promise-based filesystem operations
+import fsSync from 'fs';        // Synchronous fs for createWriteStream
 import path from 'path';        // Cross-platform path handling
 import { spawn } from 'child_process';
 
@@ -276,6 +277,20 @@ export const postConfiguration = async (req, res) => {
   }
 };
 
+// Route handler to get the latest temperature data
+export const getTemperature = async (req, res) => {
+  try {
+    const tempPath = path.join(ANALYSIS_DIR, 'configurations', 'latest_temperatures.json');
+    const data = await fs.readFile(tempPath, 'utf8');
+    const tempData = JSON.parse(data);
+    res.json(tempData);
+  } catch (error) {
+    console.error(getCurrentTimestamp());
+    console.error('Error in getTemperature:', error.message);
+    res.status(500).json({ error: 'Unable to read temperature data' });
+  }
+};
+
 // Route handler to re-analyse from a specific JSON file
 export const reAnalyse = async (req, res) => {
   try {
@@ -345,5 +360,249 @@ export const isPythonRunning = async (pidfile) => {
     return true;
   } catch (e) {
     return false;
+  }
+};
+
+/** In-memory map of running child processes keyed by script name. */
+const runningProcesses = new Map();
+
+/** Allowed script names mapped to their Python filenames, PID files, and log files. */
+const SCRIPT_MAP = {
+  temperature:  { script: 'temperature.py',        pidFile: 'temperature.pid', logFile: 'temperature.log' },
+  acquisition:  { script: 'START_ACQUISITION.py',   pidFile: 'acquisition.pid', logFile: 'acquisition.log' },
+  analysis:     { script: 'ONLINE_ANALYSIS.py',     pidFile: 'analysis.pid',    logFile: 'analysis.log' },
+};
+
+/**
+ * Starts a Python script in the background and saves its PID to a file.
+ * Only scripts listed in SCRIPT_MAP are allowed.
+ *
+ * @param {import('express').Request}  req - Express request (req.params.name = script key).
+ * @param {import('express').Response} res - Express response.
+ */
+export const startPythonScript = async (req, res) => {
+  try {
+    const { name } = req.params;
+
+    const entry = SCRIPT_MAP[name];
+    if (!entry) {
+      return res.status(400).json({ error: `Unknown script "${name}". Allowed: ${Object.keys(SCRIPT_MAP).join(', ')}` });
+    }
+
+    // Check if the script is already running
+    const alreadyRunning = await isPythonRunning(name);
+    if (alreadyRunning) {
+      return res.status(409).json({ error: `${name} is already running` });
+    }
+
+    const scriptPath = path.join(ANALYSIS_DIR, entry.script);
+    const pidFilePath = path.join(ANALYSIS_DIR, entry.pidFile);
+    const logFilePath = path.join(ANALYSIS_DIR, entry.logFile);
+
+    // Open a write stream for logging stdout and stderr
+    const logStream = fsSync.createWriteStream(logFilePath, { flags: 'w' });
+
+    // Spawn the Python process detached so it survives if the server restarts
+    // stdin is 'pipe' (not 'ignore') so scripts with interactive prompts
+    // (e.g. "press q to stop") block on input() instead of crashing with EOFError.
+    const child = spawn(PYTHON_PATH, ['-u', scriptPath], {
+      cwd: ANALYSIS_DIR,
+      detached: true,
+      stdio: ['pipe', 'pipe', 'pipe'],
+    });
+
+    // Pipe stdout and stderr to the log file
+    child.stdout.pipe(logStream);
+    child.stderr.pipe(logStream);
+
+    // Store the child process reference so we can interact with its stdin later
+    runningProcesses.set(name, child);
+
+    // Clean up the map entry when the process exits
+    child.on('close', () => {
+      runningProcesses.delete(name);
+    });
+
+    // Allow the parent (Node) to exit independently of the child
+    child.unref();
+
+    // Save the PID to disk
+    await fs.writeFile(pidFilePath, String(child.pid), 'utf8');
+
+    console.log(`[startPythonScript] Started ${entry.script} (PID ${child.pid})`);
+    res.json({ success: true, script: entry.script, pid: child.pid });
+  } catch (error) {
+    console.error(getCurrentTimestamp());
+    console.error('Error in startPythonScript:', error.message);
+    res.status(500).json({ error: error.message });
+  }
+};
+
+/**
+ * Stops a running Python script by sending SIGTERM and removes its PID file.
+ * Only scripts listed in SCRIPT_MAP are allowed.
+ *
+ * @param {import('express').Request}  req - Express request (req.params.name = script key).
+ * @param {import('express').Response} res - Express response.
+ */
+export const stopPythonScript = async (req, res) => {
+  try {
+    const { name } = req.params;
+
+    const entry = SCRIPT_MAP[name];
+    if (!entry) {
+      return res.status(400).json({ error: `Unknown script "${name}". Allowed: ${Object.keys(SCRIPT_MAP).join(', ')}` });
+    }
+
+    // Check if the script is actually running
+    const running = await isPythonRunning(name);
+    if (!running) {
+      return res.json({ success: true, message: `${name} is not running` });
+    }
+
+    const pidFilePath = path.join(ANALYSIS_DIR, entry.pidFile);
+
+    // Read the PID from the file
+    const content = await fs.readFile(pidFilePath, 'utf8');
+    const pid = parseInt(content.trim(), 10);
+
+    // For acquisition, gracefully stop by writing 'q' to stdin
+    const child = runningProcesses.get(name);
+    if (name === 'acquisition' && child && child.stdin && !child.stdin.destroyed) {
+      child.stdin.write('q\n');
+      child.stdin.end();
+    } else {
+      // Fallback: send SIGTERM
+      process.kill(pid, 'SIGTERM');
+    }
+
+    // Remove the PID file
+    await fs.unlink(pidFilePath);
+    runningProcesses.delete(name);
+
+    console.log(`[stopPythonScript] Stopped ${entry.script} (PID ${pid})`);
+    res.json({ success: true, script: entry.script, pid });
+  } catch (error) {
+    console.error(getCurrentTimestamp());
+    console.error('Error in stopPythonScript:', error.message);
+    res.status(500).json({ error: error.message });
+  }
+};
+
+// ====================
+// Pitaya status (cached ping)
+// ====================
+
+/** Cached pitaya status result and timestamp. */
+let pitayaCache = { data: null, updatedAt: 0, pending: null };
+const PITAYA_CACHE_TTL = 2000; // ms – re-ping at most every 2 s
+
+/**
+ * Pings all enabled Red Pitaya hosts in parallel and returns their statuses.
+ * Results are cached for PITAYA_CACHE_TTL ms so rapid polling from the
+ * frontend does not spawn hundreds of ping processes.
+ */
+export const getPitayaStatus = async (_req, res) => {
+  try {
+    const now = Date.now();
+
+    // Return cached result if still fresh
+    if (pitayaCache.data && now - pitayaCache.updatedAt < PITAYA_CACHE_TTL) {
+      return res.json(pitayaCache.data);
+    }
+
+    // If a refresh is already in-flight, wait for it instead of spawning dupes
+    if (pitayaCache.pending) {
+      const result = await pitayaCache.pending;
+      return res.json(result);
+    }
+
+    // Start a new refresh
+    pitayaCache.pending = (async () => {
+      try {
+        // Read the configuration to discover hostnames
+        const configPath = path.join(ANALYSIS_DIR, 'configurations', 'configuration.json');
+        const raw = await fs.readFile(configPath, 'utf8');
+        const config = JSON.parse(raw);
+        const hostnames = config.hostnames || {};
+
+        // Ping every enabled host in parallel
+        const entries = await Promise.all(
+          Object.entries(hostnames).map(([name, host]) => {
+            const enabled = config[name] !== undefined ? config[name] : false;
+            if (!enabled) {
+              return { name, host, status: 'disabled' };
+            }
+            return new Promise((resolve) => {
+              const ping = spawn('ping', ['-c', '1', '-W', '2', host]);
+              ping.on('close', (code) => {
+                resolve({ name, host, status: code === 0 ? 'on' : 'off' });
+              });
+              ping.on('error', () => {
+                resolve({ name, host, status: 'off' });
+              });
+            });
+          })
+        );
+
+        const result = { pitayas: entries, updatedAt: new Date().toISOString() };
+        pitayaCache.data = result;
+        pitayaCache.updatedAt = Date.now();
+        return result;
+      } finally {
+        // Always clear pending so future requests can trigger a new refresh
+        pitayaCache.pending = null;
+      }
+    })();
+
+    const result = await pitayaCache.pending;
+    res.json(result);
+  } catch (error) {
+    console.error(getCurrentTimestamp());
+    console.error('Error in getPitayaStatus:', error.message);
+    res.status(500).json({ error: 'Unable to check pitaya status' });
+  }
+};
+
+/**
+ * Returns the log contents for a given script.
+ * Supports an optional `lines` query parameter to return only the last N lines.
+ *
+ * @param {import('express').Request}  req - Express request (req.params.name = script key).
+ * @param {import('express').Response} res - Express response.
+ */
+export const getScriptLogs = async (req, res) => {
+  try {
+    const { name } = req.params;
+
+    const entry = SCRIPT_MAP[name];
+    if (!entry) {
+      return res.status(400).json({ error: `Unknown script "${name}". Allowed: ${Object.keys(SCRIPT_MAP).join(', ')}` });
+    }
+
+    const logFilePath = path.join(ANALYSIS_DIR, entry.logFile);
+
+    let content;
+    try {
+      content = await fs.readFile(logFilePath, 'utf8');
+    } catch (error) {
+      if (error.code === 'ENOENT') {
+        return res.json({ name, log: '', lines: 0 });
+      }
+      throw error;
+    }
+
+    // If ?lines=N is specified, return only the last N lines
+    const linesParam = parseInt(req.query.lines, 10);
+    if (!Number.isNaN(linesParam) && linesParam > 0) {
+      const allLines = content.split('\n');
+      content = allLines.slice(-linesParam).join('\n');
+    }
+
+    res.json({ name, log: content });
+  } catch (error) {
+    console.error(getCurrentTimestamp());
+    console.error('Error in getScriptLogs:', error.message);
+    res.status(500).json({ error: error.message });
   }
 };

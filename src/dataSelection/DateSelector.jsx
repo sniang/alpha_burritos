@@ -36,9 +36,9 @@ const DateSelector = ({ year, setYear, month, setMonth, day, setDay }) => {
 
 
     return (
-        <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+        <Box sx={{ display: "flex", alignItems: "center", gap: 2, flexWrap: "wrap" }}>
             {/* Year selector */}
-            <FormControl size="small" color="success" sx={{ minWidth: 120 }}>
+            <FormControl size="small"  sx={{ minWidth: 120 }}>
                 <InputLabel sx={{ fontSize: 13 }}>Year</InputLabel>
                 <Select sx={{ fontSize: 13 }} value={year} onChange={handleYearChange} label="Year">
                     {Array.from({ length: currentYear - startYear + 1 }, (_, i) => currentYear - i).map((y) => (
@@ -48,7 +48,7 @@ const DateSelector = ({ year, setYear, month, setMonth, day, setDay }) => {
             </FormControl>
 
             {/* Month selector */}
-            <FormControl size="small" color="success" sx={{ minWidth: 120 }}>
+            <FormControl size="small"  sx={{ minWidth: 120 }}>
                 <InputLabel sx={{ fontSize: 13 }}>Month</InputLabel>
                 <Select sx={{ fontSize: 13 }} value={month} onChange={handleMonthChange} label="Month">
                     {getAllMonthsOfYear(year).map((date) => (
@@ -60,7 +60,7 @@ const DateSelector = ({ year, setYear, month, setMonth, day, setDay }) => {
             </FormControl>
 
             {/* Day selector */}
-            <FormControl size="small" color="success" sx={{ minWidth: 120 }}>
+            <FormControl size="small"  sx={{ minWidth: 120 }}>
                 <InputLabel sx={{ fontSize: 13 }}>Day</InputLabel>
                 <Select sx={{ fontSize: 13 }} value={day} onChange={(e) => setDay(Number(e.target.value))} label="Day">
                     {getAllDaysOfMonth(year, month).map((d) => (

@@ -21,10 +21,15 @@ import {
     postComments,
     getConfiguration,
     postConfiguration,
+    getTemperature,
     getLatest,
     reAnalyse,
     MAIN_DIR,
-    isPythonRunning
+    isPythonRunning,
+    startPythonScript,
+    stopPythonScript,
+    getScriptLogs,
+    getPitayaStatus
 } from './routehandlers.js';
 
 // ====================
@@ -167,6 +172,20 @@ app.get("/api/status/:pidfile", async (req, res) => {
   }
 });
 
+// Start a Python script in the background (temperature, acquisition, analysis)
+app.post('/api/start/:name', verifyToken, (req, res) => startPythonScript(req, res));
+
+// Stop a running Python script (temperature, acquisition, analysis)
+app.post('/api/stop/:name', verifyToken, (req, res) => stopPythonScript(req, res));
+
+// Get logs for a Python script (temperature, acquisition, analysis)
+app.get('/api/logs/:name', verifyToken, (req, res) => getScriptLogs(req, res));
+
+// Get Temperature data
+app.get("/api/temperature", (req, res) => getTemperature(req, res));
+
+// Get Red Pitaya connection status (cached ping)
+app.get('/api/pitaya-status', (req, res) => getPitayaStatus(req, res));
 
 // ====================
 // Error Handling

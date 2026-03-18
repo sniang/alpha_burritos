@@ -76,11 +76,6 @@ function AutoRefresh({
                 window.history.replaceState({}, "", window.location.pathname);
             }
         } catch (error) {
-            // Pass error to parent
-            error.message = `AutoRefresh failed to fetch JSON files
-            Probably cause: EOS is not correctly mounted or there is no Kerberos ticket`;
-            error.bashCode = `# Temporary fix\n~/Desktop/burrito_src/mount_eos_for_7_days.sh`;
-            console.error('[ERROR]', error.message);
             setError(error); // Set error if fetch fails
         }
     };
@@ -109,7 +104,7 @@ function AutoRefresh({
 
     // Render the auto-refresh checkbox UI
     return (
-        <FormControlLabel control={<Checkbox checked={autoRefresh} color="success" onChange={handleCheckboxChange} />} label="Auto-refresh" />
+        <FormControlLabel control={<Checkbox checked={autoRefresh} onChange={handleCheckboxChange} />} label="Auto-refresh" />
     );
 }
 

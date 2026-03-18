@@ -20,7 +20,7 @@ const DetectorSelector = ({ selectedDetector, setSelectedDetector, detectorList 
     };
 
     return (
-        <FormControl size="small" color="success" sx={{ minWidth: 150 }}>
+        <FormControl size="small"  sx={{ minWidth: 150 }}>
             <InputLabel sx={{ fontSize: 13 }}>Detector</InputLabel>
             <Select
                 sx={{ fontSize: 13 }}
