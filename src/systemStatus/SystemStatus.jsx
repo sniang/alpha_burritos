@@ -87,7 +87,6 @@ export default function SystemStatus({handleLogout}) {
                     <WorkerMonitor
                         key={monitor}
                         monitor={monitor}
-                        pollingInterval={2000}
                         /* Clicking the temperature monitor toggles the temperature dialog. */
                         {...(monitor === "temperature" ? { onClick: () => setDisplayTemperature(!displayTemperature) } : {})}
                     />
