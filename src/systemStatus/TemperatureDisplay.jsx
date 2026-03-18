@@ -58,12 +58,13 @@ function TemperatureDisplay({ display, setDisplay }) {
 		}
 	};
 
-	// Poll the temperature endpoint every second while the component is mounted.
+	// Poll the temperature endpoint every second while the dialog is open.
 	useEffect(() => {
+		if (!display) return;
 		fetchData();
 		const interval = setInterval(fetchData, 1000);
 		return () => clearInterval(interval);
-	}, []);
+	}, [display]);
 
 	return (data) ? (
 		<>
