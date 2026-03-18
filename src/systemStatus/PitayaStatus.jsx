@@ -106,7 +106,7 @@ export default function PitayaStatus({ expertMode }) {
         }}>
           {problemPitayas.map(({ name, status }) => (
             <Alert key={name} severity="error">
-              {name} is {status.toUpperCase()} — Stop immediately all the scripts
+              {name} is {status.toUpperCase()} — Stop all scripts immediately.
             </Alert>
           ))}
         </div>
