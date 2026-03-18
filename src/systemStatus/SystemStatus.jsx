@@ -109,7 +109,7 @@ export default function SystemStatus({handleLogout}) {
             )}
 
             {/* Red Pitaya connection status */}
-            <PitayaStatus />
+            <PitayaStatus expertMode={expertMode}/>
             
             {/* Display error from start/stop actions */}
             {scriptError && <Alert severity="error" sx={{ mt: 1 }} onClose={() => setScriptError(null)}>{scriptError}</Alert>}

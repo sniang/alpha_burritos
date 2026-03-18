@@ -28,6 +28,7 @@ The application communicates with a custom RESTful API to fetch and display crit
 - **Choose Configuration:** Select the analysis mode ("positrons" or "antiprotons") and toggle the fit option for the current session.
 - **Re-analyse:** Trigger a new analysis of the currently selected file with the current configuration.
 - **Script Logs:** View stdout/stderr logs for each Python worker script (acquisition, analysis, temperature) directly in the UI via a dialog, with a refresh button to fetch the latest output.
+- **Red Pitaya Status:** In expert mode, displays the connection status of all Red Pitaya devices as color-coded chips (green = ON, red = OFF, grey = DISABLED). The backend pings all enabled hosts in parallel with a 2-second cache to avoid flooding.
 
 ---
 
@@ -65,6 +66,7 @@ src/
     SystemStatus.jsx               # System status panel with expert-mode controls
     TemperatureDisplay.jsx         # Real-time temperature readings for detector hosts
     WorkerMonitor.jsx              # Monitors Python worker process status
+    PitayaStatus.jsx               # Displays Red Pitaya connection status
 ```
 
 ---
@@ -263,6 +265,22 @@ The React app expects the following backend API (see [`server.js`](server.js)):
     { "name": "acquisition", "log": "...log content..." }
     ```
   - Returns `{ "name": "acquisition", "log": "", "lines": 0 }` if no log file exists yet.
+
+- **Get Red Pitaya Connection Status:**  
+  `GET /api/pitaya-status`  
+  - Pings all enabled Red Pitaya hosts in parallel and returns their connection status. Results are cached for 2 seconds.  
+  - Example: `/api/pitaya-status`  
+  - Response:  
+    ```json
+    {
+      "pitayas": [
+        { "name": "red_pitaya_1", "host": "rp-f0a821.local", "status": "on" },
+        { "name": "red_pitaya_2", "host": "rp-f073bf.local", "status": "off" },
+        { "name": "red_pitaya_3", "host": "rp-f0bd54.local", "status": "disabled" }
+      ],
+      "updatedAt": "2025-10-08T08:42:16.000Z"
+    }
+    ```
 
 - **Get Temperature Data:**  
   `GET /api/temperature`  
