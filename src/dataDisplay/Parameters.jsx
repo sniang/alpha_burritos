@@ -49,6 +49,7 @@ const Parameters = ({
   detectorList,
   setDetectorList,
   setSelectedDetector,
+  selectedDetector,
   fileVersion
 }) => {
 
@@ -84,7 +85,9 @@ const Parameters = ({
 
         const dataKeys = Object.keys(data);
         if (dataKeys.length > 0) {
-          setSelectedDetector(dataKeys[0]);
+          if (!selectedDetector || !dataKeys.includes(selectedDetector)) {
+            setSelectedDetector(dataKeys[0]);
+          }
         }
 
       } catch (error) {

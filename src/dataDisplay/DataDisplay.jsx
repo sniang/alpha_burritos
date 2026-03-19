@@ -66,6 +66,7 @@ const DataDisplay = ({ selectedFile, detectorList, selectedDetector, fileVersion
           detectorList={detectorList}
           setDetectorList={(value) => updateState('detectorList', value)}
           setSelectedDetector={(value) => updateState('selectedDetector', value)}
+          selectedDetector={selectedDetector}
           fileVersion={fileVersion}
         />
         {/* Show image for selected detector if one is chosen */}
