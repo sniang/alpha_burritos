@@ -215,53 +215,44 @@ const Parameters = ({
    * and (when in text view) a back button.
    */
   const displayButtons = () => {
-
+    // Only show the share link TextField, no button
+    const url = new URL(window.location.href);
+    url.searchParams.set("id", selectedFile);
+    const shareLink = url.toString();
     return (
-      <div style={{ display: "flex", gap: "10px", marginTop: "10px", flexWrap: "wrap", justifyContent: "center" }}>
-
-        <Button
+      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "10px", marginTop: "10px", flexWrap: "wrap", justifyContent: "center" }}>
+        <TextField
+          label="Share Link"
+          value={shareLink}
           size="small"
-          variant="contained"
-          startIcon={<ShareIcon />}
-          onClick={() => {
-
-            const url = new URL(window.location.href);
-            url.searchParams.set("id", selectedFile);
-
-            const text = url.toString();
-
-            navigator.clipboard.writeText(text)
-              .then(() => alert("Share link copied"))
-              .catch(() => alert("Copy failed"));
-
-          }}
-        >
-          Share link
-        </Button>
-
-        <Button
-          startIcon={<PivotTableChartIcon />}
-          size="small"
-          variant="contained"
-          onClick={() => setReverseTable(!reverseTable)}
-        >
-          Reverse Table
-        </Button>
-
-        {displayTable && (
+          InputProps={{ readOnly: true }}
+          style={{ minWidth: 300, marginBottom: 4 }}
+        />
+        <div style={{ display: "flex", gap: "10px", flexWrap: "wrap", justifyContent: "center" }}>
           <Button
-            startIcon={<CancelIcon />}
+            startIcon={<PivotTableChartIcon />}
             size="small"
             variant="contained"
-            onClick={() => setDisplayTable(false)}
+            onClick={() => setReverseTable(!reverseTable)}
           >
-            Back
+            Reverse Table
           </Button>
-        )}
-                {/* Button text changes based on edit mode */}
-                <Button startIcon={<EditNoteIcon />} size="small" variant="contained" onClick={updateComment}>{!update ? "Update comments" : "Save comments"}</Button>
-                                {/* Cancel button only appears in edit mode */}
-                {update && <Button startIcon={<CancelIcon />} size="small" color="error" variant="contained" onClick={() => setUpdate(!update)}>Cancel</Button>}
+
+          {displayTable && (
+            <Button
+              startIcon={<CancelIcon />}
+              size="small"
+              variant="contained"
+              onClick={() => setDisplayTable(false)}
+            >
+              Back
+            </Button>
+          )}
+          {/* Button text changes based on edit mode */}
+          <Button startIcon={<EditNoteIcon />} size="small" variant="contained" onClick={updateComment}>{!update ? "Update comments" : "Save comments"}</Button>
+          {/* Cancel button only appears in edit mode */}
+          {update && <Button startIcon={<CancelIcon />} size="small" color="error" variant="contained" onClick={() => setUpdate(!update)}>Cancel</Button>}
+        </div>
       </div>
     );
   };
