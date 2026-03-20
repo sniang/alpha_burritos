@@ -5,6 +5,7 @@ import { parameterKeys } from "../dataDisplay/Parameters";
 import SaveIcon from '@mui/icons-material/Save';
 import Button from '@mui/material/Button';
 import CancelIcon from '@mui/icons-material/Cancel';
+import AutoGraphIcon from '@mui/icons-material/AutoGraph';
 import { Switch, FormControl, InputLabel, Select, MenuItem, TextField, FormControlLabel, Box, Typography, Paper, Table as MuiTable, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
 
 
@@ -290,6 +291,23 @@ const Skimmer = ({ jsonFiles, selectedDetector, setSelectedDetector, detectorLis
         );
     };
 
+    // Placeholder for future plotting functionality
+    const MakePlotButton = () => {
+        const handleMakePlot = () => {
+            alert("Plotting functionality is not implemented yet. Stay tuned for future updates!");
+        }
+        return (
+            <Button
+                variant="contained"
+                size="small"
+                onClick={handleMakePlot}
+                startIcon={<AutoGraphIcon />}
+            >
+                Make a plot
+            </Button>
+        );
+    };
+
     return (
     <Paper elevation={3} sx={{ width: '100%', padding: 2, border: '2px solid black', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: "10px" }}>
             <Typography variant="h5">Skimmer</Typography>
@@ -299,6 +317,7 @@ const Skimmer = ({ jsonFiles, selectedDetector, setSelectedDetector, detectorLis
             {!isLoading && data && isTableTextArea && <TableTextArea />}
             <div style={{ display: "flex", gap: "10px" }}>
                 {!isLoading && data && <DownloadCSVButton />}
+                {!isLoading && data && <MakePlotButton />}
                 {!isLoading && data && isTableTextArea && <Button startIcon={<CancelIcon />} size="small" variant="contained" onClick={() => setIsTableTextArea(false)}>Back</Button>}
             </div>
         </Paper>
