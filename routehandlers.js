@@ -330,6 +330,42 @@ export const reAnalyse = async (req, res) => {
   }
 };
 
+// Route handler to generate skimmer plot for a specific detector
+export const skimmerPlot = async (req, res) => {
+  try {
+    const { detector } = req.params;
+
+    const pythonProcess = spawn(PYTHON_PATH, [
+      path.join(ANALYSIS_DIR, 'commandLine.py'),
+      '--skimmer',
+      '--dir', MAIN_DIR,
+      '--detector', detector,
+      '--verbose'
+    ]);
+
+    pythonProcess.stdout.on('data', (data) => {
+      console.log(`[stdout] ${data}`);
+    });
+
+    pythonProcess.stderr.on('data', (data) => {
+      console.error(`[stderr] ${data}`);
+    });
+
+    pythonProcess.on('close', (code) => {
+      console.log(`Python script exited with code ${code}`);
+      if (code !== 0) {
+        return res.status(500).json({ error: `Skimmer plot generation failed with exit code ${code}` });
+      }
+      return res.json({ success: true });
+    });
+
+  } catch (error) {
+    console.error(getCurrentTimestamp());
+    console.error('Error in skimmerPlot:', error.message);
+    return res.status(400).json({ error: error.message });
+  }
+};
+
 // Function to check if a Python worker process is running based on a PID file
 export const isPythonRunning = async (pidfile) => {
   // Validate pidfile to prevent path traversal and disallow path separators

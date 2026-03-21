@@ -37,8 +37,6 @@ const ChooseConfiguration = ({ selectedFile, forceRefreshSelectedFile }) => {
   const [showDetails, setShowDetails] = useState(false);
   // State for displaying messages (e.g., success messages)
   const [message, setMessage] = useState(null);
-  // State to open MessageAlert component
-  const [openAlert, setOpenAlert] = useState(false);
     // Timestamp message
   const [timestampMessage, setTimestampMessage] = useState(null);
   // State for difference in seconds between current time and latest dump timestamp
@@ -100,7 +98,6 @@ const ChooseConfiguration = ({ selectedFile, forceRefreshSelectedFile }) => {
             setLatestParticle(result.particle);
             if (diffInSec > 0 && diffInSec <= 2) {
               setMessage(`New acquisition: ${result.latest.replace('_', ' ')} -  From ${result.particle}'s trigger`);
-              setOpenAlert(true);
             }
           }
         }
@@ -167,9 +164,8 @@ const ChooseConfiguration = ({ selectedFile, forceRefreshSelectedFile }) => {
     setShowDetails(false);
     try {
       setMessage("Re-analyzing the file...");
-      setOpenAlert(true);
       // Call backend API to re-analyse the selected file
-      const response = await fetch(`/api/reanalyse/${selectedFile}`)
+      const response = await fetch(`/api/reanalyse/${selectedFile}`, { method: 'POST', credentials: 'include' });
       if (!response.ok) {
         throw new Error('Error re-analysing the file');
       }
@@ -178,12 +174,10 @@ const ChooseConfiguration = ({ selectedFile, forceRefreshSelectedFile }) => {
       if (result.success) {
         setMessage('Re-analysis successful');
         forceRefreshSelectedFile();
-        setOpenAlert(true);
       }
     }
     catch (error) {
       setMessage(`${error.message}`);
-      setOpenAlert(true);
     }
   }
 
@@ -196,7 +190,7 @@ const ChooseConfiguration = ({ selectedFile, forceRefreshSelectedFile }) => {
 
   return data && (
     <Paper elevation={3} sx={{ width: '100%', padding: 2, border: '2px solid black', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: "2px" }}>
-      <MessageAlert message={message} open={openAlert} setOpen={setOpenAlert} />
+      <MessageAlert message={message} />
       <Typography variant="h5">Offline Analysis Configuration</Typography>
       <div style={{ display: 'flex', flexDirection: 'row', gap: '10px', justifyContent: 'center', alignItems: 'center', flexWrap: 'wrap' }}>
         <Button startIcon={<AddCircleOutlineIcon />} style={{ opacity: data.config !== 'positrons' ? 0.5 : 1 }} onClick={() => handleConfigChange('positrons')}>

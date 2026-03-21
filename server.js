@@ -29,7 +29,8 @@ import {
     startPythonScript,
     stopPythonScript,
     getScriptLogs,
-    getPitayaStatus
+    getPitayaStatus,
+    skimmerPlot
 } from './routehandlers.js';
 
 // ====================
@@ -105,7 +106,10 @@ app.post('/api/configuration', (req, res) => postConfiguration(req, res));
 app.get('/api/latest', (req, res) => getLatest(req, res));
 
 // Re-analyse a specific JSON file
-app.get('/api/reanalyse/:filename', (req, res) => reAnalyse(req, res));
+app.post('/api/reanalyse/:filename', verifyToken, (req, res) => reAnalyse(req, res));
+
+// Skimmer plot for a specific detector and JSON file list
+app.post('/api/skimmer/:detector', verifyToken, (req, res) => skimmerPlot(req, res));
 
 // ====================
 // Authentication Routes
