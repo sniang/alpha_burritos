@@ -16,15 +16,16 @@ import { useState, useEffect } from 'react';
  * MessageAlert functional component
  * @param {Object} props - Component props
  * @param {string} props.message - The alert message to display
+ * @param {Function} props.setMessage - Function to update the alert message
  */
-export default function MessageAlert({ message }) {
+export default function MessageAlert({ message, setMessage }) {
     const [open, setOpen] = useState(false);
 
     useEffect(() => {
         if (message) {
             setOpen(true);
         }
-    }, [message]);
+    }, [message, setMessage]);
 
     /**
      * Handles closing the Snackbar.
@@ -37,6 +38,7 @@ export default function MessageAlert({ message }) {
             return;
         }
         setOpen(false);
+        setMessage(""); // Clear the message after displaying it
     };
 
     return (
