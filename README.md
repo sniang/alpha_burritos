@@ -42,7 +42,7 @@ src/
     App.jsx                        # Main React component
     LoginForm.jsx                  # User authentication form
     MainTitle.jsx                  # App title and logo
-    MessageAlert.jsx               # Reusable alert/message component
+    MessageAlert.jsx               # Temporary top-left Snackbar for status and error messages
   assets/
     ALPHA_Logo_png.png             # ALPHA experiment logo
   configuration/
@@ -210,17 +210,31 @@ The React app expects the following backend API (see [`server.js`](server.js)):
   - Example: `/api/latest`  
   - Response:  
     ```json
-    { "latest": "2025-08-25_11-04-04" }
+    { "latest": "2025-08-25_11-04-04", "particle": "antiprotons" }
     ```
 
 - **Re-analyse a JSON File:**  
-  `GET /api/reanalyse/:filename`  
-  - Triggers a re-analysis for the specified JSON file.
+  `POST /api/reanalyse/:filename`  
+  - Triggers a re-analysis for the specified JSON file. Requires authentication.
+  - Example: `/api/reanalyse/data-2025-06-02_08-25-03.json`
+  - Response:
+    ```json
+    { "success": true }
+    ```
+
+- **Generate a Skimmer Plot:**  
+  `POST /api/skimmer/:detector`  
+  - Triggers skimmer plot generation for the selected detector. Requires authentication.  
+  - Example: `/api/skimmer/PDS`
+  - Response:
+    ```json
+    { "success": true }
+    ```
 
 - **Check Python Worker Status:**  
   `GET /api/status/:pidfile`  
   - Checks if a Python worker process is running, based on the given pidfile name.  
-  - Example: `/api/status/worker`  
+  - Example: `/api/status/acquisition`  
   - Response:  
     ```json
     { "worker": "running" }
@@ -231,9 +245,9 @@ The React app expects the following backend API (see [`server.js`](server.js)):
     ```
 
 - **Authentication:**  
-  - `POST /api/login` — Authenticate user (expects `{ login, password }` in body).  
-  - `GET /api/profile` — Returns user info if authenticated.
-  - `POST /api/logout` — Logout user and clear authentication cookie.
+  - `POST /api/login` — Authenticate user and set the HTTP-only token cookie (expects `{ login, password }` in body).  
+  - `GET /api/profile` — Returns `{ "login": "your_login" }` when the user is authenticated.
+  - `POST /api/logout` — Logout user and clear the authentication cookie.
 
 - **Start a Python Worker Script (requires authentication):**  
   `POST /api/start/:name`  
