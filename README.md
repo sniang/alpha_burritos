@@ -56,6 +56,7 @@ src/
     DownloadAllButton.jsx          # Button to download all signals for all detectors
     Parameters.jsx                 # Displays detector parameters from JSON
     Skimmer.jsx                    # Browse and export a range of acquisitions as CSV
+    SkimmerPlotButton.jsx          # Button to trigger skimmer plot generation for selected data
   dataSelection/
     AutoRefresh.jsx                # Toggle auto-refresh of file list
     DataSelection.jsx              # Container for data selection controls
