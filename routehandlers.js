@@ -334,12 +334,18 @@ export const reAnalyse = async (req, res) => {
 export const skimmerPlot = async (req, res) => {
   try {
     const { detector } = req.params;
+    const { jsonFiles } = req.body;
+    if (!Array.isArray(jsonFiles) || jsonFiles.some(file => typeof file !== 'string')) {
+      throw new Error('Invalid jsonFiles format. Expected an array of strings.');
+    }
+    jsonFiles.forEach(validateFilename);
 
     const pythonProcess = spawn(PYTHON_PATH, [
       path.join(ANALYSIS_DIR, 'commandLine.py'),
       '--skimmer',
       '--dir', MAIN_DIR,
       '--detector', detector,
+      '--jsonFiles', jsonFiles.join(','),
       '--verbose'
     ]);
 
