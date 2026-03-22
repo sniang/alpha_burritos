@@ -335,40 +335,71 @@ export const skimmerPlot = async (req, res) => {
   try {
     const { detector } = req.params;
     const { jsonFiles } = req.body;
-    if (!Array.isArray(jsonFiles) || jsonFiles.some(file => typeof file !== 'string')) {
-      throw new Error('Invalid jsonFiles format. Expected an array of strings.');
+
+    if (!Array.isArray(jsonFiles) || jsonFiles.length === 0 || jsonFiles.some(file => typeof file !== 'string')) {
+      const validationError = new Error('Invalid jsonFiles format. Expected a non-empty array of strings.');
+      validationError.statusCode = 400;
+      throw validationError;
     }
     jsonFiles.forEach(validateFilename);
 
-    const pythonProcess = spawn(PYTHON_PATH, [
-      path.join(ANALYSIS_DIR, 'commandLine.py'),
-      '--skimmer',
-      '--dir', MAIN_DIR,
-      '--detector', detector,
-      '--jsonFiles', jsonFiles.join(','),
-      '--verbose'
-    ]);
+    await new Promise((resolve, reject) => {
+      const pythonProcess = spawn(PYTHON_PATH, [
+        path.join(ANALYSIS_DIR, 'commandLine.py'),
+        '--skimmer',
+        '--dir', MAIN_DIR,
+        '--detector', detector,
+        '--jsonFiles', jsonFiles.join(','),
+        '--verbose'
+      ]);
 
-    pythonProcess.stdout.on('data', (data) => {
-      console.log(`[stdout] ${data}`);
+      pythonProcess.stdout.on('data', (data) => {
+        console.log(`[stdout] ${data}`);
+      });
+
+      pythonProcess.stderr.on('data', (data) => {
+        console.error(`[stderr] ${data}`);
+      });
+
+      pythonProcess.on('error', (spawnError) => {
+        reject(spawnError);
+      });
+
+      pythonProcess.on('close', (code) => {
+        console.log(`Python script exited with code ${code}`);
+        if (code !== 0) {
+          const processError = new Error(`Skimmer plot generation failed with exit code ${code}`);
+          processError.statusCode = 500;
+          return reject(processError);
+        }
+        resolve();
+      });
     });
 
-    pythonProcess.stderr.on('data', (data) => {
-      console.error(`[stderr] ${data}`);
-    });
+    const imageName = `skimmer_${detector}_${jsonFiles[0].replace('.json', '')}_${jsonFiles[jsonFiles.length - 1].replace('.json', '')}.png`;
+    const imagePath = path.join(ANALYSIS_DIR, imageName);
+    const imageBuffer = await fs.readFile(imagePath);
 
-    pythonProcess.on('close', (code) => {
-      console.log(`Python script exited with code ${code}`);
-      if (code !== 0) {
-        return res.status(500).json({ error: `Skimmer plot generation failed with exit code ${code}` });
-      }
-      return res.json({ success: true });
+    return res.json({
+      success: true,
+      message: `Skimmer plot generated successfully for detector ${detector}.`,
+      image: imageBuffer.toString('base64'),
+      imageName,
+      mimeType: 'image/png'
     });
-
   } catch (error) {
     console.error(getCurrentTimestamp());
     console.error('Error in skimmerPlot:', error.message);
-    return res.status(400).json({ error: error.message });
+    const statusCode = error.statusCode || (error.code === 'ENOENT' ? 500 : 400);
+    const message = error.code === 'ENOENT'
+      ? 'Skimmer plot image not found after successful script execution.'
+      : error.message;
+
+    return res.status(statusCode).json({
+      success: false,
+      message,
+      image: null
+    });
   }
 };
 

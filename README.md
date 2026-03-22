@@ -225,11 +225,25 @@ The React app expects the following backend API (see [`server.js`](server.js)):
 
 - **Generate a Skimmer Plot:**  
   `POST /api/skimmer/:detector`  
-  - Triggers skimmer plot generation for the selected detector. Requires authentication.  
+  - Triggers skimmer plot generation for the selected detector and returns the generated PNG as a base64-encoded string inside a JSON response. Requires authentication.  
   - Example: `/api/skimmer/PDS`
-  - Response:
+  - Success response:
     ```json
-    { "success": true }
+    {
+      "success": true,
+      "message": "Skimmer plot generated successfully for detector PDS.",
+      "image": "<base64-encoded PNG>",
+      "imageName": "skimmer_PDS_data-2025-06-02_08-25-03.json_data-2025-06-02_08-40-12.json.png",
+      "mimeType": "image/png"
+    }
+    ```
+  - Error response:
+    ```json
+    {
+      "success": false,
+      "message": "Skimmer plot image not found after successful script execution.",
+      "image": null
+    }
     ```
 
 - **Check Python Worker Status:**  

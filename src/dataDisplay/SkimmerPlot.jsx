@@ -19,6 +19,25 @@ import { useState } from 'react';
 const SkimmerPlot = ({ filteredData, selectedDetector, isSwitchOn, nValue }) => {
     const [alertMessage, setAlertMessage] = useState(null);
 
+    const downloadImage = (image, imageName, mimeType) => {
+        const byteCharacters = atob(image);
+        const byteNumbers = new Array(byteCharacters.length);
+
+        for (let i = 0; i < byteCharacters.length; i += 1) {
+            byteNumbers[i] = byteCharacters.charCodeAt(i);
+        }
+
+        const blob = new Blob([new Uint8Array(byteNumbers)], { type: mimeType || 'image/png' });
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = imageName || `skimmer_${selectedDetector}.png`;
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        window.URL.revokeObjectURL(url);
+    };
+
     // Build the list of selected JSON files and trigger plot generation.
     const handleMakePlot = async () => {
         if (filteredData.length === 0) {
@@ -48,13 +67,18 @@ const SkimmerPlot = ({ filteredData, selectedDetector, isSwitchOn, nValue }) => 
                 credentials: 'include',
                 body: JSON.stringify({ jsonFiles: selectedToPlot.jsonFiles }),
             });
+            const responseData = await result.json();
 
             if (!result.ok) {
-                const errorData = await result.json();
-                throw new Error(errorData.message || 'Failed to prepare plot data');
+                throw new Error(responseData.message || 'Failed to prepare plot data');
             }
 
-            setAlertMessage(`New plot available! (Data prepared for detector: ${selectedDetector})`);
+            if (!responseData.image) {
+                throw new Error('The server did not return a skimmer plot image.');
+            }
+
+            downloadImage(responseData.image, responseData.imageName, responseData.mimeType);
+            setAlertMessage(responseData.message || `New plot available for detector: ${selectedDetector}`);
         } catch (error) {
             setAlertMessage(`Error preparing data for plotting: ${error.message}`);
         }
