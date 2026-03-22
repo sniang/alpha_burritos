@@ -377,7 +377,8 @@ export const skimmerPlot = async (req, res) => {
     });
 
     const imageName = `skimmer_${detector}_${jsonFiles[0].replace('.json', '')}_${jsonFiles[jsonFiles.length - 1].replace('.json', '')}.png`;
-    const imagePath = path.join(ANALYSIS_DIR, imageName);
+    const { year, month, day } = parseDateFromFilename(jsonFiles[0]);
+    const imagePath = path.join(MAIN_DIR, year, padToTwoDigits(month), padToTwoDigits(day), 'Skimmer', imageName);
     const imageBuffer = await fs.readFile(imagePath);
 
     return res.json({
