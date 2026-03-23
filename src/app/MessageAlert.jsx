@@ -10,6 +10,7 @@
  */
 
 import Snackbar from '@mui/material/Snackbar';
+import CloseIcon from '@mui/icons-material/Close';
 import { useState, useEffect } from 'react';
 
 /**
@@ -24,6 +25,8 @@ export default function MessageAlert({ message, setMessage }) {
     useEffect(() => {
         if (message) {
             setOpen(true);
+        } else {
+            setOpen(false);
         }
     }, [message, setMessage]);
 
@@ -38,7 +41,9 @@ export default function MessageAlert({ message, setMessage }) {
             return;
         }
         setOpen(false);
-        setMessage(""); // Clear the message after displaying it
+        setTimeout(() => {
+            setMessage(null);
+        }, 500); // Delay clearing the message by 0.5 second
     };
 
     return (
@@ -48,6 +53,12 @@ export default function MessageAlert({ message, setMessage }) {
             autoHideDuration={5000} // Auto-hide after 5 seconds
             onClose={handleClose} // Close handler
             message={message} // Message to display
+            action={
+                <CloseIcon
+                    onClick={handleClose}
+                    style={{ cursor: 'pointer' }}
+                />
+            }
         />
     );
 }
