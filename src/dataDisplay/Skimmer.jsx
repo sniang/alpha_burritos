@@ -267,8 +267,10 @@ const Skimmer = ({ jsonFiles, selectedDetector, setSelectedDetector, detectorLis
                     fontSize: "0.65rem",
                     overflowX: "auto",
                     marginBottom: "10px",
-                    textAlign: "left",
-                    width: "100%"
+                    textAlign: "center",
+                    width: "100%",
+                    maxWidth: "750px",
+                    cursor: "text"
                 }}
             >
                 {tableText}
