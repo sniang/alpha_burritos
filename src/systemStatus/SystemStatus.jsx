@@ -41,6 +41,25 @@ export default function SystemStatus({handleLogout, expertMode, setExpertMode}) 
     const [scriptError, setScriptError] = useState(null);
     const [logDialog, setLogDialog] = useState({ open: false, name: '', log: '' });
     const [configData, setConfigData] = useState(null);
+    const [workerStatuses, setWorkerStatuses] = useState({ acquisition: 'unknown', analysis: 'unknown' });
+
+    useEffect(() => {
+        const fetchWorkers = async () => {
+            try {
+                const [acqRes, anaRes] = await Promise.all([
+                    fetch('/api/status/acquisition'),
+                    fetch('/api/status/analysis'),
+                ]);
+                const [acq, ana] = await Promise.all([acqRes.json(), anaRes.json()]);
+                setWorkerStatuses({ acquisition: acq.worker, analysis: ana.worker });
+            } catch (_) {}
+        };
+        fetchWorkers();
+        const interval = setInterval(fetchWorkers, 1000);
+        return () => clearInterval(interval);
+    }, []);
+
+    const pitayaButtonsDisabled = workerStatuses.acquisition === 'running' || workerStatuses.analysis === 'running';
 
     useEffect(() => {
         const fetchConfig = async () => {
@@ -161,6 +180,7 @@ export default function SystemStatus({handleLogout, expertMode, setExpertMode}) 
                                     color={enabled ? "success" : "error"}
                                     startIcon={<RouterIcon />}
                                     onClick={() => handlePitayaToggle(key)}
+                                    disabled={pitayaButtonsDisabled}
                                 >
                                     {enabled ? "Enabled" : "Disabled"}
                                 </Button>
