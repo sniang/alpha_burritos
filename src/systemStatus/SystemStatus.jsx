@@ -179,13 +179,12 @@ export default function SystemStatus({handleLogout, expertMode, setExpertMode}) 
                                     {`Pitaya ${idx + 1} (${ch1} / ${ch2})`}
                                 </Typography>
                                 <Button
-                                    sx={{ flex: 1 }}
+                                    sx={{ flex: 1, ...(pitayaButtonsDisabled && { pointerEvents: 'none', opacity: 0.4 }) }}
                                     size="small"
                                     variant="contained"
                                     color={enabled ? "success" : "error"}
                                     startIcon={<RouterIcon />}
                                     onClick={() => handlePitayaToggle(key)}
-                                    disabled={pitayaButtonsDisabled}
                                 >
                                     {enabled ? "Enabled" : "Disabled"}
                                 </Button>
