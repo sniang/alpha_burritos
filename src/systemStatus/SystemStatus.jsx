@@ -162,6 +162,11 @@ export default function SystemStatus({handleLogout, expertMode, setExpertMode}) 
                         <Alert severity="info" sx={{ py: 0.5, fontSize: '0.75rem' }}>
                             Disabling a card only excludes it from the offline analysis. The device stays on and all data is still recorded on EOS.
                         </Alert>
+                        {pitayaButtonsDisabled && (
+                            <Alert severity="warning" sx={{ py: 0.5, fontSize: '0.75rem' }}>
+                                Stop acquisition and analysis before changing the card configuration.
+                            </Alert>
+                        )}
                     </>}
                     {pitayaKeys.length > 0 && pitayaKeys.map((key, idx) => {
                         const channels = configData?.Mapping?.[key] || [];
