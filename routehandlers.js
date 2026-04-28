@@ -266,9 +266,21 @@ export const getLatest = async (req, res) => {
 // Route handler to post/update configuration
 export const postConfiguration = async (req, res) => {
   try {
-    const configPath = path.join(ANALYSIS_DIR, 'configurations', 'configuration.json');
+    const configDir = path.join(ANALYSIS_DIR, 'configurations');
     const newConfig = req.body;
-    await fs.writeFile(configPath, JSON.stringify(newConfig, null, 2), 'utf8');
+
+    await fs.writeFile(path.join(configDir, 'configuration.json'), JSON.stringify(newConfig, null, 2), 'utf8');
+
+    // Propagate pitaya enable/disable states to both default config files
+    const pitayaKeys = Object.keys(newConfig).filter(k => k.startsWith('red_pitaya_'));
+    for (const defaultFile of ['default_config_positrons.json', 'default_config_antiprotons.json']) {
+      const filePath = path.join(configDir, defaultFile);
+      const raw = await fs.readFile(filePath, 'utf8');
+      const defaultConfig = JSON.parse(raw);
+      for (const key of pitayaKeys) defaultConfig[key] = newConfig[key];
+      await fs.writeFile(filePath, JSON.stringify(defaultConfig, null, 2), 'utf8');
+    }
+
     res.json({ success: true, message: 'Configuration updated successfully' });
   } catch (error) {
     console.error(getCurrentTimestamp());
