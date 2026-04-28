@@ -13,7 +13,6 @@ import Chip from '@mui/material/Chip';
 import Typography from '@mui/material/Typography';
 import PowerIcon from '@mui/icons-material/Power';
 import PowerOffIcon from '@mui/icons-material/PowerOff';
-import BlockIcon from '@mui/icons-material/Block';
 
 /** Polling interval (ms) for fetching pitaya status from the backend. */
 const POLL_INTERVAL = 1000;
@@ -77,17 +76,8 @@ export default function PitayaStatus({ expertMode }) {
           justifyContent: 'center',
         }}>
           {pitayas.map(({ name, status }) => {
-            const color = status === 'on'
-              ? 'success'
-              : status === 'disabled'
-                ? 'default'
-                : 'error';
-
-            const icon = status === 'on'
-              ? <PowerIcon />
-              : status === 'disabled'
-                ? <BlockIcon />
-                : <PowerOffIcon />;
+            const color = status === 'on' ? 'success' : 'error';
+            const icon = status === 'on' ? <PowerIcon /> : <PowerOffIcon />;
 
             return (
               <Chip
