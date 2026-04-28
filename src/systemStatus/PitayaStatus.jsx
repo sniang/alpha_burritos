@@ -10,6 +10,7 @@
 import { useEffect, useState } from 'react';
 import Alert from '@mui/material/Alert';
 import Chip from '@mui/material/Chip';
+import Typography from '@mui/material/Typography';
 import PowerIcon from '@mui/icons-material/Power';
 import PowerOffIcon from '@mui/icons-material/PowerOff';
 import BlockIcon from '@mui/icons-material/Block';
@@ -55,11 +56,21 @@ export default function PitayaStatus({ expertMode }) {
   if (pitayas.length === 0) return null;
 
   // Pitayas whose status is anything other than "on"
-  const problemPitayas = pitayas.filter(({ status }) => status !== 'on');
+  const problemPitayas = pitayas.filter(({ status }) => status !== 'on' && status !== 'disabled');
 
   return (
     <>
       {/* Expert mode: one chip per pitaya with color-coded connection state */}
+      {expertMode && (
+        <>
+          <Typography variant="body2" sx={{ fontWeight: 600 }}>
+            Network connection per acquisition card
+          </Typography>
+          <Alert severity="info" sx={{ py: 0.5, fontSize: '0.75rem', maxWidth: '400px' }}>
+            These chips indicate whether each Red Pitaya is reachable on the network.
+          </Alert>
+        </>
+      )}
       {expertMode && (
         <div style={{
           display: 'flex',
@@ -67,6 +78,8 @@ export default function PitayaStatus({ expertMode }) {
           gap: '8px',
           flexWrap: 'wrap',
           justifyContent: 'center',
+          width: '100%',
+          maxWidth: '400px',
         }}>
           {pitayas.map(({ name, status }) => {
             const color = status === 'on'
