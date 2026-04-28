@@ -62,25 +62,20 @@ export default function PitayaStatus({ expertMode }) {
     <>
       {/* Expert mode: one chip per pitaya with color-coded connection state */}
       {expertMode && (
-        <>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', width: '100%', maxWidth: '400px' }}>
           <Typography variant="body2" sx={{ fontWeight: 600 }}>
             Network connection per acquisition card
           </Typography>
-          <Alert severity="info" sx={{ py: 0.5, fontSize: '0.75rem', maxWidth: '400px' }}>
+          <Alert severity="info" sx={{ py: 0.5, fontSize: '0.75rem' }}>
             These chips indicate whether each Red Pitaya is reachable on the network.
           </Alert>
-        </>
-      )}
-      {expertMode && (
-        <div style={{
-          display: 'flex',
-          flexDirection: 'row',
-          gap: '8px',
-          flexWrap: 'wrap',
-          justifyContent: 'center',
-          width: '100%',
-          maxWidth: '400px',
-        }}>
+          <div style={{
+            display: 'flex',
+            flexDirection: 'row',
+            gap: '8px',
+            flexWrap: 'wrap',
+            justifyContent: 'center',
+          }}>
           {pitayas.map(({ name, status }) => {
             const color = status === 'on'
               ? 'success'
@@ -104,6 +99,7 @@ export default function PitayaStatus({ expertMode }) {
               />
             );
           })}
+          </div>
         </div>
       )}
 
