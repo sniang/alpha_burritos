@@ -28,6 +28,8 @@ import DataSelection from '../dataSelection/DataSelection.jsx'
  * @returns {JSX.Element} The main application UI
  **/
 function App() {
+  const [expertMode, setExpertMode] = useState(false);
+
   // Global state for the application, all major UI state is centralized here
   const [state, setState] = useState({
     jsonFiles: [],           // List of available JSON files for selection
@@ -111,7 +113,7 @@ function App() {
   return (
     <>
       <MainTitle />
-      <SystemStatus handleLogout={handleLogout} />
+      <SystemStatus handleLogout={handleLogout} expertMode={expertMode} setExpertMode={setExpertMode} />
       <ChooseConfiguration
         selectedFile={selectedFile}
         forceRefreshSelectedFile={forceRefreshSelectedFile}

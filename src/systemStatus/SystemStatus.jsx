@@ -6,7 +6,7 @@
  *              In expert mode, provides controls to start/stop Python workers.
  * @author Samuel Niang
  */
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Paper from '@mui/material/Paper';
 import WorkerMonitor from './WorkerMonitor.jsx';
 import { Typography, Alert } from '@mui/material';
@@ -17,6 +17,7 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import StopIcon from '@mui/icons-material/Stop';
 import DescriptionIcon from '@mui/icons-material/Description';
+import RouterIcon from '@mui/icons-material/Router';
 import Button from "@mui/material/Button";
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
@@ -35,11 +36,41 @@ const monitors = ["acquisition", "analysis", "temperature"];
  * @param {Object}   props
  * @param {Function} props.handleLogout - Callback invoked when the user clicks "Log out".
  */
-export default function SystemStatus({handleLogout}) {
-    const [expertMode, setExpertMode] = useState(false);
+export default function SystemStatus({handleLogout, expertMode, setExpertMode}) {
     const [displayTemperature, setDisplayTemperature] = useState(false);
     const [scriptError, setScriptError] = useState(null);
     const [logDialog, setLogDialog] = useState({ open: false, name: '', log: '' });
+    const [configData, setConfigData] = useState(null);
+
+    useEffect(() => {
+        const fetchConfig = async () => {
+            try {
+                const res = await fetch('/api/configuration');
+                if (!res.ok) return;
+                const result = await res.json();
+                setConfigData(result.configData);
+            } catch (_) {}
+        };
+        fetchConfig();
+        const interval = setInterval(fetchConfig, 500);
+        return () => clearInterval(interval);
+    }, []);
+
+    const pitayaKeys = configData ? Object.keys(configData).filter(k => k.startsWith('red_pitaya_')).sort() : [];
+
+    const handlePitayaToggle = async (pitayaKey) => {
+        const newData = { ...configData, [pitayaKey]: !configData[pitayaKey] };
+        try {
+            const res = await fetch('/api/configuration', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(newData),
+            });
+            if (!res.ok) throw new Error(`Failed to update configuration: ${res.statusText}`);
+        } catch (err) {
+            setScriptError(err.message);
+        }
+    };
 
     /**
      * Fetches and displays the log for a given script.
@@ -104,6 +135,38 @@ export default function SystemStatus({handleLogout}) {
                             <Button sx={{flex: 1}} size="small" variant="outlined" startIcon={<DescriptionIcon />} onClick={() => handleShowLogs(name)}>Logs</Button>
                         </div>
                     ))}
+                    {/* Acquisition card enable/disable toggles */}
+                    {pitayaKeys.length > 0 && <>
+                        <Typography variant="body2" sx={{ fontWeight: 600, mt: 1 }}>
+                            Signal analysis per acquisition card
+                        </Typography>
+                        <Alert severity="info" sx={{ py: 0.5, fontSize: '0.75rem' }}>
+                            Disabling a card only excludes it from the offline analysis. The device stays on and all data is still recorded on EOS.
+                        </Alert>
+                    </>}
+                    {pitayaKeys.length > 0 && pitayaKeys.map((key, idx) => {
+                        const channels = configData?.Mapping?.[key] || [];
+                        const ch1 = channels.find(c => c[0].includes("ch1"))?.[1] || "-";
+                        const ch2 = channels.find(c => c[0].includes("ch2"))?.[1] || "-";
+                        const enabled = configData?.[key];
+                        return (
+                            <div key={key} style={{ display: 'flex', gap: '4px', alignItems: 'center' }}>
+                                <Typography variant="body2" sx={{ fontWeight: 600, mr: 0.5, flex: 1 }}>
+                                    {`Pitaya ${idx + 1} (${ch1} / ${ch2})`}
+                                </Typography>
+                                <Button
+                                    sx={{ flex: 1 }}
+                                    size="small"
+                                    variant="contained"
+                                    color={enabled ? "success" : "error"}
+                                    startIcon={<RouterIcon />}
+                                    onClick={() => handlePitayaToggle(key)}
+                                >
+                                    {enabled ? "Enabled" : "Disabled"}
+                                </Button>
+                            </div>
+                        );
+                    })}
                 </div>
             )}
 
