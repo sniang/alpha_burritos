@@ -39,7 +39,7 @@ const monitors = ["acquisition", "analysis", "temperature"];
  * @param {Object}   props
  * @param {Function} props.handleLogout - Callback invoked when the user clicks "Log out".
  */
-export default function SystemStatus({ handleLogout, expertMode, setExpertMode }) {
+export default function SystemStatus({ expertMode, setExpertMode }) {
     const [displayTemperature, setDisplayTemperature] = useState(false);
     const [scriptError, setScriptError] = useState(null);
     const [expanded, setExpanded] = useState(true);
@@ -203,8 +203,6 @@ export default function SystemStatus({ handleLogout, expertMode, setExpertMode }
                 <PitayaStatus expertMode={expertMode} />
 
                 {scriptError && <Alert severity="error" sx={{ mt: 1 }} onClose={() => setScriptError(null)}>{scriptError}</Alert>}
-
-                <Button onClick={handleLogout} startIcon={<LogoutIcon />} variant="contained">Log out</Button>
 
                 <TemperatureDisplay display={displayTemperature} setDisplay={setDisplayTemperature} />
 
