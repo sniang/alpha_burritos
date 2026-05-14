@@ -228,20 +228,12 @@ const Parameters = ({
           Reverse Table
         </Button>
 
-        {displayTable && (
-          <Button
-            startIcon={<CancelIcon />}
-            size="small"
-            variant="contained"
-            onClick={() => setDisplayTable(false)}
-          >
-            Back
-          </Button>
-        )}
         {/* Button text changes based on edit mode */}
         <Button startIcon={<EditNoteIcon />} size="small" variant="contained" onClick={updateComment}>{!update ? "Update comments" : "Save comments"}</Button>
         {/* Cancel button only appears in edit mode */}
         {update && <Button startIcon={<CancelIcon />} size="small" color="error" variant="contained" onClick={() => setUpdate(!update)}>Cancel</Button>}
+        {/* Back button only appears in text view mode */}
+        {displayTable && <Button startIcon={<CancelIcon />} size="small" color="secondary" variant="contained" onClick={() => setDisplayTable(false)}> Back </Button>}
       </div>
     );
   };
