@@ -12,7 +12,7 @@ import LogoutIcon from '@mui/icons-material/Logout';
  */
 const MainTitle = ( {handleLogout} ) => {
     return (
-        <Typography variant="h4" sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '10px', justifyContent: 'center', flexWrap: 'wrap', marginTop: '10px', textAlign: 'center' }}>
+        <Typography variant="h4" sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '10px', justifyContent: 'center', flexWrap: 'wrap', marginTop: '10px', textAlign: 'center', marginBottom: '10px' }}>
             <img style={{ width: '55px', marginRight: '20px' }} src={alphaLogo} alt="Logo of the ALPHA experiment" />
             ALPHA Burrito Detectors
             <Button onClick={handleLogout} startIcon={<LogoutIcon />} variant="contained">Log out</Button>
