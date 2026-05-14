@@ -7,6 +7,7 @@
  * @author Samuel Niang
  */
 import { useState, useEffect } from 'react';
+import Paper from '@mui/material/Paper';
 import WorkerMonitor from './WorkerMonitor.jsx';
 import { Typography, Alert } from '@mui/material';
 import TemperatureDisplay from './TemperatureDisplay.jsx';
@@ -24,10 +25,6 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
-import AccordionDetails from '@mui/material/AccordionDetails';
-import Accordion from '@mui/material/Accordion';
-import AccordionSummary from '@mui/material/AccordionSummary';
-import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 
 /** List of worker processes to monitor. */
 const monitors = ["acquisition", "analysis", "temperature"];
@@ -39,10 +36,9 @@ const monitors = ["acquisition", "analysis", "temperature"];
  * @param {Object}   props
  * @param {Function} props.handleLogout - Callback invoked when the user clicks "Log out".
  */
-export default function SystemStatus({ expertMode, setExpertMode }) {
+export default function SystemStatus({handleLogout, expertMode, setExpertMode}) {
     const [displayTemperature, setDisplayTemperature] = useState(false);
     const [scriptError, setScriptError] = useState(null);
-    const [expanded, setExpanded] = useState(true);
     const [logDialog, setLogDialog] = useState({ open: false, name: '', log: '' });
     const [configData, setConfigData] = useState(null);
     const [workerStatuses, setWorkerStatuses] = useState({ acquisition: 'unknown', analysis: 'unknown' });
@@ -127,101 +123,105 @@ export default function SystemStatus({ expertMode, setExpertMode }) {
     };
 
     return (
-        <Accordion
-            expanded={expanded}
-            sx={{ width: '100%', padding: 2, border: '2px solid black' }}
-        >
-            <AccordionSummary
-                expandIcon={<ArrowDownwardIcon />}
-                aria-controls="system-status-content"
-                id="system-status-header"
-            >
-                <div style={{ display: 'flex', flexDirection: 'row', gap: '10px', justifyContent: 'center', alignItems: 'center', flexWrap: 'wrap' }}>
-                    <Typography variant="h6">System Status</Typography>
-                    {monitors.map(monitor => (
-                        <WorkerMonitor
-                            key={monitor}
-                            monitor={monitor}
-                            {...(monitor === "temperature" ? { onClick: () => setDisplayTemperature(!displayTemperature) } : {})}
-                        />
+        <Paper elevation={3} sx={{ width: '100%', padding: 2, border: '2px solid black', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: "10px" }}>
+            {/* Header row: title + expert-mode switch */}
+            <div style={{ display: 'flex', flexDirection: 'row', gap: '10px', justifyContent: 'center', alignItems: 'center', flexWrap: 'wrap' }}>
+                <Typography variant="h5">System Status</Typography>
+                <Switch checked={expertMode} onChange={(e) => setExpertMode(e.target.checked)} />
+                <Typography variant="body1">{expertMode ? "Expert Mode: ON" : "Expert Mode: OFF"}</Typography>
+            </div>
+
+            {/* Worker monitors row + logout button */}
+            <div style={{ display: 'flex', flexDirection: 'row', gap: '10px', justifyContent: 'center', alignItems: 'center', flexWrap: 'wrap' }}>
+                {monitors.map(monitor => (
+                    <WorkerMonitor
+                        key={monitor}
+                        monitor={monitor}
+                        /* Clicking the temperature monitor toggles the temperature dialog. */
+                        {...(monitor === "temperature" ? { onClick: () => setDisplayTemperature(!displayTemperature) } : {})}
+                    />
+                ))}
+            </div>
+
+            {/* Expert mode: start/stop controls for each Python worker */}
+            {expertMode && (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', justifyContent: 'center', flexWrap: 'wrap', width: '100%', marginTop: '20px', maxWidth: '400px' }}>
+                    {monitors.map(name => (
+                        <div key={name} style={{ display: 'flex', gap: '4px', alignItems: 'center' }}>
+                            <Typography variant="body2" sx={{ fontWeight: 600, mr: 0.5, flex: 1 }}>{name}</Typography>
+                            <Button sx={{flex: 1}} size="small" variant="contained" color="success" startIcon={<PlayArrowIcon />} onClick={() => handleScript('start', name)}>Start</Button>
+                            <Button sx={{flex: 1}} size="small" variant="contained" color="error" startIcon={<StopIcon />} onClick={() => handleScript('stop', name)}>Stop</Button>
+                            <Button sx={{flex: 1}} size="small" variant="outlined" startIcon={<DescriptionIcon />} onClick={() => handleShowLogs(name)}>Logs</Button>
+                        </div>
                     ))}
-                    <Switch checked={expertMode} onChange={(e) => setExpertMode(e.target.checked)} />
-                    <Typography variant="body1">{expertMode ? "Expert Mode: ON" : "Expert Mode: OFF"}</Typography>
-                </div>
-            </AccordionSummary>
-
-            <AccordionDetails sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: "10px" }}>
-                {expertMode && (
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', justifyContent: 'center', flexWrap: 'wrap', width: '100%', marginTop: '20px', maxWidth: '400px' }}>
-                        {monitors.map(name => (
-                            <div key={name} style={{ display: 'flex', gap: '4px', alignItems: 'center' }}>
-                                <Typography variant="body2" sx={{ fontWeight: 600, mr: 0.5, flex: 1 }}>{name}</Typography>
-                                <Button sx={{ flex: 1 }} size="small" variant="contained" color="success" startIcon={<PlayArrowIcon />} onClick={() => handleScript('start', name)}>Start</Button>
-                                <Button sx={{ flex: 1 }} size="small" variant="contained" color="error" startIcon={<StopIcon />} onClick={() => handleScript('stop', name)}>Stop</Button>
-                                <Button sx={{ flex: 1 }} size="small" variant="outlined" startIcon={<DescriptionIcon />} onClick={() => handleShowLogs(name)}>Logs</Button>
-                            </div>
-                        ))}
-                        {pitayaKeys.length > 0 && <>
-                            <Typography variant="body2" sx={{ fontWeight: 600, mt: 1 }}>
-                                Signal analysis per acquisition card
-                            </Typography>
-                            <Alert severity="info" sx={{ py: 0.5, fontSize: '0.75rem' }}>
-                                Disabling a card only excludes it from the offline analysis. The device stays on and all data is still recorded on EOS.
+                    {/* Acquisition card enable/disable toggles */}
+                    {pitayaKeys.length > 0 && <>
+                        <Typography variant="body2" sx={{ fontWeight: 600, mt: 1 }}>
+                            Signal analysis per acquisition card
+                        </Typography>
+                        <Alert severity="info" sx={{ py: 0.5, fontSize: '0.75rem' }}>
+                            Disabling a card only excludes it from the offline analysis. The device stays on and all data is still recorded on EOS.
+                        </Alert>
+                        {pitayaButtonsDisabled && (
+                            <Alert severity="warning" sx={{ py: 0.5, fontSize: '0.75rem' }}>
+                                Stop acquisition and analysis before changing the card configuration.
                             </Alert>
-                            {pitayaButtonsDisabled && (
-                                <Alert severity="warning" sx={{ py: 0.5, fontSize: '0.75rem' }}>
-                                    Stop acquisition and analysis before changing the card configuration.
-                                </Alert>
-                            )}
-                        </>}
-                        {pitayaKeys.length > 0 && pitayaKeys.map((key, idx) => {
-                            const channels = configData?.Mapping?.[key] || [];
-                            const ch1 = channels.find(c => c[0].includes("ch1"))?.[1] || "-";
-                            const ch2 = channels.find(c => c[0].includes("ch2"))?.[1] || "-";
-                            const enabled = configData?.[key];
-                            return (
-                                <div key={key} style={{ display: 'flex', gap: '4px', alignItems: 'center' }}>
-                                    <Typography variant="body2" sx={{ fontWeight: 600, mr: 0.5, flex: 1 }}>
-                                        {`Pitaya ${idx + 1} (${ch1} / ${ch2})`}
-                                    </Typography>
-                                    <Button
-                                        sx={{ flex: 1, ...(pitayaButtonsDisabled && { pointerEvents: 'none', opacity: 0.4 }) }}
-                                        size="small"
-                                        variant="contained"
-                                        color={enabled ? "success" : "error"}
-                                        startIcon={<RouterIcon />}
-                                        onClick={() => handlePitayaToggle(key)}
-                                    >
-                                        {enabled ? "Enabled" : "Disabled"}
-                                    </Button>
-                                </div>
-                            );
-                        })}
-                    </div>
-                )}
+                        )}
+                    </>}
+                    {pitayaKeys.length > 0 && pitayaKeys.map((key, idx) => {
+                        const channels = configData?.Mapping?.[key] || [];
+                        const ch1 = channels.find(c => c[0].includes("ch1"))?.[1] || "-";
+                        const ch2 = channels.find(c => c[0].includes("ch2"))?.[1] || "-";
+                        const enabled = configData?.[key];
+                        return (
+                            <div key={key} style={{ display: 'flex', gap: '4px', alignItems: 'center' }}>
+                                <Typography variant="body2" sx={{ fontWeight: 600, mr: 0.5, flex: 1 }}>
+                                    {`Pitaya ${idx + 1} (${ch1} / ${ch2})`}
+                                </Typography>
+                                <Button
+                                    sx={{ flex: 1, ...(pitayaButtonsDisabled && { pointerEvents: 'none', opacity: 0.4 }) }}
+                                    size="small"
+                                    variant="contained"
+                                    color={enabled ? "success" : "error"}
+                                    startIcon={<RouterIcon />}
+                                    onClick={() => handlePitayaToggle(key)}
+                                >
+                                    {enabled ? "Enabled" : "Disabled"}
+                                </Button>
+                            </div>
+                        );
+                    })}
+                </div>
+            )}
 
-                <PitayaStatus expertMode={expertMode} />
+            {/* Red Pitaya connection status */}
+            <PitayaStatus expertMode={expertMode}/>
+            
+            {/* Display error from start/stop actions */}
+            {scriptError && <Alert severity="error" sx={{ mt: 1 }} onClose={() => setScriptError(null)}>{scriptError}</Alert>}
 
-                {scriptError && <Alert severity="error" sx={{ mt: 1 }} onClose={() => setScriptError(null)}>{scriptError}</Alert>}
+            {/* Logout button */}
+            <Button onClick={handleLogout} startIcon={<LogoutIcon />} variant="contained">Log out</Button>
 
-                <TemperatureDisplay display={displayTemperature} setDisplay={setDisplayTemperature} />
+            {/* Modal dialog with live Pitaya temperature readings */}
+            <TemperatureDisplay display={displayTemperature} setDisplay={setDisplayTemperature} />
 
-                <Dialog open={logDialog.open} onClose={() => setLogDialog({ ...logDialog, open: false })} maxWidth="md" fullWidth>
-                    <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        Logs: {logDialog.name}
-                        <IconButton onClick={() => setLogDialog({ ...logDialog, open: false })}><CloseIcon /></IconButton>
-                    </DialogTitle>
-                    <DialogContent dividers>
-                        <pre style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word', margin: 0, fontSize: '0.85rem', maxHeight: '60vh', overflow: 'auto' }}>
-                            {logDialog.log}
-                        </pre>
-                    </DialogContent>
-                    <DialogActions>
-                        <Button onClick={() => handleShowLogs(logDialog.name)}>Refresh</Button>
-                        <Button onClick={() => setLogDialog({ ...logDialog, open: false })}>Close</Button>
-                    </DialogActions>
-                </Dialog>
-            </AccordionDetails>
-        </Accordion>
+            {/* Log dialog */}
+            <Dialog open={logDialog.open} onClose={() => setLogDialog({ ...logDialog, open: false })} maxWidth="md" fullWidth>
+                <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    Logs: {logDialog.name}
+                    <IconButton onClick={() => setLogDialog({ ...logDialog, open: false })}><CloseIcon /></IconButton>
+                </DialogTitle>
+                <DialogContent dividers>
+                    <pre style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word', margin: 0, fontSize: '0.85rem', maxHeight: '60vh', overflow: 'auto' }}>
+                        {logDialog.log}
+                    </pre>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={() => handleShowLogs(logDialog.name)}>Refresh</Button>
+                    <Button onClick={() => setLogDialog({ ...logDialog, open: false })}>Close</Button>
+                </DialogActions>
+            </Dialog>
+        </Paper>
     );
-}
+} 

@@ -112,8 +112,8 @@ function App() {
   // @returns {JSX.Element} The main application UI
   return (
     <>
-      <MainTitle handleLogout={handleLogout} />
-      <SystemStatus expertMode={expertMode} setExpertMode={setExpertMode} />
+      <MainTitle />
+      <SystemStatus handleLogout={handleLogout} expertMode={expertMode} setExpertMode={setExpertMode} />
       <ChooseConfiguration
         selectedFile={selectedFile}
         forceRefreshSelectedFile={forceRefreshSelectedFile}
