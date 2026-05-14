@@ -2,7 +2,7 @@
  * @file SystemStatus.jsx
  * @description Panel that displays the overall system status, including
  *              worker monitors (acquisition, analysis, temperature), an
- *              expert-mode toggle, a temperature dialog, and a logout button.
+ *              expert-mode toggle, a temperature dialog
  *              In expert mode, provides controls to start/stop Python workers.
  * @author Samuel Niang
  */
@@ -13,7 +13,6 @@ import { Typography, Alert } from '@mui/material';
 import TemperatureDisplay from './TemperatureDisplay.jsx';
 import PitayaStatus from './PitayaStatus.jsx';
 import Switch from '@mui/material/Switch';
-import LogoutIcon from '@mui/icons-material/Logout';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import StopIcon from '@mui/icons-material/Stop';
 import DescriptionIcon from '@mui/icons-material/Description';
@@ -31,12 +30,11 @@ const monitors = ["acquisition", "analysis", "temperature"];
 
 /**
  * SystemStatus – top-level status bar showing worker health, expert-mode
- * toggle, and a logout action.
+ * toggle
  *
  * @param {Object}   props
- * @param {Function} props.handleLogout - Callback invoked when the user clicks "Log out".
  */
-export default function SystemStatus({handleLogout, expertMode, setExpertMode}) {
+export default function SystemStatus({ expertMode, setExpertMode}) {
     const [displayTemperature, setDisplayTemperature] = useState(false);
     const [scriptError, setScriptError] = useState(null);
     const [logDialog, setLogDialog] = useState({ open: false, name: '', log: '' });
@@ -131,7 +129,7 @@ export default function SystemStatus({handleLogout, expertMode, setExpertMode}) 
                 <Typography variant="body1">{expertMode ? "Expert Mode: ON" : "Expert Mode: OFF"}</Typography>
             </div>
 
-            {/* Worker monitors row + logout button */}
+            {/* Worker monitors row */}
             <div style={{ display: 'flex', flexDirection: 'row', gap: '10px', justifyContent: 'center', alignItems: 'center', flexWrap: 'wrap' }}>
                 {monitors.map(monitor => (
                     <WorkerMonitor
@@ -199,9 +197,6 @@ export default function SystemStatus({handleLogout, expertMode, setExpertMode}) 
             
             {/* Display error from start/stop actions */}
             {scriptError && <Alert severity="error" sx={{ mt: 1 }} onClose={() => setScriptError(null)}>{scriptError}</Alert>}
-
-            {/* Logout button */}
-            <Button onClick={handleLogout} startIcon={<LogoutIcon />} variant="contained">Log out</Button>
 
             {/* Modal dialog with live Pitaya temperature readings */}
             <TemperatureDisplay display={displayTemperature} setDisplay={setDisplayTemperature} />
