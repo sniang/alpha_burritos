@@ -334,7 +334,7 @@ const Skimmer = ({ jsonFiles, selectedDetector, setSelectedDetector, detectorLis
                     />
                 )}
                 {!isLoading && data && isTableTextArea && (
-                    <Button startIcon={<CancelIcon />} size="small" variant="contained" onClick={() => setIsTableTextArea(false)}>
+                    <Button startIcon={<CancelIcon />} color="secondary" size="small" variant="contained" onClick={() => setIsTableTextArea(false)}>
                         Back
                     </Button>
                 )}
