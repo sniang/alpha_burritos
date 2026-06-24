@@ -9,6 +9,7 @@ import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import MessageAlert from "../app/MessageAlert.jsx";
 import {Paper, Alert, Typography} from "@mui/material";
 import ConfigTable from "./ConfigTable.jsx";
+import PlotRanges from "./PlotRanges.jsx";
 /**
  * ChooseConfiguration component provides UI controls for selecting the analysis configuration
  * ("positrons" or "antiprotons") and toggling the "fit" option. It fetches the current configuration
@@ -240,6 +241,7 @@ const ChooseConfiguration = ({ selectedFile, forceRefreshSelectedFile }) => {
       {!timestampMessage && <Alert severity="error">An error occurred while fetching the latest acquisition timestamp.</Alert>}
       {/* Display error message if any */}
       {error && <Alert severity="error">{error.message}</Alert>}
+      <PlotRanges />
     </Paper>
   );
 }

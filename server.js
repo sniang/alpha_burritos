@@ -30,7 +30,9 @@ import {
     stopPythonScript,
     getScriptLogs,
     getPitayaStatus,
-    skimmerPlot
+    skimmerPlot,
+    getPlotRanges,
+    postPlotRanges
 } from './routehandlers.js';
 
 // ====================
@@ -101,6 +103,12 @@ app.get('/api/configuration', (req, res) => getConfiguration(req, res));
 
 // Post the configuration for the analysis
 app.post('/api/configuration', (req, res) => postConfiguration(req, res));
+
+// Get the plot ranges
+app.get('/api/plot-ranges', (req, res) => getPlotRanges(req, res));
+
+// Post the plot ranges
+app.post('/api/plot-ranges', (req, res) => postPlotRanges(req, res));
 
 // Get the latest dump timestamp
 app.get('/api/latest', (req, res) => getLatest(req, res));

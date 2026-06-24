@@ -263,6 +263,36 @@ export const getLatest = async (req, res) => {
   }
 };
 
+// Route handler to get plot ranges configuration
+export const getPlotRanges = async (req, res) => {
+  try {
+    const plotRangesPath = path.join(ANALYSIS_DIR, 'configurations', 'plot_ranges.json');
+    const data = await fs.readFile(plotRangesPath, 'utf8');
+    const plotRangesData = JSON.parse(data);
+    res.json(plotRangesData);
+  } catch (error) {
+    console.error(getCurrentTimestamp());
+    console.error('Error in getPlotRanges:', error.message);
+    res.status(500).json({ error: 'Unable to read plot ranges data' });
+  }
+};
+
+// Route handler to post/update plot ranges configuration
+export const postPlotRanges = async (req, res) => {
+  try {
+    const plotRangesPath = path.join(ANALYSIS_DIR, 'configurations', 'plot_ranges.json');
+    const newPlotRanges = req.body;
+
+    await fs.writeFile(plotRangesPath, JSON.stringify(newPlotRanges, null, 2), 'utf8');
+
+    res.json({ success: true, message: 'Plot ranges updated successfully' });
+  } catch (error) {
+    console.error(getCurrentTimestamp());
+    console.error('Error in postPlotRanges:', error.message);
+    res.status(400).json({ error: error.message });
+  }
+};
+
 // Route handler to post/update configuration
 export const postConfiguration = async (req, res) => {
   try {
