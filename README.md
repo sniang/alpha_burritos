@@ -29,6 +29,7 @@ The application communicates with a custom RESTful API to fetch and display crit
 - **Re-analyse:** Trigger a new analysis of the currently selected file with the current configuration.
 - **Script Logs:** View stdout/stderr logs for each Python worker script (acquisition, analysis, temperature) directly in the UI via a dialog, with a refresh button to fetch the latest output.
 - **Red Pitaya Status:** In expert mode, displays the connection status of all Red Pitaya devices as color-coded chips (green = ON, red = OFF, grey = DISABLED). The backend pings all enabled hosts in parallel with a 2-second cache to avoid flooding.
+- **Plot Ranges:** Configure custom x-axis (time, in µs) and y-axis (voltage, in mV) ranges for plots via toggle switches and numeric inputs. Ranges are synced to the server in real time and applied to all generated plots.
 
 ---
 
@@ -48,6 +49,7 @@ src/
   configuration/
     ChooseConfiguration.jsx        # Select analysis mode (positrons/antiprotons) and fit option
     ConfigTable.jsx                # Displays configuration details in a table
+    PlotRanges.jsx                 # Configure x/y axis ranges for plots (time µs, voltage mV)
   dataDisplay/
     DataDisplay.jsx                # Container for detector data visualization
     DetectorImage.jsx              # Shows image for a selected detector
@@ -56,7 +58,7 @@ src/
     DownloadAllButton.jsx          # Button to download all signals for all detectors
     Parameters.jsx                 # Displays detector parameters from JSON
     Skimmer.jsx                    # Browse and export a range of acquisitions as CSV
-    SkimmerPlotButton.jsx          # Button to trigger skimmer plot generation for selected data
+    SkimmerPlot.jsx                # Button to trigger skimmer plot generation for selected data
   dataSelection/
     AutoRefresh.jsx                # Toggle auto-refresh of file list
     DataSelection.jsx              # Container for data selection controls
@@ -204,6 +206,17 @@ The React app expects the following backend API (see [`server.js`](server.js)):
 - **Get/Update Configuration:**  
   - `GET /api/configuration` — Get the current configuration (from `ANALYSIS_DIR/configurations/configuration.json`).
   - `POST /api/configuration` — Update the configuration (expects JSON body).
+
+- **Get/Update Plot Ranges:**
+  - `GET /api/plot-ranges` — Get the current plot axis ranges (from `ANALYSIS_DIR/configurations/plot_ranges.json`).
+    - Response:
+      ```json
+      { "x": false, "y": false, "xmin": 0, "xmax": 120, "ymin": 0, "ymax": 250 }
+      ```
+  - `POST /api/plot-ranges` — Update the plot axis ranges (expects the same JSON body). Response:
+    ```json
+    { "success": true, "message": "Plot ranges updated successfully" }
+    ```
 
 - **Get the Latest Dump Timestamp:**  
   `GET /api/latest`  
