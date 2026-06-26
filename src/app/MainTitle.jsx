@@ -17,7 +17,11 @@ const MainTitle = ({ handleLogout }) => {
             <img style={{ width: '55px', marginRight: '20px' }} src={alphaLogo} alt="Logo of the ALPHA experiment" />
             ALPHA Burrito Detectors
             {/* Logout button */}
-            <Button sx={{ ml: '20px' }} onClick={handleLogout} startIcon={<LogoutIcon />} variant="contained">Log out</Button>
+            {handleLogout && (
+                <Button sx={{ ml: '20px' }} onClick={handleLogout} startIcon={<LogoutIcon />} variant="contained">
+                    Log out
+                </Button>
+            )}
         </Typography>
     );
 }
