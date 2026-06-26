@@ -54,7 +54,6 @@ const DataDisplay = ({ selectedFile, detectorList, selectedDetector, fileVersion
           flexWrap: 'wrap',
           overflow: 'hidden',
           padding: '10px',
-          width: '100%',
           '@media (max-width: 900px)': { flexDirection: 'column' },
         }}>
         {/* Parameters: Controls for detector selection and parameter adjustment */}
