@@ -63,7 +63,7 @@ const PlotRanges = () => {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', justifyContent: 'center', alignItems: 'center', marginTop: '20px', marginBottom: '20px' }}>
-      <Typography variant="h6" gutterBottom>Plot Ranges</Typography>
+      <Typography variant="subtitle1" gutterBottom>Plot Ranges</Typography>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, auto)', gap: '15px', justifyContent: 'center', alignItems: 'center' }}>
         {/* Time (X-axis) range controls */}
         <Typography variant="subtitle1" gutterBottom>Time</Typography>
