@@ -7,9 +7,12 @@ import MonitorHeartIcon from '@mui/icons-material/MonitorHeart';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import MessageAlert from "../app/MessageAlert.jsx";
-import {Paper, Alert, Typography} from "@mui/material";
+import { Paper, Alert, Typography } from "@mui/material";
 import ConfigTable from "./ConfigTable.jsx";
 import PlotRanges from "./PlotRanges.jsx";
+import Accordion from '@mui/joy/Accordion';
+import AccordionDetails from '@mui/joy/AccordionDetails';
+import AccordionSummary from '@mui/joy/AccordionSummary';
 /**
  * ChooseConfiguration component provides UI controls for selecting the analysis configuration
  * ("positrons" or "antiprotons") and toggling the "fit" option. It fetches the current configuration
@@ -38,7 +41,7 @@ const ChooseConfiguration = ({ selectedFile, forceRefreshSelectedFile }) => {
   const [showDetails, setShowDetails] = useState(false);
   // State for displaying messages (e.g., success messages)
   const [message, setMessage] = useState(null);
-    // Timestamp message
+  // Timestamp message
   const [timestampMessage, setTimestampMessage] = useState(null);
   // State for difference in seconds between current time and latest dump timestamp
   const [diffInSeconds, setDiffInSeconds] = useState(null);
@@ -105,7 +108,7 @@ const ChooseConfiguration = ({ selectedFile, forceRefreshSelectedFile }) => {
         setTimestampMessage(result.latest.replace('_', ' '));
       } catch (err) {
         const errorMessage = `${err.message}
-            ChooseConfiguration failed to fetch latest dump timestamp`;
+ChooseConfiguration failed to fetch latest dump timestamp`;
         console.error('[ERROR]', errorMessage);
         setError(errorMessage);
         setDiffInSeconds(null);
@@ -183,66 +186,73 @@ const ChooseConfiguration = ({ selectedFile, forceRefreshSelectedFile }) => {
   }
 
   if (!data && error) return (
-    <Paper elevation={3} sx={{ width: '100%', padding: 2, border: '2px solid black', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', gap: "10px" }}>
-      <Typography variant="h5">Analysis Configuration</Typography>
-      <Alert severity="error">{error.message}</Alert>
-    </Paper>
+    <Accordion defaultExpanded>
+      <AccordionSummary><Typography variant="h5">Analysis Configuration</Typography></AccordionSummary>
+      <AccordionDetails>
+        <Paper elevation={3} sx={{ width: '100%', padding: 2, border: '2px solid black', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', gap: "10px" }}>
+          <Typography variant="h5">Analysis Configuration</Typography>
+          <Alert severity="error">{error.message}</Alert>
+        </Paper>
+      </AccordionDetails>
+    </Accordion>
   );
 
   return data && (
-    <Paper elevation={3} sx={{ width: '100%', padding: 2, border: '2px solid black', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: "2px" }}>
-      <MessageAlert message={message} setMessage={setMessage} />
-      <Typography variant="h5">Analysis Configuration</Typography>
-      <div style={{ display: 'flex', flexDirection: 'row', gap: '10px', justifyContent: 'center', alignItems: 'center', flexWrap: 'wrap' }}>
-        <Button startIcon={<AddCircleOutlineIcon />} style={{ opacity: data.config !== 'positrons' ? 0.5 : 1 }} onClick={() => handleConfigChange('positrons')}>
-          Positrons
-        </Button>
-        {/* Button to select antiprotons configuration */}
-        <Button
-          startIcon={<RemoveCircleOutlineIcon />}
-          style={{ opacity: data.config !== 'antiprotons' ? 0.5 : 1 }}
-          onClick={() => handleConfigChange('antiprotons')}
-        >
-          Antiprotons
-        </Button>
-        {/* Button to toggle fit option */}
-        <Button
-          startIcon={<MonitorHeartIcon />}
-          style={{ opacity: data.fit ? 1 : 0.5 }}
-          onClick={() => { handleConfigChange(data.config, !data.fit); }}
-        >
-          {data.fit ? "Fit enabled" : "Fit disabled"}
-        </Button>
-        {/* Button to trigger re-analysis */}
-        <Button
-          onClick={handleReAnalyse}
-          startIcon={<PsychologyIcon />}
-        >
-          Re-analyse
-        </Button>
-        {/* Button to show/hide configuration details */}
-        <Button startIcon={<InfoIcon />} onClick={() => { setShowDetails(!showDetails); }}
-        >
-          {showDetails ? "Hide details" : "Show details"}
-        </Button>
-        <a
-          href="https://alphacpc05.cern.ch/elog/ALPHA/36053"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Button startIcon={<AutoStoriesIcon />} >
-            Go to the guide
+    <Accordion defaultExpanded>
+      <AccordionSummary><Typography variant="h5">Analysis Configuration</Typography></AccordionSummary>
+      <AccordionDetails>
+        <MessageAlert message={message} setMessage={setMessage} />
+        <div style={{ display: 'flex', flexDirection: 'row', gap: '10px', justifyContent: 'center', alignItems: 'center', flexWrap: 'wrap', padding: "10px", width: "100%" }}>
+          <Button startIcon={<AddCircleOutlineIcon />} style={{ opacity: data.config !== 'positrons' ? 0.5 : 1 }} onClick={() => handleConfigChange('positrons')}>
+            Positrons
           </Button>
-        </a>
-      </div>
-      <ConfigTable showDetails={showDetails} data={data} dataKeys={dataKeys} />
-      <PlotRanges />
-      {/* Display timestamp message if any */}
-      {timestampMessage && <Alert severity="info">{`Latest acquisition: ${timestampMessage} - From the ${latestParticle} trigger`}</Alert>}
-      {!timestampMessage && <Alert severity="error">An error occurred while fetching the latest acquisition timestamp.</Alert>}
-      {/* Display error message if any */}
-      {error && <Alert severity="error">{error.message}</Alert>}
-    </Paper>
+          {/* Button to select antiprotons configuration */}
+          <Button
+            startIcon={<RemoveCircleOutlineIcon />}
+            style={{ opacity: data.config !== 'antiprotons' ? 0.5 : 1 }}
+            onClick={() => handleConfigChange('antiprotons')}
+          >
+            Antiprotons
+          </Button>
+          {/* Button to toggle fit option */}
+          <Button
+            startIcon={<MonitorHeartIcon />}
+            style={{ opacity: data.fit ? 1 : 0.5 }}
+            onClick={() => { handleConfigChange(data.config, !data.fit); }}
+          >
+            {data.fit ? "Fit enabled" : "Fit disabled"}
+          </Button>
+          {/* Button to trigger re-analysis */}
+          <Button
+            onClick={handleReAnalyse}
+            startIcon={<PsychologyIcon />}
+          >
+            Re-analyse
+          </Button>
+          {/* Button to show/hide configuration details */}
+          <Button startIcon={<InfoIcon />} onClick={() => { setShowDetails(!showDetails); }}
+          >
+            {showDetails ? "Hide details" : "Show details"}
+          </Button>
+          <a
+            href="https://alphacpc05.cern.ch/elog/ALPHA/36053"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <Button startIcon={<AutoStoriesIcon />} >
+              Go to the guide
+            </Button>
+          </a>
+        </div>
+        <ConfigTable showDetails={showDetails} data={data} dataKeys={dataKeys} />
+        <PlotRanges />
+        {/* Display timestamp message if any */}
+        {timestampMessage && <Alert severity="info">{`Latest acquisition: ${timestampMessage} - From the ${latestParticle} trigger`}</Alert>}
+        {!timestampMessage && <Alert severity="error">An error occurred while fetching the latest acquisition timestamp.</Alert>}
+        {/* Display error message if any */}
+        {error && <Alert severity="error">{error.message}</Alert>}
+      </AccordionDetails>
+    </Accordion>
   );
 }
 

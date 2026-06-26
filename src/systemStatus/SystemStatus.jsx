@@ -24,6 +24,9 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
+import Accordion from '@mui/joy/Accordion';
+import AccordionDetails from '@mui/joy/AccordionDetails';
+import AccordionSummary from '@mui/joy/AccordionSummary';
 
 /** List of worker processes to monitor. */
 const monitors = ["acquisition", "analysis", "temperature"];
@@ -121,10 +124,13 @@ export default function SystemStatus({ expertMode, setExpertMode}) {
     };
 
     return (
-        <Paper elevation={3} sx={{ width: '100%', padding: 2, border: '2px solid black', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: "10px" }}>
+        <Accordion defaultExpanded>
             {/* Header row: title + expert-mode switch */}
+            <AccordionSummary><Typography variant="h5">System Status</Typography></AccordionSummary>
+            <AccordionDetails>
+                        <div style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: "10px", margin: "10px" }}>
             <div style={{ display: 'flex', flexDirection: 'row', gap: '10px', justifyContent: 'center', alignItems: 'center', flexWrap: 'wrap' }}>
-                <Typography variant="h5">System Status</Typography>
+                
                 <Switch checked={expertMode} onChange={(e) => setExpertMode(e.target.checked)} />
                 <Typography variant="body1">{expertMode ? "Expert Mode: ON" : "Expert Mode: OFF"}</Typography>
             </div>
@@ -217,6 +223,8 @@ export default function SystemStatus({ expertMode, setExpertMode}) {
                     <Button onClick={() => setLogDialog({ ...logDialog, open: false })}>Close</Button>
                 </DialogActions>
             </Dialog>
-        </Paper>
+            </div>
+            </AccordionDetails>
+        </Accordion>
     );
 } 

@@ -4,6 +4,11 @@ import DetectorImage from '../dataDisplay/DetectorImage.jsx'
 import Skimmer from './Skimmer.jsx'
 import Paper from '@mui/material/Paper';
 import Alert from '@mui/material/Alert';
+import Accordion from '@mui/joy/Accordion';
+import AccordionDetails from '@mui/joy/AccordionDetails';
+import AccordionSummary from '@mui/joy/AccordionSummary';
+import Typography from '@mui/material/Typography';
+
 
 /**
  * DataDisplay component renders the detector data visualization section.
@@ -24,32 +29,23 @@ import Alert from '@mui/material/Alert';
  */
 const DataDisplay = ({ selectedFile, detectorList, selectedDetector, fileVersion, jsonFiles, updateState }) => {
   if (!selectedFile) return (
-    <Paper
-      elevation={3}
-      sx={{
-        width: '100%',
-        padding: 2,
-        border: '2px solid black',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-      }}
-    >
+    <Accordion defaultExpanded>
+      <AccordionSummary><Typography variant="h5">Single detector</Typography></AccordionSummary>
+      <AccordionDetails>
       <Alert sx={{ width: '200px' }} severity="warning">
         No data to display
       </Alert>
-    </Paper>
+      </AccordionDetails>
+    </Accordion>
   );
 
   return (
     <>
       {/* Paper container: switches to column layout on small screens (<900px>) */}
-      <Paper
-        elevation={3}
-        sx={{
-          width: '100%',
-          padding: 2,
-          border: '2px solid black',
+      <Accordion defaultExpanded>
+        <AccordionSummary><Typography variant="h5">Single detector</Typography></AccordionSummary>
+        <AccordionDetails>
+          <div style={{
           display: 'flex',
           flexDirection: { xs: 'column', sm: 'row' },
           justifyContent: 'space-between',
@@ -57,9 +53,10 @@ const DataDisplay = ({ selectedFile, detectorList, selectedDetector, fileVersion
           gap: "10px",
           flexWrap: 'wrap',
           overflow: 'hidden',
+          padding: '10px',
+          width: '100%',
           '@media (max-width: 900px)': { flexDirection: 'column' },
-        }}
-      >
+        }}>
         {/* Parameters: Controls for detector selection and parameter adjustment */}
         <Parameters
           selectedFile={selectedFile}
@@ -78,7 +75,9 @@ const DataDisplay = ({ selectedFile, detectorList, selectedDetector, fileVersion
             fileVersion={fileVersion}
           />
         )}
-      </Paper>
+        </div>
+        </AccordionDetails>
+      </Accordion>
 
       {/* Show all detector images for the selected file */}
       <DetectorImageAll selectedFile={selectedFile} fileVersion={fileVersion} />

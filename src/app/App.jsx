@@ -5,6 +5,7 @@ import ChooseConfiguration from '../configuration/ChooseConfiguration.jsx'
 import SystemStatus from '../systemStatus/SystemStatus.jsx'
 import DataDisplay from '../dataDisplay/DataDisplay.jsx'
 import DataSelection from '../dataSelection/DataSelection.jsx'
+import AccordionGroup from '@mui/joy/AccordionGroup';
 
 /**
  * Root component of the application that orchestrates detector visualization and data management.
@@ -113,6 +114,7 @@ function App() {
   return (
     <>
       <MainTitle handleLogout={handleLogout} />
+      <AccordionGroup sx={{border: '1px solid black', borderRadius: '10px', overflow: 'hidden'}}>
       <SystemStatus expertMode={expertMode} setExpertMode={setExpertMode} />
       <ChooseConfiguration
         selectedFile={selectedFile}
@@ -136,6 +138,7 @@ function App() {
         jsonFiles={jsonFiles}
         updateState={updateState}
       />
+      </AccordionGroup>
     </>
   )
 }

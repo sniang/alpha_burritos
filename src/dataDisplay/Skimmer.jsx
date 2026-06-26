@@ -6,6 +6,9 @@ import SaveIcon from '@mui/icons-material/Save';
 import Button from '@mui/material/Button';
 import CancelIcon from '@mui/icons-material/Cancel';
 import SkimmerPlot from "./SkimmerPlot.jsx";
+import Accordion from '@mui/joy/Accordion';
+import AccordionDetails from '@mui/joy/AccordionDetails';
+import AccordionSummary from '@mui/joy/AccordionSummary';
 import { Switch, FormControl, InputLabel, Select, MenuItem, TextField, FormControlLabel, Box, Typography, Paper, Table as MuiTable, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
 
 /**
@@ -85,9 +88,14 @@ const Skimmer = ({ jsonFiles, selectedDetector, setSelectedDetector, detectorLis
     // Early exit when no acquisitions are available for the selected date.
     if (!jsonFiles || !jsonFiles.length) {
         return (
-            <Paper elevation={3} sx={{ width: '100%', padding: 2, border: '2px solid black' }}>
-                No JSON files available.
-            </Paper>
+            <Accordion defaultExpanded>
+                <AccordionSummary><Typography variant="h5">Skimmer</Typography></AccordionSummary>
+                <AccordionDetails>
+                    <div style={{ width: '100%', padding: '10px', border: '2px solid black' }}>
+                        No JSON files available.
+                    </div>
+                </AccordionDetails>
+            </Accordion>
         );
     }
 
@@ -317,29 +325,33 @@ const Skimmer = ({ jsonFiles, selectedDetector, setSelectedDetector, detectorLis
     };
 
     return (
-        <Paper elevation={3} sx={{ width: '100%', padding: 2, border: '2px solid black', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: "10px" }}>
-            <Typography variant="h5">Skimmer</Typography>
-            <Selectors />
-            {isLoading && <div className="loading-indicator">Loading data...</div>}
-            {!isLoading && data && !isTableTextArea && <Table />}
-            {!isLoading && data && isTableTextArea && <TableTextArea />}
-            <div style={{ display: "flex", gap: "10px" }}>
-                {!isLoading && data && <DownloadCSVButton />}
-                {!isLoading && filteredData && (
-                    <SkimmerPlot
-                        filteredData={filteredData}
-                        selectedDetector={selectedDetector}
-                        isSwitchOn={isSwitchOn}
-                        nValue={nValue}
-                    />
-                )}
-                {!isLoading && data && isTableTextArea && (
-                    <Button startIcon={<CancelIcon />} color="secondary" size="small" variant="contained" onClick={() => setIsTableTextArea(false)}>
-                        Back
-                    </Button>
-                )}
-            </div>
-        </Paper>
+        <Accordion defaultExpanded>
+            <AccordionSummary><Typography variant="h5">Skimmer</Typography></AccordionSummary>
+            <AccordionDetails>
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: "10px", padding: "10px", width: "100%" }}>
+                    <Selectors />
+                    {isLoading && <div className="loading-indicator">Loading data...</div>}
+                    {!isLoading && data && !isTableTextArea && <Table />}
+                    {!isLoading && data && isTableTextArea && <TableTextArea />}
+                    <div style={{ display: "flex", gap: "10px" }}>
+                        {!isLoading && data && <DownloadCSVButton />}
+                        {!isLoading && filteredData && (
+                            <SkimmerPlot
+                                filteredData={filteredData}
+                                selectedDetector={selectedDetector}
+                                isSwitchOn={isSwitchOn}
+                                nValue={nValue}
+                            />
+                        )}
+                        {!isLoading && data && isTableTextArea && (
+                            <Button startIcon={<CancelIcon />} color="secondary" size="small" variant="contained" onClick={() => setIsTableTextArea(false)}>
+                                Back
+                            </Button>
+                        )}
+                    </div>
+                </div>
+            </AccordionDetails>
+        </Accordion>
     );
 };
 

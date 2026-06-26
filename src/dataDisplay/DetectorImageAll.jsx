@@ -3,6 +3,10 @@ import DownloadAllButton from "./DownloadAllButton";
 import Button from '@mui/material/Button';
 import DrawIcon from '@mui/icons-material/Draw';
 import Paper from '@mui/material/Paper';
+import Accordion from '@mui/joy/Accordion';
+import AccordionDetails from '@mui/joy/AccordionDetails';
+import AccordionSummary from '@mui/joy/AccordionSummary';
+import Typography from '@mui/material/Typography';
 
 /**
  * Displays an image for the selected file, allowing toggling between combined and subplot views.
@@ -30,20 +34,25 @@ const DetectorImageAll = ({ selectedFile, fileVersion = 0 }) => {
   const handleToggleSignals = () => setAllSignals(prev => !prev);
 
   return (
-    <Paper elevation={3} sx={{ width: '100%', padding: 2, border: '2px solid black', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: "2px" }}>
-      <img
-        id="detectorImageAll"
-        src={imgSrc}
-        alt={`Preview for ${imgSrc}`}
-        style={{ width: '100%' }}
-      />
-      <div style={{ display: "flex", gap: "10px" }}>
-        <Button variant="contained" size="small" onClick={handleToggleSignals} startIcon={<DrawIcon />}>
-          {allSignals ? "Subplots" : "Combined plot"}
-        </Button>
-        <DownloadAllButton selectedFile={selectedFile} />
-      </div>
-    </Paper>
+    <Accordion defaultExpanded>
+      <AccordionSummary><Typography variant="h5">All detectors</Typography></AccordionSummary>
+      <AccordionDetails>
+        <div style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: "2px", padding: "10px" }}>
+          <img
+            id="detectorImageAll"
+            src={imgSrc}
+            alt={`Preview for ${imgSrc}`}
+            style={{ width: '100%' }}
+          />
+          <div style={{ display: "flex", gap: "10px" }}>
+            <Button variant="contained" size="small" onClick={handleToggleSignals} startIcon={<DrawIcon />}>
+              {allSignals ? "Subplots" : "Combined plot"}
+            </Button>
+            <DownloadAllButton selectedFile={selectedFile} />
+          </div>
+        </div>
+      </AccordionDetails>
+    </Accordion>
   );
 };
 

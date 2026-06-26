@@ -6,14 +6,18 @@ import Paper from '@mui/material/Paper';
 import Alert from '@mui/material/Alert';
 import Typography from '@mui/material/Typography';
 import { useState } from 'react';
+import Accordion from '@mui/joy/Accordion';
+import AccordionDetails from '@mui/joy/AccordionDetails';
+import AccordionSummary from '@mui/joy/AccordionSummary';
 
 const DataSelection = ({ selectedFile, updateState, year, month, day, jsonFiles, detectorList, selectedDetector }) => {
     const [error, setError] = useState(null);
     
     return (
-    <Paper elevation={3} sx={{ width: '100%', padding: 2, border: '2px solid black', display: 'flex', flexDirection: 'column', gap: "10px", justifyContent: 'center', alignItems: 'center', flexWrap: 'wrap' }}>
-        <Typography variant="h5" sx={{ mb: 1 }}>Data Selection</Typography>
-        <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: "20px", flexWrap: "wrap" }}>
+      <Accordion defaultExpanded>
+        <AccordionSummary><Typography variant="h5">Data Selection</Typography></AccordionSummary>
+        <AccordionDetails>
+        <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: "20px", flexWrap: "wrap", padding: "10px", width: "100%" }}>
                   {/* AutoRefresh: Handles periodic refresh of file list */}
         <AutoRefresh
           selectedFile={selectedFile}
@@ -58,7 +62,8 @@ const DataSelection = ({ selectedFile, updateState, year, month, day, jsonFiles,
             {error.message || 'An error occurred while fetching files'}
           </Alert>
         )}
-      </Paper>
+        </AccordionDetails>
+      </Accordion>
     );
   };
 
