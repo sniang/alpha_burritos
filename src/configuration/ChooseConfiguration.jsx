@@ -244,7 +244,10 @@ ChooseConfiguration failed to fetch latest dump timestamp`;
           </a>
         </div>
         <ConfigTable showDetails={showDetails} data={data} dataKeys={dataKeys} />
-        <PlotRanges />
+        <div style={{ display: 'flex', flexDirection: 'row', gap: '10px', justifyContent: 'space-around', flexWrap: 'wrap', width: "100%" }}>
+          <PlotRanges particles="positrons"/>
+          <PlotRanges particles="antiprotons"/>
+        </div>
         {/* Display timestamp message if any */}
         {timestampMessage && <Alert severity="info">{`Latest acquisition: ${timestampMessage} - From the ${latestParticle} trigger`}</Alert>}
         {!timestampMessage && <Alert severity="error">An error occurred while fetching the latest acquisition timestamp.</Alert>}
