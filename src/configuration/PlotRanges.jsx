@@ -11,9 +11,9 @@ import Typography from '@mui/material/Typography';
 import Switch from '@mui/material/Switch';
 import { useEffect, useState } from 'react';
 
-const PlotRanges = () => {
+const PlotRanges = ({ particles }) => {
   // State holding the current range settings and whether each axis range is enabled
-  const [ranges, setRanges] = useState({ x: false, y: false, xmin: 0, xmax: 120, ymin: 0, ymax: 250 });
+  const [ranges, setRanges] = useState({ x: false, y: false, xmin: 0, xmax: 120, ymin: 0, ymax: 250, particles: particles });
   // State holding the last error message, if any
   const [error, setError] = useState(null);
 
@@ -47,9 +47,8 @@ const PlotRanges = () => {
     }
   };
 
-  // On mount: send the default ranges to the server and start polling every 200ms
+  // On mount: start polling every 200ms
   useEffect(() => {
-    sendPlotRanges(ranges);
     const interval = setInterval(getPlotRanges, 200);
     return () => clearInterval(interval);
   }, []);
@@ -63,7 +62,7 @@ const PlotRanges = () => {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', justifyContent: 'center', alignItems: 'center', marginTop: '20px', marginBottom: '20px' }}>
-      <Typography variant="subtitle1" gutterBottom>Plot Ranges</Typography>
+      <Typography variant="subtitle1" gutterBottom>Plot range for {particles}</Typography>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, auto)', gap: '15px', justifyContent: 'center', alignItems: 'center' }}>
         {/* Time (X-axis) range controls */}
         <Typography variant="subtitle1" gutterBottom>Time</Typography>
