@@ -9,6 +9,7 @@
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import Switch from '@mui/material/Switch';
+import Alert from '@mui/material/Alert';
 import { useEffect, useState } from 'react';
 
 const PlotRanges = ({ particles }) => {
@@ -36,7 +37,7 @@ const PlotRanges = ({ particles }) => {
   // Fetches the current plot ranges from the server and updates the state
   const getPlotRanges = async () => {
     try {
-      const response = await fetch('/api/plot-ranges');
+      const response = await fetch('/api/plot-ranges/' + particles);
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
@@ -59,11 +60,11 @@ const PlotRanges = ({ particles }) => {
     sendPlotRanges(newRanges);
   };
 
-
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', justifyContent: 'center', alignItems: 'center', marginTop: '20px', marginBottom: '20px' }}>
       <Typography variant="subtitle1" gutterBottom>Plot range for {particles}</Typography>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, auto)', gap: '15px', justifyContent: 'center', alignItems: 'center' }}>
+        
         {/* Time (X-axis) range controls */}
         <Typography variant="subtitle1" gutterBottom>Time</Typography>
         <Switch checked={ranges.x} onChange={(e) => handleChangeRanges({ ...ranges, x: e.target.checked })} />
@@ -107,8 +108,8 @@ const PlotRanges = ({ particles }) => {
           sx={{ width: '100px' }}
           size="small"
         />
-
       </div>
+      {error && <Alert severity="error" color="error">{error}</Alert>}
     </div>
   );
 };

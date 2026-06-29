@@ -105,7 +105,7 @@ app.get('/api/configuration', (req, res) => getConfiguration(req, res));
 app.post('/api/configuration', (req, res) => postConfiguration(req, res));
 
 // Get the plot ranges
-app.get('/api/plot-ranges', (req, res) => getPlotRanges(req, res));
+app.get('/api/plot-ranges/:particles', (req, res) => getPlotRanges(req, res));
 
 // Post the plot ranges
 app.post('/api/plot-ranges', (req, res) => postPlotRanges(req, res));

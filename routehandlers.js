@@ -265,8 +265,11 @@ export const getLatest = async (req, res) => {
 
 // Route handler to get plot ranges configuration
 export const getPlotRanges = async (req, res) => {
+  if (!req.params.particles) {
+    return res.status(400).json({ error: 'Missing particles parameter' });
+  }
   try {
-    const plotRangesPath = path.join(ANALYSIS_DIR, 'configurations', 'plot_ranges.json');
+    const plotRangesPath = path.join(ANALYSIS_DIR, 'configurations', 'plot_ranges_' + req.params.particles + '.json');
     const data = await fs.readFile(plotRangesPath, 'utf8');
     const plotRangesData = JSON.parse(data);
     res.json(plotRangesData);
@@ -280,11 +283,10 @@ export const getPlotRanges = async (req, res) => {
 // Route handler to post/update plot ranges configuration
 export const postPlotRanges = async (req, res) => {
   try {
-    const plotRangesPath = path.join(ANALYSIS_DIR, 'configurations', 'plot_ranges.json');
     const newPlotRanges = req.body;
-
+    const particles = req.body.particles;
+    const plotRangesPath = path.join(ANALYSIS_DIR, 'configurations', 'plot_ranges_' + particles + '.json');
     await fs.writeFile(plotRangesPath, JSON.stringify(newPlotRanges, null, 2), 'utf8');
-
     res.json({ success: true, message: 'Plot ranges updated successfully' });
   } catch (error) {
     console.error(getCurrentTimestamp());
