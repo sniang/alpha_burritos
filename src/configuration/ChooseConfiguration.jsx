@@ -189,10 +189,9 @@ ChooseConfiguration failed to fetch latest dump timestamp`;
     <Accordion defaultExpanded>
       <AccordionSummary><Typography variant="h5">Analysis Configuration</Typography></AccordionSummary>
       <AccordionDetails>
-        <Paper elevation={3} sx={{ width: '100%', padding: 2, border: '2px solid black', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', gap: "10px" }}>
-          <Typography variant="h5">Analysis Configuration</Typography>
+        <div style={{ display: 'flex', flexDirection: 'row', gap: '10px', justifyContent: 'center', alignItems: 'center', flexWrap: 'wrap', padding: "10px", width: "100%" }}>
           <Alert severity="error">{error.message}</Alert>
-        </Paper>
+        </div>
       </AccordionDetails>
     </Accordion>
   );
