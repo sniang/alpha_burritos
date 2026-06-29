@@ -62,7 +62,7 @@ export default function PitayaStatus({ expertMode }) {
     <>
       {/* Expert mode: one chip per pitaya with color-coded connection state */}
       {expertMode && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', width: '100%', maxWidth: '400px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', width: '100%'}}>
           <Typography variant="body2" sx={{ fontWeight: 600 }}>
             Network connection per acquisition card
           </Typography>
@@ -72,7 +72,7 @@ export default function PitayaStatus({ expertMode }) {
           <div style={{
             display: 'flex',
             flexDirection: 'row',
-            gap: '8px',
+            gap: '4px',
             flexWrap: 'wrap',
             justifyContent: 'center',
           }}>
@@ -110,7 +110,6 @@ export default function PitayaStatus({ expertMode }) {
           flexDirection: 'column',
           gap: '6px',
           width: '100%',
-          maxWidth: '500px',
           margin: '10px auto',
         }}>
           {problemPitayas.map(({ name, status }) => (
