@@ -2,7 +2,7 @@ import fs from 'fs/promises';
 import path from 'path';
 import { ANALYSIS_DIR } from './routehandlers.js';
 
-const TIMEOUT_MS = 20 * 60 * 1000; // 20 minutes
+const TIMEOUT_MS = 60 * 60 * 1000; // 60 minutes
 const PARTICLES = ['positrons', 'antiprotons'];
 
 async function checkPlotRanges() {
