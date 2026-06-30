@@ -283,7 +283,7 @@ export const getPlotRanges = async (req, res) => {
 // Route handler to post/update plot ranges configuration
 export const postPlotRanges = async (req, res) => {
   try {
-    const newPlotRanges = req.body;
+    const newPlotRanges = { ...req.body, lastModified: new Date().toISOString() };
     const particles = req.body.particles;
     const plotRangesPath = path.join(ANALYSIS_DIR, 'configurations', 'plot_ranges_' + particles + '.json');
     await fs.writeFile(plotRangesPath, JSON.stringify(newPlotRanges, null, 2), 'utf8');

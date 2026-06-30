@@ -10,7 +10,6 @@ import dotenv from 'dotenv';        // Loads environment variables from .env fil
 import cookieParser from 'cookie-parser';   // Middleware for parsing cookies
 import jwt from 'jsonwebtoken'; // JSON Web Token library for authentication
 import bcrypt from 'bcrypt'; // Library for hashing passwords
-
 import { getCurrentTimestamp } from './utils.js';
 import {
     getJsonFiles,
@@ -34,6 +33,7 @@ import {
     getPlotRanges,
     postPlotRanges
 } from './routehandlers.js';
+import { startDumpMonitor } from './plotRangesMonitor.js';
 
 // ====================
 // Environment & Config
@@ -239,4 +239,5 @@ app.listen(PORT, '0.0.0.0', () => {
     console.log('Server started');
     console.log(`Server is running at http://localhost:${PORT}`);
     console.log(`Main directory is set to: ${MAIN_DIR}`);
+    startDumpMonitor();
 });
