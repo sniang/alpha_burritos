@@ -87,8 +87,8 @@ const Parameters = ({
         ) {
           setParticleConfig(data[Object.keys(data)[0]].config);
           setFitStatus(data[Object.keys(data)[0]].fit_status);
-          // setFftStatus(data[Object.keys(data)[0]].fft_status);
-          // setCutOff(data[Object.keys(data)[0]].cut_off);
+          setFftStatus(data[Object.keys(data)[0]].fft_status);
+          setCutOff(data[Object.keys(data)[0]].cut_off);
         }
 
         const dataKeys = Object.keys(data);
