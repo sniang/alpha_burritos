@@ -11,6 +11,8 @@
 import { useState, useEffect } from "react";
 import { parseTimestamp } from "../dataSelection/TimeStampSelector";
 import PivotTableChartIcon from "@mui/icons-material/PivotTableChart";
+import MonitorHeartIcon from '@mui/icons-material/MonitorHeart';
+import GraphicEqIcon from "@mui/icons-material/GraphicEq";
 import CancelIcon from "@mui/icons-material/Cancel";
 import EditNoteIcon from '@mui/icons-material/EditNote';
 import { TextField, Button, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Alert } from "@mui/material";
@@ -61,6 +63,9 @@ const Parameters = ({
   const [comment, setComment] = useState("No comment"); // Stores the current comment for the selected file
   const [newComment, setNewComment] = useState(""); // Stores the comment being edited
   const [update, setUpdate] = useState(false); // Controls whether edit mode is active
+  const [fitStatus, setFitStatus] = useState(false); // Stores the fit status for the selected file
+  const [fftStatus, setFftStatus] = useState(false); // Stores the FFT status for the selected file
+  const [cutOff, setCutOff] = useState(0); // Stores the cut-off for the selected file
   /**
    * Fetches parameter JSON for the selected file, populates the detector
    * list, and extracts the particle configuration label if present.
@@ -81,6 +86,9 @@ const Parameters = ({
           data[Object.keys(data)[0]].config
         ) {
           setParticleConfig(data[Object.keys(data)[0]].config);
+          setFitStatus(data[Object.keys(data)[0]].fit_status);
+          // setFftStatus(data[Object.keys(data)[0]].fft_status);
+          // setCutOff(data[Object.keys(data)[0]].cut_off);
         }
 
         const dataKeys = Object.keys(data);
@@ -395,6 +403,14 @@ const Parameters = ({
         </TableContainer>
 
       )}
+      <Typography sx={{ display: 'flex', alignItems: 'center', gap: 0.5, alignSelf: 'flex-start' }}>
+        <MonitorHeartIcon fontSize="small" />
+        {fitStatus ? "Fit successful" : "No fit has been performed"}
+      </Typography>
+      <Typography sx={{ display: 'flex', alignItems: 'center', gap: 0.5, alignSelf: 'flex-start' }}>
+        <GraphicEqIcon fontSize="small" />
+        {fftStatus ? `FFT filter active (cut-off: ${cutOff})` : "No FFT filter has been performed"}
+      </Typography>
       {update && <TextField value={newComment}
                     onChange={(e) => setNewComment(e.target.value)} label="Write a comment..." />}
       {!update && <Alert severity="info">{comment}</Alert>}
