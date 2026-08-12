@@ -403,14 +403,14 @@ const Parameters = ({
         </TableContainer>
 
       )}
-      <Typography sx={{ display: 'flex', alignItems: 'center', gap: 0.5, alignSelf: 'flex-start' }}>
+      {/* <Typography sx={{ display: 'flex', alignItems: 'center', gap: 0.5, alignSelf: 'flex-start' }}>
         <MonitorHeartIcon fontSize="small" />
         {fitStatus ? "Fit successful" : "No fit has been performed"}
       </Typography>
       <Typography sx={{ display: 'flex', alignItems: 'center', gap: 0.5, alignSelf: 'flex-start' }}>
         <GraphicEqIcon fontSize="small" />
         {fftStatus ? `FFT filter active (cut-off: ${cutOff})` : "No FFT filter has been performed"}
-      </Typography>
+      </Typography> */}
       {update && <TextField value={newComment}
                     onChange={(e) => setNewComment(e.target.value)} label="Write a comment..." />}
       {!update && <Alert severity="info">{comment}</Alert>}
