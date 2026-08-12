@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import Button from '@mui/material/Button';
 import PsychologyIcon from '@mui/icons-material/Psychology';
 import AutoStoriesIcon from '@mui/icons-material/AutoStories';
+import GraphicEqIcon from "@mui/icons-material/GraphicEq";
 import InfoIcon from '@mui/icons-material/Info';
 import MonitorHeartIcon from '@mui/icons-material/MonitorHeart';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
@@ -126,8 +127,9 @@ ChooseConfiguration failed to fetch latest dump timestamp`;
    * Sends the updated configuration to the backend.
    * @param {string} newConfig - The new configuration type ("positrons" or "antiprotons")
    * @param {boolean} newFit - The new fit value
+   * @param {boolean} newFft - The new FFT value
    */
-  const handleConfigChange = async (newConfig = data.config, newFit = data.fit) => {
+  const handleConfigChange = async (newConfig = data.config, newFit = data.fit, newFft = data.fft) => {
     setError(null);
     // Validate config type
     if (newConfig !== 'positrons' && newConfig !== 'antiprotons')
@@ -139,8 +141,9 @@ ChooseConfiguration failed to fetch latest dump timestamp`;
     } else if (newConfig === 'antiprotons') {
       newData = antiprotonConfig;
     }
-    // Set the fit property
+    // Set the fit and FFT properties
     newData.fit = newFit;
+    newData.fft = newFft;
     try {
       // Send updated configuration to backend API
       const response = await fetch('/api/configuration', {
@@ -202,7 +205,11 @@ ChooseConfiguration failed to fetch latest dump timestamp`;
       <AccordionDetails>
         <MessageAlert message={message} setMessage={setMessage} />
         <div style={{ display: 'flex', flexDirection: 'row', gap: '10px', justifyContent: 'center', alignItems: 'center', flexWrap: 'wrap', padding: "10px", width: "100%" }}>
-          <Button startIcon={<AddCircleOutlineIcon />} style={{ opacity: data.config !== 'positrons' ? 0.5 : 1 }} onClick={() => handleConfigChange('positrons')}>
+          <Button startIcon={<AddCircleOutlineIcon />} 
+            style={{ opacity: data.config !== 'positrons' ? 0.5 : 1 }} 
+            onClick={() => handleConfigChange('positrons')}
+            size="small"
+           >
             Positrons
           </Button>
           {/* Button to select antiprotons configuration */}
@@ -210,6 +217,7 @@ ChooseConfiguration failed to fetch latest dump timestamp`;
             startIcon={<RemoveCircleOutlineIcon />}
             style={{ opacity: data.config !== 'antiprotons' ? 0.5 : 1 }}
             onClick={() => handleConfigChange('antiprotons')}
+            size="small"
           >
             Antiprotons
           </Button>
@@ -218,18 +226,32 @@ ChooseConfiguration failed to fetch latest dump timestamp`;
             startIcon={<MonitorHeartIcon />}
             style={{ opacity: data.fit ? 1 : 0.5 }}
             onClick={() => { handleConfigChange(data.config, !data.fit); }}
+            size="small"
           >
             {data.fit ? "Fit enabled" : "Fit disabled"}
+          </Button>
+          {/* Button to toggle FFT option */}
+          <Button
+            startIcon={<GraphicEqIcon />}
+            style={{ opacity: data.fft ? 1 : 0.5 }}
+            onClick={() => { handleConfigChange(data.config, data.fit, !data.fft); }}
+            size="small"
+          >
+            {data.fft ? "FFT enabled" : "FFT disabled"}
           </Button>
           {/* Button to trigger re-analysis */}
           <Button
             onClick={handleReAnalyse}
             startIcon={<PsychologyIcon />}
+            size="small"
           >
             Re-analyse
           </Button>
           {/* Button to show/hide configuration details */}
-          <Button startIcon={<InfoIcon />} onClick={() => { setShowDetails(!showDetails); }}
+          <Button 
+            startIcon={<InfoIcon />} 
+            onClick={() => { setShowDetails(!showDetails); }}
+            size="small"
           >
             {showDetails ? "Hide details" : "Show details"}
           </Button>
@@ -238,7 +260,7 @@ ChooseConfiguration failed to fetch latest dump timestamp`;
             target="_blank"
             rel="noopener noreferrer"
           >
-            <Button startIcon={<AutoStoriesIcon />} >
+            <Button startIcon={<AutoStoriesIcon />} size="small">
               Go to the guide
             </Button>
           </a>
