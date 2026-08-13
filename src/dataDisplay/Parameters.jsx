@@ -409,11 +409,20 @@ const Parameters = ({
       </Typography>
       <Typography sx={{ display: 'flex', alignItems: 'center', gap: 0.5, alignSelf: 'flex-start' }}>
         <GraphicEqIcon fontSize="small" />
-        {fftStatus ? `FFT filter active (cut-off: ${cutOff})` : "No FFT filter has been performed"}
+        {fftStatus === true
+          ? `FFT filter active (cut-off: ${cutOff ?? "N/A"} MHz)`
+          : fftStatus === false
+            ? "No FFT filter has been performed"
+            : "We don't have information about the FFT filter status"}
       </Typography>
-      {update && <TextField value={newComment}
-                    onChange={(e) => setNewComment(e.target.value)} label="Write a comment..." />}
-      {!update && <Alert severity="info">{comment}</Alert>}
+      {update && <TextField 
+                    value={newComment}
+                    onChange={(e) => setNewComment(e.target.value)} 
+                    label="Write a comment..." 
+                  />}
+      {!update && <Alert severity="info">
+                    {comment}
+                  </Alert>}
       {displayButtons()}
       {error && <Alert severity="error">{error.message}</Alert>}
     </div>
