@@ -100,7 +100,7 @@ const Skimmer = ({ jsonFiles, selectedDetector, setSelectedDetector, detectorLis
     }
 
     // Shared formatter used by the table and CSV export.
-    const formatValue = v => (v === undefined || v === null) ? "N/A" : Number(v).toPrecision(3);
+    const formatValue = v => (v === undefined || v === null) ? "N/A" : Number(v).toPrecision(5);
 
     // Selection controls for particle type, detector, and acquisition range.
     const Selectors = () => (
